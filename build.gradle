@@ -1,3 +1,7 @@
 apply plugin: 'idea'
 //and standard one
 apply plugin: 'java'
+
+dependencies {
+    compile 'com.google.firebase:firebase-server-sdk:[3.0.0,)'
+}

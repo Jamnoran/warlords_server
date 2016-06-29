@@ -3,6 +3,7 @@ package game;
 import game.logging.Log;
 import vo.Message;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,7 +22,11 @@ public class Test {
 		String classType = "WARRIOR";
 		String user = "Emil";
 
-		// DO stuff
+		FirebaseOptions options = new FirebaseOptions.Builder()
+				.setServiceAccount(new FileInputStream("firebase/warlords-10aa9a5c0e12.json"))
+				.setDatabaseUrl("https://databaseName.firebaseio.com/")
+				.build();
+		FirebaseApp.initializeApp(options);
 
 	}
 
