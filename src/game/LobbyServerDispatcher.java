@@ -3,6 +3,7 @@ package game;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import game.logging.Log;
+import io.CreateCharacterRequest;
 import io.JsonRequest;
 import vo.Message;
 
@@ -111,7 +112,8 @@ public class LobbyServerDispatcher extends Thread {
 			if(request.getRequestType().equals("JOIN_SERVER")){
 				clientJoinServer(clientInfo);
 			}else if (request.getRequestType().equals("CREATE_CHARACTER")){
-
+				CreateCharacterRequest createCharacterRequest = (CreateCharacterRequest) request.getRequest();
+				Log.i(TAG, "User is trying to create class: ");
 			}
 		}
 

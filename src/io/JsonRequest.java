@@ -69,4 +69,8 @@ public class JsonRequest implements Serializable {
 				"requestType='" + requestType + '\'' +
 				'}';
 	}
+
+	public JsonRequest getRequest() {
+		return null;
+	}
 }
