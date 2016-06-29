@@ -38,7 +38,8 @@ public class GameServer {
 	public void characterJoined(String character_id) {
 		champions.add(new Champion(character_id));
 		Log.i(TAG, "Character joined with this characterID: " + character_id + " characters in game: " + champions.size());
-		server.dispatchMessage(new Message("{data:\"character joined\"}"));
+//		server.dispatchMessage(new Message("{\"response_type\":\"GAME_INFO\", data:\"character joined\"}"));
+		sendGameStatus();
 	}
 
 

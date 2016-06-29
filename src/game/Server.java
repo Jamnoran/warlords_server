@@ -60,7 +60,7 @@ public class Server {
 			Log.i(TAG, "Added client to server : " + lobbyServerDispatcher.getServerId() + " That now has this many players: " + lobbyServerDispatcher.getClientCount());
 
             // Dispatch message to all client that a client has joined
-			lobbyServerDispatcher.dispatchMessage(new Message(null, "{ \"clients\" : \"" + lobbyServerDispatcher.getClientCount() + "\"}"));
+			lobbyServerDispatcher.dispatchMessage(new Message(null, "{\"response_type\":\"SERVER_INFO\", \"clients\" : \"" + lobbyServerDispatcher.getClientCount() + "\"}"));
 		}
 	}
 

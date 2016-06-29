@@ -1,6 +1,6 @@
 package io;
 
-import vo.Animation;
+import vo.GameAnimation;
 import vo.Champion;
 import vo.Minion;
 
@@ -10,13 +10,23 @@ import java.util.ArrayList;
  * Created by Jamnoran on 27-Jun-16.
  */
 public class GameStatusResponse {
+	private String response_type = "GAME_STATUS";
 	private ArrayList<Minion> minions = new ArrayList<>();
 	private ArrayList<Champion> champions = new ArrayList<>();
-	private ArrayList<Animation> animations = new ArrayList<>();
+	private ArrayList<GameAnimation> gameAnimations = new ArrayList<>();
 
 	public GameStatusResponse(ArrayList<Minion> minions, ArrayList<Champion> champions) {
 		this.minions = minions;
 		this.champions = champions;
+	}
+
+
+	public String getResponse_type() {
+		return response_type;
+	}
+
+	public void setResponse_type(String response_type) {
+		this.response_type = response_type;
 	}
 
 	public ArrayList<Minion> getMinions() {
@@ -35,12 +45,12 @@ public class GameStatusResponse {
 		this.champions = champions;
 	}
 
-	public ArrayList<Animation> getAnimations() {
-		return animations;
+	public ArrayList<GameAnimation> getGameAnimations() {
+		return gameAnimations;
 	}
 
-	public void setAnimations(ArrayList<Animation> animations) {
-		this.animations = animations;
+	public void setGameAnimations(ArrayList<GameAnimation> gameAnimations) {
+		this.gameAnimations = gameAnimations;
 	}
 
 	@Override
@@ -48,7 +58,7 @@ public class GameStatusResponse {
 		return "GameStatusResponse{" +
 				"minions=" + minions +
 				", champions=" + champions +
-				", animations=" + animations +
+				", gameAnimations=" + gameAnimations +
 				'}';
 	}
 }
