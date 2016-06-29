@@ -1,11 +1,14 @@
 package game;
 
+import game.logging.Log;
 import io.JsonRequest;
 import vo.Message;
 
 import java.util.Vector;
 
 public class ServerDispatcher extends Thread {
+	private static final String TAG = ServerDispatcher.class.getSimpleName();
+
 	private Vector mMessageQueue = new Vector();
 	private Vector mClients = new Vector();
     private int serverId = 0;
@@ -44,7 +47,7 @@ public class ServerDispatcher extends Thread {
 	public synchronized void handleClientRequest(Message aMessage) {
 		JsonRequest request = JsonRequest.parse(gameServer, aMessage);
         if (request != null) {
-	        System.out.println("JsonRequest: " + request.toString());
+	        Log.i(TAG, "JsonRequest: " + request.toString());
             notify();
         }
 	}
@@ -72,7 +75,7 @@ public class ServerDispatcher extends Thread {
 			ClientInfo clientInfo = (ClientInfo) mClients.get(i);
 			if ((aMessage.getRecipient() == null || (aMessage.getRecipient() != null && clientInfo.id == aMessage.getRecipient()))
                     || aMessage.getRecipient() != null &&  aMessage.getRecipient() == -1 && i > 0 ) {
-				clientInfo.mClientSender.sendMessage(aMessage);
+				clientInfo.clientSender.sendMessage(aMessage);
 			}
 		}
 	}

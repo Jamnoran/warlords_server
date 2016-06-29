@@ -3,13 +3,15 @@ package io;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
+import game.logging.Log;
 import vo.Message;
 import game.GameServer;
 
 import java.io.Serializable;
 
 public class JsonRequest implements Serializable {
-    @SerializedName("request_type")
+	private static final String TAG = JsonRequest.class.getSimpleName();
+	@SerializedName("request_type")
 	public String requestType;
 
 	public static JsonRequest parse(GameServer gameServer, Message aMessage) {
@@ -21,16 +23,22 @@ public class JsonRequest implements Serializable {
         }
 
         if (request != null && request.getRequestType() != null) {
-            System.out.println("Got this request: " + request.toString());
+	        Log.i(TAG, "Got this request: " + request.toString());
         }
 
-		if(request.isType("JOIN_SERVER")){
-			JoinServerRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JoinServerRequest.class);
-			System.out.println("parsedRequest : " + parsedRequest.toString());
-			gameServer.getGameCommunicationUtil().handleJoinServerRequest(parsedRequest);
+		if (request != null) {
+			if(request.isType("CHARACTER_ACTION")){
+				JoinServerRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JoinServerRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				gameServer.getGameCommunicationUtil().handleJoinServerRequest(parsedRequest);
+			}else if(request.isType("GET_STATUS")){
+				JoinServerRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JoinServerRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				gameServer.getGameCommunicationUtil().handleGetStatusRequest(parsedRequest);
+			}
 		}
 
-        return request;
+		return request;
 	}
 
 

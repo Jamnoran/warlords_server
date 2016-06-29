@@ -1,5 +1,6 @@
 package game;
 
+import game.logging.Log;
 import vo.Message;
 
 import java.io.IOException;
@@ -10,11 +11,13 @@ import java.util.ArrayList;
 
 public class Server {
 
-    // Configuration;
+	private static final String TAG = Server.class.getSimpleName();
+	// Configuration;
     static int portNumber = 2055;
     private static int CLIENTS_PER_SERVER = 3;
     private static int idOfServerCounter = 1;
 
+	private static LobbyServerDispatcher lobbyServerDispatcher;
 
     private static ArrayList<ServerDispatcher> servers = new ArrayList<ServerDispatcher>();
 
@@ -23,14 +26,17 @@ public class Server {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("warlords.game.Server is up and running!");
+		Log.i(TAG, "warlords.game.Server is up and running!");
+
+		lobbyServerDispatcher = new LobbyServerDispatcher();
+		lobbyServerDispatcher.start();
 		// Open server socket for listening
 		ServerSocket serverSocket = null;
 		try {
 			serverSocket = new ServerSocket(portNumber);
-			System.out.println("Warlords started on port " + portNumber);
+			Log.i(TAG, "Warlords started on port " + portNumber);
 		} catch (IOException se) {
-			System.err.println("Can not start listening on port " + portNumber);
+			Log.i(TAG, "Can not start listening on port " + portNumber);
 			se.printStackTrace();
 			System.exit(-1);
 		}
@@ -43,33 +49,30 @@ public class Server {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("Incoming connection");
-
-            // Get a server that the client can join.
-            ServerDispatcher server = getAvailableServer();
-			server.setGameServer(new GameServer(server));
+			Log.i(TAG, "Incoming connection");
 
             // Create the client
-            ClientInfo clientInfo = createClient(socket, server);
+            ClientInfo clientInfo = createClient(socket, lobbyServerDispatcher);
 
+			lobbyServerDispatcher.addClient(clientInfo);
             // Add client to server
-            server.addClient(clientInfo);
-            System.out.println("Added client to server : " + server.getServerId() + " That now has this many players: " + server.getClientCount());
+//            server.addClient(clientInfo);
+			Log.i(TAG, "Added client to server : " + lobbyServerDispatcher.getServerId() + " That now has this many players: " + lobbyServerDispatcher.getClientCount());
 
             // Dispatch message to all client that a client has joined
-            server.dispatchMessage(new Message(null, "{ \"clients\" : \"" + server.getClientCount() + "\"}"));
+			lobbyServerDispatcher.dispatchMessage(new Message(null, "{ \"clients\" : \"" + lobbyServerDispatcher.getClientCount() + "\"}"));
 		}
 	}
 
-    private static ClientInfo createClient(Socket socket, ServerDispatcher server) {
+    private static ClientInfo createClient(Socket socket, LobbyServerDispatcher server) {
         try {
             ClientInfo clientInfo = new ClientInfo();
             clientInfo.mSocket = socket;
             clientInfo.id = server.getNextClientId();
             ClientListener clientListener = new ClientListener(clientInfo, server);
             ClientSender clientSender = new ClientSender(clientInfo, server);
-            clientInfo.mClientListener = clientListener;
-            clientInfo.mClientSender = clientSender;
+            clientInfo.clientListener = clientListener;
+            clientInfo.clientSender = clientSender;
             clientListener.start();
             clientSender.start();
             return clientInfo;
@@ -79,28 +82,4 @@ public class Server {
         return null;
     }
 
-    private static ServerDispatcher getAvailableServer() {
-        // Start warlords.game.ServerDispatcher thread
-        if (servers.size() == 0) {
-            // First server.
-            return createServer();
-        } else {
-            for(ServerDispatcher server : servers){
-                if(server.getClientCount() < CLIENTS_PER_SERVER){
-                    return server;
-                }
-            }
-            // Could not find any servers with free slots in create a new one
-            return createServer();
-        }
-    }
-
-    private static ServerDispatcher createServer() {
-        ServerDispatcher serverDispatcher = new ServerDispatcher();
-        serverDispatcher.start();
-        serverDispatcher.setServerId(idOfServerCounter);
-        servers.add(serverDispatcher);
-        idOfServerCounter++;
-        return serverDispatcher;
-    }
 }

@@ -16,4 +16,8 @@ public class GameCommunicationUtil {
 	public void handleJoinServerRequest(JoinServerRequest parsedRequest) {
 		server.characterJoined(parsedRequest.getCharacter_id());
 	}
+
+	public void handleGetStatusRequest(JoinServerRequest parsedRequest) {
+		server.sendStatusToAllClients();
+	}
 }

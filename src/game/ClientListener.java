@@ -8,40 +8,65 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 
-public class ClientListener extends Thread
-{
-    private ServerDispatcher mServerDispatcher;
-    private ClientInfo mClientInfo;
-    private BufferedReader mIn;
+public class ClientListener extends Thread {
+	private LobbyServerDispatcher lobbyServerDispatcher;
+    private ServerDispatcher serverDispatcher;
+    private ClientInfo clientInfo;
+    private BufferedReader in;
  
-    public ClientListener(ClientInfo aClientInfo, ServerDispatcher aServerDispatcher)
+    public ClientListener(ClientInfo aClientInfo, LobbyServerDispatcher lobbyServerDispatcher)
     throws IOException
     {
-        mClientInfo = aClientInfo;
-        mServerDispatcher = aServerDispatcher;
+        clientInfo = aClientInfo;
+	    this.lobbyServerDispatcher = lobbyServerDispatcher;
         Socket socket = aClientInfo.mSocket;
-        mIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
- 
-    /**
+
+	public ServerDispatcher getServerDispatcher() {
+		return serverDispatcher;
+	}
+
+	public void setServerDispatcher(ServerDispatcher mServerDispatcher) {
+		this.serverDispatcher = mServerDispatcher;
+	}
+
+	public LobbyServerDispatcher getLobbyServerDispatcher() {
+		return lobbyServerDispatcher;
+	}
+
+	public void setLobbyServerDispatcher(LobbyServerDispatcher lobbyServerDispatcher) {
+		this.lobbyServerDispatcher = lobbyServerDispatcher;
+	}
+
+	/**
      * Until interrupted, reads messages from the client socket, forwards them
      * to the server dispatcher's queue and notifies the server dispatcher.
      */
     public void run(){
         try {
            while (!isInterrupted()) {
-               String message = mIn.readLine();
+               String message = in.readLine();
                if (message == null)
                    break;
-               mServerDispatcher.handleClientRequest(new Message(message));
+	           if (serverDispatcher != null) {
+		           serverDispatcher.handleClientRequest(new Message(message));
+	           } else {
+		           lobbyServerDispatcher.handleClientRequest(clientInfo, new Message(message));
+	           }
            }
         } catch (IOException ioex) {
            // Problem reading from socket (communication is broken)
         }
  
         // Communication is broken. Interrupt both listener and sender threads
-        mClientInfo.mClientSender.interrupt();
-        mServerDispatcher.deleteClient(mClientInfo);
+        clientInfo.clientSender.interrupt();
+	    if (serverDispatcher != null) {
+		    serverDispatcher.deleteClient(clientInfo);
+	    }
+	    if (lobbyServerDispatcher != null) {
+		    lobbyServerDispatcher.deleteClient(clientInfo);
+	    }
     }
  
 }
