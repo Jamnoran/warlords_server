@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import game.logging.Log;
 import io.CreateHeroRequest;
 import io.CreateUserRequest;
+import io.JoinServerRequest;
 import io.JsonRequest;
 import util.DatabaseUtil;
 import vo.Hero;
@@ -103,18 +104,15 @@ public class LobbyServerDispatcher extends Thread {
 	}
 
 	public synchronized void handleClientRequest(ClientInfo clientInfo, Message aMessage) {
-		Gson gson = new GsonBuilder().create();
-
 		JsonRequest request = null;
 		if (aMessage != null && aMessage.getMessage() != null) {
-//			request = gson.fromJson(aMessage.getMessage(), JsonRequest.class);
 			request = JsonRequest.parse(null, aMessage);
 		}
-
 		if (request != null && request.getRequestType() != null) {
 			Log.i(TAG, "Got this request" + request.toString());
-
 			if(request.getRequestType().equals("JOIN_SERVER")){
+				JoinServerRequest joinServerRequest = (JoinServerRequest) request;
+				clientInfo.setHeroId(Integer.parseInt(joinServerRequest.getHero_id()));
 				clientJoinServer(clientInfo);
 			}else if (request.getRequestType().equals("CREATE_HERO")){
 				CreateHeroRequest createHeroRequest = (CreateHeroRequest) request;
@@ -126,8 +124,7 @@ public class LobbyServerDispatcher extends Thread {
 				Log.i(TAG, "User is trying to create class: " + createUserRequest.toString());
 				User user = DatabaseUtil.createUser(new User(createUserRequest.getUsername(), createUserRequest.getEmail(), createUserRequest.getPassword()));
 				Log.i(TAG, "Created user with this is: " + user.getId() + " We need to send that back to client");
-
-				//TODO: learn to send response back to specific client
+				dispatchMessage(new Message(clientInfo.getId(), "{\"response_type\":\"CREATE_USER\", \"user_id\" : \"" + user.getId() + "\"}"));
 			}
 		}
 

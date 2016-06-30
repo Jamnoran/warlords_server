@@ -27,7 +27,7 @@ public class JsonRequest implements Serializable {
 
 		if (request != null) {
 			Log.i(TAG, "Got this request: " + request.toString());
-			if(request.isType("CHARACTER_ACTION")){
+			if(request.isType("JOIN_SERVER")){
 				JoinServerRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JoinServerRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;

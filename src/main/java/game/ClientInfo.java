@@ -9,6 +9,7 @@ public class ClientInfo {
     public ClientListener clientListener = null;
     public ClientSender clientSender = null;
     public Integer id = null;
+    public Integer heroId = null;
 
     public Socket getmSocket() {
         return mSocket;
@@ -41,4 +42,12 @@ public class ClientInfo {
     public void setId(Integer id) {
         this.id = id;
     }
+
+	public Integer getHeroId() {
+		return heroId;
+	}
+
+	public void setHeroId(Integer heroId) {
+		this.heroId = heroId;
+	}
 }

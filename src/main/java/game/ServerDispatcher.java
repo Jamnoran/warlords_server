@@ -3,6 +3,8 @@ package game;
 import game.logging.Log;
 import io.JoinServerRequest;
 import io.JsonRequest;
+import util.DatabaseUtil;
+import vo.Hero;
 import vo.Message;
 
 import java.util.Vector;
@@ -21,6 +23,14 @@ public class ServerDispatcher extends Thread {
 	 */
 	public synchronized void addClient(ClientInfo aClientInfo) {
 		mClients.add(aClientInfo);
+		getClientsHero(aClientInfo.getHeroId());
+	}
+
+	private void getClientsHero(Integer heroId) {
+		Log.i(TAG, "Add hero with id: " + heroId);
+		Hero hero = DatabaseUtil.getHero(heroId);
+		Log.i(TAG, "Got this hero: " + hero.toString());
+		gameServer.addHero(hero);
 	}
 
 	/**
@@ -50,13 +60,10 @@ public class ServerDispatcher extends Thread {
         if (request != null) {
 	        Log.i(TAG, "JsonRequest: " + request.toString());
 
-	        if(request.isType("CHARACTER_ACTION")){
-		        JoinServerRequest parsedRequest = (JoinServerRequest) request;
-		        gameServer.getGameCommunicationUtil().handleJoinServerRequest(parsedRequest);
-	        }else if(request.isType("GET_STATUS")){
+	        if(request.isType("GET_STATUS")){
 		        JoinServerRequest parsedRequest = (JoinServerRequest) request;
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-		        gameServer.getGameCommunicationUtil().handleGetStatusRequest(parsedRequest);
+		        gameServer.sendStatusToAllClients();
 	        }
             notify();
         }

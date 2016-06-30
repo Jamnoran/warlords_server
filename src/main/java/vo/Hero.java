@@ -2,27 +2,27 @@ package vo;
 
 public class Hero {
 	public Integer id = null;
-	public Integer userId = null;
+	public Integer user_id = null;
 	public Integer xp = 0;
 	public Integer level = 1;
 	public Double positionX = 6.0d;
 	public Double positionY = 5.0d;
 	public String class_type = "WARRIOR";
 
-	public Hero(Integer userId) {
-		this.userId = userId;
+	public Hero(Integer user_id) {
+		this.user_id = user_id;
 	}
 
-	public Hero(String userId) {
-		this.userId = Integer.parseInt(userId);
+	public Hero(String user_id) {
+		this.user_id = Integer.parseInt(user_id);
 	}
 
-	public Integer getUserId() {
-		return userId;
+	public Integer getUser_id() {
+		return user_id;
 	}
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
 	}
 
 	public Integer getXp() {
@@ -72,7 +72,7 @@ public class Hero {
 	public String toString() {
 		return "Hero{" +
 				"id=" + id +
-				", userId=" + userId +
+				", user_id=" + user_id +
 				", xp=" + xp +
 				", level=" + level +
 				", positionX=" + positionX +
@@ -82,6 +82,6 @@ public class Hero {
 	}
 
 	public String getSqlInsertQuery() {
-		return "INSERT INTO `warlords`.`heroes` (`id`, `user_id`, `xp`, `level`, `class_type`) VALUES (NULL, '" + getUserId() + "', '" + getXp() + "', '" + getLevel() + "', '" + getClass_type() + "')";
+		return "INSERT INTO `warlords`.`heroes` (`id`, `user_id`, `xp`, `level`, `class_type`) VALUES (NULL, '" + getUser_id() + "', '" + getXp() + "', '" + getLevel() + "', '" + getClass_type() + "')";
 	}
 }

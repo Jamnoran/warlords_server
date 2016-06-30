@@ -143,4 +143,33 @@ public class DatabaseUtil {
 			return null;
 		}
 	}
+
+	public static Hero getHero(Integer id) {
+		Hero hero = null;
+		Connection connection = getConnection();
+		if (connection != null) {
+			try {
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery("SELECT * FROM heroes where id = " + id);
+				while (rs.next()) {
+					hero = new Hero(0);
+					//Retrieve by column name
+					hero.setId(rs.getInt("id"));
+					hero.setXp(rs.getInt("xp"));
+					hero.setUser_id(rs.getInt("user_id"));
+					hero.setClass_type(rs.getString("class_type"));
+					hero.setLevel(rs.getInt("level"));
+					//Display values
+				}
+				rs.close();
+				stmt.close();
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.i(TAG, "Failed to make connection!");
+		}
+		return hero;
+	}
 }
