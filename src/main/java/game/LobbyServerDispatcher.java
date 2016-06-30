@@ -3,9 +3,13 @@ package game;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import game.logging.Log;
-import io.CreateCharacterRequest;
+import io.CreateHeroRequest;
+import io.CreateUserRequest;
 import io.JsonRequest;
+import util.DatabaseUtil;
+import vo.Hero;
 import vo.Message;
+import vo.User;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -103,7 +107,8 @@ public class LobbyServerDispatcher extends Thread {
 
 		JsonRequest request = null;
 		if (aMessage != null && aMessage.getMessage() != null) {
-			request = gson.fromJson(aMessage.getMessage(), JsonRequest.class);
+//			request = gson.fromJson(aMessage.getMessage(), JsonRequest.class);
+			request = JsonRequest.parse(null, aMessage);
 		}
 
 		if (request != null && request.getRequestType() != null) {
@@ -111,9 +116,18 @@ public class LobbyServerDispatcher extends Thread {
 
 			if(request.getRequestType().equals("JOIN_SERVER")){
 				clientJoinServer(clientInfo);
-			}else if (request.getRequestType().equals("CREATE_CHARACTER")){
-				CreateCharacterRequest createCharacterRequest = (CreateCharacterRequest) request.getRequest();
-				Log.i(TAG, "User is trying to create class: ");
+			}else if (request.getRequestType().equals("CREATE_HERO")){
+				CreateHeroRequest createHeroRequest = (CreateHeroRequest) request;
+				Log.i(TAG, "User is trying to create class: " + createHeroRequest.toString());
+				Hero hero = DatabaseUtil.createHero(Integer.parseInt(createHeroRequest.getUser_id()), createHeroRequest.getClass_type());
+				Log.i(TAG, "Created hero : " + hero.toString());
+			}else if (request.getRequestType().equals("CREATE_USER")){
+				CreateUserRequest createUserRequest = (CreateUserRequest) request;
+				Log.i(TAG, "User is trying to create class: " + createUserRequest.toString());
+				User user = DatabaseUtil.createUser(new User(createUserRequest.getUsername(), createUserRequest.getEmail(), createUserRequest.getPassword()));
+				Log.i(TAG, "Created user with this is: " + user.getId() + " We need to send that back to client");
+
+				//TODO: learn to send response back to specific client
 			}
 		}
 

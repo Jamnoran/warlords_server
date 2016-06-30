@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class GameUpdate {
 	private String typeOfAction = null;
 	private ArrayList<Minion> minions = null;
-	private ArrayList<Champion> champions = null;
+	private ArrayList<Hero> heros = null;
 	
 	public String getTypeOfAction() {
 		return typeOfAction;
@@ -30,19 +30,19 @@ public class GameUpdate {
 		minions.add(minion);
 	}
 
-	public ArrayList<Champion> getChampions() {
-		return champions;
+	public ArrayList<Hero> getHeros() {
+		return heros;
 	}
 
-	public void setChampions(ArrayList<Champion> champions) {
-		this.champions = champions;
+	public void setHeros(ArrayList<Hero> heros) {
+		this.heros = heros;
 	}
 	
-	public void addChampion(Champion champion) {
-		if(champions == null){
-			champions = new ArrayList<Champion>();
+	public void addChampion(Hero hero) {
+		if(heros == null){
+			heros = new ArrayList<Hero>();
 		}
-		champions.add(champion);
+		heros.add(hero);
 	}
 
 	
@@ -56,8 +56,8 @@ public class GameUpdate {
 
 	public Integer getChampionPosiotion(Integer id) {
 		int position = 0;
-		for (Champion champion : champions) {
-			if(champion.getId() == id){
+		for (Hero hero : heros) {
+			if(hero.getId() == id){
 				return position;
 			}
 			position++;

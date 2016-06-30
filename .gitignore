@@ -2,3 +2,5 @@
 war.iml
 out/*
 build/*
+.gradle/*
+.gradle/

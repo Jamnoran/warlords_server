@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import game.logging.Log;
 import io.GameStatusResponse;
 import util.GameCommunicationUtil;
-import vo.Champion;
+import vo.Hero;
 import vo.Message;
 import vo.Minion;
 
@@ -21,7 +21,7 @@ public class GameServer {
 	private GameCommunicationUtil gameCommunicationUtil = new GameCommunicationUtil(this);
 
 	private ArrayList<Minion> minions = new ArrayList<>();
-	private ArrayList<Champion> champions = new ArrayList<>();
+	private ArrayList<Hero> heros = new ArrayList<>();
 
 
 	public GameServer(ServerDispatcher server) {
@@ -35,9 +35,9 @@ public class GameServer {
 		return gameCommunicationUtil;
 	}
 
-	public void characterJoined(String character_id) {
-		champions.add(new Champion(character_id));
-		Log.i(TAG, "Character joined with this characterID: " + character_id + " characters in game: " + champions.size());
+	public void characterJoined(String user_id) {
+		heros.add(new Hero(user_id));
+		Log.i(TAG, "Character joined with this characterID: " + user_id + " characters in game: " + heros.size());
 //		server.dispatchMessage(new Message("{\"response_type\":\"GAME_INFO\", data:\"character joined\"}"));
 		sendGameStatus();
 	}
@@ -83,7 +83,7 @@ public class GameServer {
 	}
 	public void sendGameStatus(){
 		Gson gson = new Gson();
-		String jsonInString = gson.toJson(new GameStatusResponse(minions, champions));
+		String jsonInString = gson.toJson(new GameStatusResponse(minions, heros));
 		server.dispatchMessage(new Message(jsonInString));
 	}
 

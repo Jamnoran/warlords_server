@@ -13,6 +13,9 @@ public class JsonRequest implements Serializable {
 	private static final String TAG = JsonRequest.class.getSimpleName();
 	@SerializedName("request_type")
 	public String requestType;
+	@SerializedName("user_id")
+	public String user_id;
+
 
 	public static JsonRequest parse(GameServer gameServer, Message aMessage) {
         Gson gson = new GsonBuilder().create();
@@ -22,19 +25,24 @@ public class JsonRequest implements Serializable {
 	        request = gson.fromJson(aMessage.getMessage(), JsonRequest.class);
         }
 
-        if (request != null && request.getRequestType() != null) {
-	        Log.i(TAG, "Got this request: " + request.toString());
-        }
-
 		if (request != null) {
+			Log.i(TAG, "Got this request: " + request.toString());
 			if(request.isType("CHARACTER_ACTION")){
 				JoinServerRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JoinServerRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.getGameCommunicationUtil().handleJoinServerRequest(parsedRequest);
+				return parsedRequest;
 			}else if(request.isType("GET_STATUS")){
 				JoinServerRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JoinServerRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.getGameCommunicationUtil().handleGetStatusRequest(parsedRequest);
+				return parsedRequest;
+			}else if(request.getRequestType().equals("CREATE_HERO")){
+				CreateHeroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), CreateHeroRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				return parsedRequest;
+			}else if(request.getRequestType().equals("CREATE_USER")){
+				CreateUserRequest parsedRequest = gson.fromJson(aMessage.getMessage(), CreateUserRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				return parsedRequest;
 			}
 		}
 
@@ -54,23 +62,23 @@ public class JsonRequest implements Serializable {
         }
     }
 
-
 	public String getRequestType() {
         return requestType;
     }
 
-    public void setRequestType(String requestType) {
-        this.requestType = requestType;
-    }
+	public String getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
+	}
 
 	@Override
 	public String toString() {
 		return "JsonRequest{" +
 				"requestType='" + requestType + '\'' +
+				", user_id='" + user_id + '\'' +
 				'}';
-	}
-
-	public JsonRequest getRequest() {
-		return null;
 	}
 }

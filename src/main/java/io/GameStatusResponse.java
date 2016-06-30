@@ -1,7 +1,7 @@
 package io;
 
 import vo.GameAnimation;
-import vo.Champion;
+import vo.Hero;
 import vo.Minion;
 
 import java.util.ArrayList;
@@ -12,12 +12,12 @@ import java.util.ArrayList;
 public class GameStatusResponse {
 	private String response_type = "GAME_STATUS";
 	private ArrayList<Minion> minions = new ArrayList<>();
-	private ArrayList<Champion> champions = new ArrayList<>();
+	private ArrayList<Hero> heroes = new ArrayList<>();
 	private ArrayList<GameAnimation> gameAnimations = new ArrayList<>();
 
-	public GameStatusResponse(ArrayList<Minion> minions, ArrayList<Champion> champions) {
+	public GameStatusResponse(ArrayList<Minion> minions, ArrayList<Hero> heroes) {
 		this.minions = minions;
-		this.champions = champions;
+		this.heroes = heroes;
 	}
 
 
@@ -37,12 +37,12 @@ public class GameStatusResponse {
 		this.minions = minions;
 	}
 
-	public ArrayList<Champion> getChampions() {
-		return champions;
+	public ArrayList<Hero> getHeroes() {
+		return heroes;
 	}
 
-	public void setChampions(ArrayList<Champion> champions) {
-		this.champions = champions;
+	public void setHeroes(ArrayList<Hero> heroes) {
+		this.heroes = heroes;
 	}
 
 	public ArrayList<GameAnimation> getGameAnimations() {
@@ -57,7 +57,7 @@ public class GameStatusResponse {
 	public String toString() {
 		return "GameStatusResponse{" +
 				"minions=" + minions +
-				", champions=" + champions +
+				", heroes=" + heroes +
 				", gameAnimations=" + gameAnimations +
 				'}';
 	}

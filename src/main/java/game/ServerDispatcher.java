@@ -1,6 +1,7 @@
 package game;
 
 import game.logging.Log;
+import io.JoinServerRequest;
 import io.JsonRequest;
 import vo.Message;
 
@@ -48,6 +49,15 @@ public class ServerDispatcher extends Thread {
 		JsonRequest request = JsonRequest.parse(gameServer, aMessage);
         if (request != null) {
 	        Log.i(TAG, "JsonRequest: " + request.toString());
+
+	        if(request.isType("CHARACTER_ACTION")){
+		        JoinServerRequest parsedRequest = (JoinServerRequest) request;
+		        gameServer.getGameCommunicationUtil().handleJoinServerRequest(parsedRequest);
+	        }else if(request.isType("GET_STATUS")){
+		        JoinServerRequest parsedRequest = (JoinServerRequest) request;
+		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+		        gameServer.getGameCommunicationUtil().handleGetStatusRequest(parsedRequest);
+	        }
             notify();
         }
 	}
