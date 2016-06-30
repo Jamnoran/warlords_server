@@ -3,6 +3,7 @@ package util;
 import game.logging.Log;
 import vo.Hero;
 import vo.User;
+import vo.classes.Warrior;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -152,7 +153,11 @@ public class DatabaseUtil {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery("SELECT * FROM heroes where id = " + id);
 				while (rs.next()) {
-					hero = new Hero(0);
+					if(rs.getString("class_type").equals(Hero.WARRIOR)){
+						hero = new Warrior();
+					}else if(rs.getString("class_type").equals(Hero.PRIEST)){
+						Log.i(TAG, "Create priest instead");
+					}
 					//Retrieve by column name
 					hero.setId(rs.getInt("id"));
 					hero.setXp(rs.getInt("xp"));

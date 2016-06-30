@@ -1,6 +1,7 @@
 package game;
 
 import game.logging.Log;
+import io.AttackRequest;
 import io.JoinServerRequest;
 import io.JsonRequest;
 import util.DatabaseUtil;
@@ -64,6 +65,10 @@ public class ServerDispatcher extends Thread {
 		        JoinServerRequest parsedRequest = (JoinServerRequest) request;
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.sendStatusToAllClients();
+	        }else if (request.isType("ATTACK")){
+		        AttackRequest parsedRequest = (AttackRequest) request;
+		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+		        gameServer.attack(parsedRequest.getUser_id(), parsedRequest.getMinion_id());
 	        }
             notify();
         }

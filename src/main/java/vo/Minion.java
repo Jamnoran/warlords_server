@@ -5,13 +5,47 @@ public class Minion {
 	private Integer id = 1;
 	private float positionX = 10.0f;
 	private float positionY = 10.0f;
-	
-	
+	private Integer level = 1;
+	private Integer hp = null;
+	private Integer maxHp = null;
+
+	private transient Integer hpPerLevel = 10;
+
 	public Minion() {
 		
 	}
+
 	public Minion(int id) {
 		this.id = id;
+	}
+
+	public void generateMinionInformation(){
+		setHp(hpPerLevel * level);
+		setMaxHp(getHp());
+	}
+
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
+	public Integer getHp() {
+		return hp;
+	}
+
+	public void setHp(Integer hp) {
+		this.hp = hp;
+	}
+
+	public Integer getMaxHp() {
+		return maxHp;
+	}
+
+	public void setMaxHp(Integer maxHp) {
+		this.maxHp = maxHp;
 	}
 
 	public void setPositionY(float positionY) {

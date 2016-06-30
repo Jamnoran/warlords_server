@@ -6,8 +6,10 @@ import io.GameStatusResponse;
 import vo.Hero;
 import vo.Message;
 import vo.Minion;
+import vo.classes.Warrior;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 /**
@@ -18,21 +20,28 @@ public class GameServer {
 	private boolean gameRunning = true;
 	private ServerDispatcher server;
 
+	private int minionCount = 0;
 	private ArrayList<Minion> minions = new ArrayList<>();
-	private ArrayList<Hero> heros = new ArrayList<>();
+	private ArrayList<Hero> heroes = new ArrayList<>();
 
 
 	public GameServer(ServerDispatcher server) {
 		this.server = server;
 		// Start a thread that sends game status every second, this should be changed to when something happens in future
 //		startStatusThread();
+		spawnMinions();
 	}
 
 
 	public void addHero(Hero hero) {
-		heros.add(hero);
-		Log.i(TAG, "Hero joined with this user id: " + hero.getUser_id() + " characters in game: " + heros.size());
-//		server.dispatchMessage(new Message("{\"response_type\":\"GAME_INFO\", data:\"character joined\"}"));
+		if (hero.isClass(Hero.WARRIOR)) {
+			Warrior warrior = (Warrior) hero;
+			warrior.generateHeroInformation();
+			heroes.add(warrior);
+		} else if (hero.isClass(Hero.PRIEST)){
+			Log.i(TAG, "No support for priests yet");
+		}
+		Log.i(TAG, "Hero joined with this user id: " + hero.getUser_id() + " characters in game: " + heroes.size());
 		sendGameStatus();
 	}
 
@@ -75,10 +84,58 @@ public class GameServer {
 
 		thread.start();
 	}
+
+	private void spawnMinions() {
+		Thread thread = new Thread(){
+			public void run(){
+				while(gameRunning){
+					try {
+						sleep(10000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					Log.i(TAG, "Sending game status");
+					spawnMinion();
+				}
+			}
+		};
+
+		thread.start();
+	}
+
+	private void spawnMinion() {
+		minionCount++;
+		Minion minion = new Minion();
+		minion.setId(minionCount);
+		minion.generateMinionInformation();
+		minions.add(minion);
+		sendGameStatus();
+	}
+
 	public void sendGameStatus(){
 		Gson gson = new Gson();
-		String jsonInString = gson.toJson(new GameStatusResponse(minions, heros));
+		String jsonInString = gson.toJson(new GameStatusResponse(minions, heroes));
 		server.dispatchMessage(new Message(jsonInString));
 	}
 
+	public void attack(String userId, Integer minionId) {
+		Log.i(TAG, "User " + userId + " Hero attacked minion: " + minionId + " minons count : " + minions.size());
+		Iterator<Hero> it = heroes.iterator();
+		while (it.hasNext()) {
+			Hero hero = it.next();
+			if(hero.getUser_id() == Integer.parseInt(userId)){
+				Log.i(TAG, "Found hero thats attacking : " + hero.getClass_type());
+				Iterator<Minion> ut = minions.iterator();
+				while (ut.hasNext()) {
+					Minion minion = ut.next();
+					if(minion.getId() == minionId){
+						Log.i(TAG, "Found minion to attack : " + minion.getId());
+						ut.remove();
+					}
+				}
+			}
+		}
+		Log.i(TAG, "Minion size now: " + minions.size());
+		sendGameStatus();
+	}
 }
