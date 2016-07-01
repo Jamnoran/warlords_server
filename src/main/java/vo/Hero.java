@@ -1,6 +1,14 @@
 package vo;
 
+import game.logging.Log;
+import util.CalculationUtil;
+
 public class Hero {
+	public static final String WARRIOR = "WARRIOR";
+	public static final String PRIEST = "PRIEST";
+	private static final String TAG = Hero.class.getSimpleName();
+
+	// General stats
 	public Integer id = null;
 	private Integer user_id = null;
 	private Integer xp = 0;
@@ -10,11 +18,20 @@ public class Hero {
 	private float desiredPositionX = 6.0f;
 	private float desiredPositionY = 5.0f;
 	private String class_type = "WARRIOR";
+
+
+	// Hero stats
 	private Integer hp;
 	private Integer maxHp;
-
-	public static String WARRIOR = "WARRIOR";
-	public static String PRIEST = "PRIEST";
+	private transient Integer strength;
+	private transient Integer intelligence;
+	private transient Integer stamina;
+	private transient Integer dexterity;
+	private transient Integer baseAttackDamage = 2;
+	private transient Integer baseMaxAttackDamage = 4;
+	private transient float attackStrScaling = 0.1f;
+	private transient float criticalMultiplier = 2.0f;
+	private transient float criticalChance = 0.25f;
 
 	public Hero() {
 	}
@@ -110,6 +127,37 @@ public class Hero {
 		this.maxHp = maxHp;
 	}
 
+	public Integer getStrength() {
+		return strength;
+	}
+
+	public void setStrength(Integer strength) {
+		this.strength = strength;
+	}
+
+	public Integer getIntelligence() {
+		return intelligence;
+	}
+
+	public void setIntelligence(Integer intelligence) {
+		this.intelligence = intelligence;
+	}
+
+	public Integer getStamina() {
+		return stamina;
+	}
+
+	public void setStamina(Integer stamina) {
+		this.stamina = stamina;
+	}
+
+	public Integer getDexterity() {
+		return dexterity;
+	}
+
+	public void setDexterity(Integer dexterity) {
+		this.dexterity = dexterity;
+	}
 
 	public String getSqlInsertQuery() {
 		return "INSERT INTO `warlords`.`heroes` (`id`, `user_id`, `xp`, `level`, `class_type`) VALUES (NULL, '" + getUser_id() + "', '" + getXp() + "', '" + getLevel() + "', '" + getClass_type() + "')";
@@ -117,6 +165,23 @@ public class Hero {
 
 	public void generateHeroInformation() {
 
+	}
+
+	public float getAttackDamage() {
+		float damage = CalculationUtil.getRandomInt(baseAttackDamage, baseMaxAttackDamage) * (1 + (getStrength() * attackStrScaling));
+		if(checkIfCritical()){
+			Log.i(TAG, "Critical hit");
+			damage = damage * criticalMultiplier;
+		}
+		return damage;
+	}
+
+	private boolean checkIfCritical() {
+		int randomNumber = CalculationUtil.getRandomInt(0,10000);
+		if(randomNumber <= (criticalChance * 10000)){
+			return true;
+		}
+		return false;
 	}
 
 	public boolean isClass(String classCheck){
@@ -143,4 +208,5 @@ public class Hero {
 				", maxHp=" + maxHp +
 				'}';
 	}
+
 }

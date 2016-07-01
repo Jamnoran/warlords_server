@@ -100,4 +100,32 @@ public class Minion {
 		}
 	}
 
+	public float calculateDamageReceived(float damage) {
+		// Calculate if minion has armor or dodge chance
+		return damage;
+	}
+	public boolean takeDamage(float damageAfterMinionCalculation) {
+		hp = hp - Math.round(damageAfterMinionCalculation);
+		if(hp <= 0){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "Minion{" +
+				"id=" + id +
+				", positionX=" + positionX +
+				", positionY=" + positionY +
+				", desiredPositionX=" + desiredPositionX +
+				", desiredPositionY=" + desiredPositionY +
+				", level=" + level +
+				", hp=" + hp +
+				", maxHp=" + maxHp +
+				", hpPerLevel=" + hpPerLevel +
+				'}';
+	}
+
+
 }
