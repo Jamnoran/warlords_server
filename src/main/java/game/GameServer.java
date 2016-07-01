@@ -3,6 +3,7 @@ package game;
 import com.google.gson.Gson;
 import game.logging.Log;
 import io.GameStatusResponse;
+import vo.GameAnimation;
 import vo.Hero;
 import vo.Message;
 import vo.Minion;
@@ -23,6 +24,7 @@ public class GameServer {
 	private int minionCount = 0;
 	private ArrayList<Minion> minions = new ArrayList<>();
 	private ArrayList<Hero> heroes = new ArrayList<>();
+	private ArrayList<GameAnimation> animations = new ArrayList<>();
 
 
 	public GameServer(ServerDispatcher server) {
@@ -114,8 +116,14 @@ public class GameServer {
 
 	public void sendGameStatus(){
 		Gson gson = new Gson();
-		String jsonInString = gson.toJson(new GameStatusResponse(minions, heroes));
+		String jsonInString = gson.toJson(new GameStatusResponse(minions, heroes, animations));
 		server.dispatchMessage(new Message(jsonInString));
+		clearSentAnimations();
+	}
+
+	private void clearSentAnimations() {
+		animations.clear();
+		Log.i(TAG, "Animations is cleared: " + animations.size());
 	}
 
 	public void attack(String userId, Integer minionId) {
@@ -130,6 +138,7 @@ public class GameServer {
 					Minion minion = ut.next();
 					if(minion.getId() == minionId){
 						Log.i(TAG, "Found minion to attack : " + minion.getId());
+						minionDied(userId, minion.getId());
 						ut.remove();
 					}
 				}
@@ -137,5 +146,9 @@ public class GameServer {
 		}
 		Log.i(TAG, "Minion size now: " + minions.size());
 		sendGameStatus();
+	}
+
+	private void minionDied(String userId, Integer minionId) {
+		animations.add(new GameAnimation("MINION_DIED", minionId, Integer.parseInt(userId)));
 	}
 }

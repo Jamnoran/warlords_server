@@ -15,9 +15,10 @@ public class GameStatusResponse {
 	private ArrayList<Hero> heroes = new ArrayList<>();
 	private ArrayList<GameAnimation> gameAnimations = new ArrayList<>();
 
-	public GameStatusResponse(ArrayList<Minion> minions, ArrayList<Hero> heroes) {
+	public GameStatusResponse(ArrayList<Minion> minions, ArrayList<Hero> heroes, ArrayList<GameAnimation> gameAnimations) {
 		this.minions = minions;
 		this.heroes = heroes;
+		this.gameAnimations = gameAnimations;
 	}
 
 
