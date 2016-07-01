@@ -5,8 +5,10 @@ public class Hero {
 	private Integer user_id = null;
 	private Integer xp = 0;
 	private Integer level = 1;
-	private Double positionX = 6.0d;
-	private Double positionY = 5.0d;
+	private float positionX = 6.0f;
+	private float positionY = 5.0f;
+	private float desiredPositionX = 6.0f;
+	private float desiredPositionY = 5.0f;
 	private String class_type = "WARRIOR";
 	private Integer hp;
 	private Integer maxHp;
@@ -55,17 +57,33 @@ public class Hero {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public Double getPositionX() {
+	public float getPositionX() {
 		return positionX;
 	}
-	public void setPositionX(Double positionX) {
+	public void setPositionX(float positionX) {
 		this.positionX = positionX;
 	}
-	public Double getPositionY() {
+	public float getPositionY() {
 		return positionY;
 	}
-	public void setPositionY(Double positionY) {
+	public void setPositionY(float positionY) {
 		this.positionY = positionY;
+	}
+
+	public float getDesiredPositionX() {
+		return desiredPositionX;
+	}
+
+	public void setDesiredPositionX(float desiredPositionX) {
+		this.desiredPositionX = desiredPositionX;
+	}
+
+	public float getDesiredPositionY() {
+		return desiredPositionY;
+	}
+
+	public void setDesiredPositionY(float desiredPositionY) {
+		this.desiredPositionY = desiredPositionY;
 	}
 
 	public String getClass_type() {
@@ -92,20 +110,6 @@ public class Hero {
 		this.maxHp = maxHp;
 	}
 
-	@Override
-	public String toString() {
-		return "Hero{" +
-				"id=" + id +
-				", user_id=" + user_id +
-				", xp=" + xp +
-				", level=" + level +
-				", positionX=" + positionX +
-				", positionY=" + positionY +
-				", class_type='" + class_type + '\'' +
-				", hp=" + hp +
-				", maxHp=" + maxHp +
-				'}';
-	}
 
 	public String getSqlInsertQuery() {
 		return "INSERT INTO `warlords`.`heroes` (`id`, `user_id`, `xp`, `level`, `class_type`) VALUES (NULL, '" + getUser_id() + "', '" + getXp() + "', '" + getLevel() + "', '" + getClass_type() + "')";
@@ -121,5 +125,22 @@ public class Hero {
 		}else {
 			return false;
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "Hero{" +
+				"id=" + id +
+				", user_id=" + user_id +
+				", xp=" + xp +
+				", level=" + level +
+				", positionX=" + positionX +
+				", positionY=" + positionY +
+				", desiredPositionX=" + desiredPositionX +
+				", desiredPositionY=" + desiredPositionY +
+				", class_type='" + class_type + '\'' +
+				", hp=" + hp +
+				", maxHp=" + maxHp +
+				'}';
 	}
 }
