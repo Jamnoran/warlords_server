@@ -18,21 +18,22 @@ public class Test {
 	private ArrayList<GameAnimation> animations = new ArrayList<>();
 
 	public static void main(String[] args) {
-		Warrior warrior = new Warrior();
-		warrior.generateHeroInformation();
-		heroes.add(warrior);
 
-		Minion minion = new Minion();
-		minion.generateMinionInformation();
-		minions.add(minion);
-
-
-		handleAttack(warrior, minion);
-		handleAttack(warrior, minion);
-
-
-		Log.i(TAG, "Heroes: " + heroes.toString());
-		Log.i(TAG, "Minions:" + minions.toString());
+//		Warrior warrior = new Warrior();
+//		warrior.generateHeroInformation();
+//		heroes.add(warrior);
+//
+//		Minion minion = new Minion();
+//		minion.generateMinionInformation();
+//		minions.add(minion);
+//
+//
+//		handleAttack(warrior, minion);
+//		handleAttack(warrior, minion);
+//
+//
+//		Log.i(TAG, "Heroes: " + heroes.toString());
+//		Log.i(TAG, "Minions:" + minions.toString());
 
 	}
 

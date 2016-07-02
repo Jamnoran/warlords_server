@@ -1,5 +1,7 @@
 package vo;
 
+import util.CalculationUtil;
+
 public class Minion {
 
 	private Integer id = 1;
@@ -24,6 +26,13 @@ public class Minion {
 	public void generateMinionInformation(){
 		setHp(hpPerLevel * level);
 		setMaxHp(getHp());
+
+		float posX = (CalculationUtil.getRandomFloat(5, 15));
+		float posZ = (CalculationUtil.getRandomFloat(5, 15));
+		setPositionX(posX);
+		setDesiredPositionX(posX);
+		setPositionZ(posZ);
+		setDesiredPositionZ(posZ);
 	}
 
 	public Integer getLevel() {
