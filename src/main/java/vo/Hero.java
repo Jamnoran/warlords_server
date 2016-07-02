@@ -14,9 +14,9 @@ public class Hero {
 	private Integer xp = 0;
 	private Integer level = 1;
 	private float positionX = 6.0f;
-	private float positionY = 5.0f;
+	private float positionZ = 5.0f;
 	private float desiredPositionX = 6.0f;
-	private float desiredPositionY = 5.0f;
+	private float desiredPositionZ = 5.0f;
 	private String class_type = "WARRIOR";
 
 
@@ -80,11 +80,13 @@ public class Hero {
 	public void setPositionX(float positionX) {
 		this.positionX = positionX;
 	}
-	public float getPositionY() {
-		return positionY;
+
+	public float getPositionZ() {
+		return positionZ;
 	}
-	public void setPositionY(float positionY) {
-		this.positionY = positionY;
+
+	public void setPositionZ(float positionZ) {
+		this.positionZ = positionZ;
 	}
 
 	public float getDesiredPositionX() {
@@ -95,12 +97,12 @@ public class Hero {
 		this.desiredPositionX = desiredPositionX;
 	}
 
-	public float getDesiredPositionY() {
-		return desiredPositionY;
+	public float getDesiredPositionZ() {
+		return desiredPositionZ;
 	}
 
-	public void setDesiredPositionY(float desiredPositionY) {
-		this.desiredPositionY = desiredPositionY;
+	public void setDesiredPositionZ(float desiredPositionZ) {
+		this.desiredPositionZ = desiredPositionZ;
 	}
 
 	public String getClass_type() {
@@ -192,6 +194,7 @@ public class Hero {
 		}
 	}
 
+
 	@Override
 	public String toString() {
 		return "Hero{" +
@@ -200,13 +203,21 @@ public class Hero {
 				", xp=" + xp +
 				", level=" + level +
 				", positionX=" + positionX +
-				", positionY=" + positionY +
+				", positionZ=" + positionZ +
 				", desiredPositionX=" + desiredPositionX +
-				", desiredPositionY=" + desiredPositionY +
+				", desiredPositionZ=" + desiredPositionZ +
 				", class_type='" + class_type + '\'' +
 				", hp=" + hp +
 				", maxHp=" + maxHp +
+				", strength=" + strength +
+				", intelligence=" + intelligence +
+				", stamina=" + stamina +
+				", dexterity=" + dexterity +
+				", baseAttackDamage=" + baseAttackDamage +
+				", baseMaxAttackDamage=" + baseMaxAttackDamage +
+				", attackStrScaling=" + attackStrScaling +
+				", criticalMultiplier=" + criticalMultiplier +
+				", criticalChance=" + criticalChance +
 				'}';
 	}
-
 }

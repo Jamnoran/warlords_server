@@ -4,9 +4,9 @@ public class Minion {
 
 	private Integer id = 1;
 	private float positionX = 10.0f;
-	private float positionY = 10.0f;
+	private float positionZ = 10.0f;
 	private float desiredPositionX = 10.0f;
-	private float desiredPositionY = 10.0f;
+	private float desiredPositionZ = 10.0f;
 	private Integer level = 1;
 	private Integer hp = null;
 	private Integer maxHp = null;
@@ -50,17 +50,10 @@ public class Minion {
 		this.maxHp = maxHp;
 	}
 
-	public void setPositionY(float positionY) {
-		this.positionY = positionY;
-	}
-
 	public void setPositionX(float positionX) {
 		this.positionX = positionX;
 	}
 
-	public float getPositionY() {
-		return positionY;
-	}
 
 	public float getPositionX() {
 		return positionX;
@@ -74,12 +67,20 @@ public class Minion {
 		this.desiredPositionX = desiredPositionX;
 	}
 
-	public float getDesiredPositionY() {
-		return desiredPositionY;
+	public float getPositionZ() {
+		return positionZ;
 	}
 
-	public void setDesiredPositionY(float desiredPositionY) {
-		this.desiredPositionY = desiredPositionY;
+	public void setPositionZ(float positionZ) {
+		this.positionZ = positionZ;
+	}
+
+	public float getDesiredPositionZ() {
+		return desiredPositionZ;
+	}
+
+	public void setDesiredPositionZ(float desiredPositionZ) {
+		this.desiredPositionZ = desiredPositionZ;
 	}
 
 	public Integer getId() {
@@ -93,10 +94,10 @@ public class Minion {
 	public void move() {
 		if (positionX <= 15f) {
 			positionX = positionX + 1.0f;
-			positionY = positionY + 1.0f;
+			positionZ = positionZ + 1.0f;
 		}else {
 			positionX = 1.0f;
-			positionY = 1.0f;
+			positionZ = 1.0f;
 		}
 	}
 
@@ -117,15 +118,13 @@ public class Minion {
 		return "Minion{" +
 				"id=" + id +
 				", positionX=" + positionX +
-				", positionY=" + positionY +
+				", positionZ=" + positionZ +
 				", desiredPositionX=" + desiredPositionX +
-				", desiredPositionY=" + desiredPositionY +
+				", desiredPositionZ=" + desiredPositionZ +
 				", level=" + level +
 				", hp=" + hp +
 				", maxHp=" + maxHp +
 				", hpPerLevel=" + hpPerLevel +
 				'}';
 	}
-
-
 }

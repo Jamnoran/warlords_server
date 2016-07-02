@@ -4,6 +4,7 @@ import game.logging.Log;
 import io.AttackRequest;
 import io.JoinServerRequest;
 import io.JsonRequest;
+import io.MoveRequest;
 import util.DatabaseUtil;
 import vo.Hero;
 import vo.Message;
@@ -69,6 +70,10 @@ public class ServerDispatcher extends Thread {
 		        AttackRequest parsedRequest = (AttackRequest) request;
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.attack(parsedRequest.getUser_id(), parsedRequest.getMinion_id());
+	        }else if (request.isType("MOVE")){
+		        MoveRequest parsedRequest = (MoveRequest) request;
+		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+		        gameServer.heroMove(parsedRequest);
 	        }
             notify();
         }

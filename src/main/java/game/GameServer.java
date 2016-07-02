@@ -3,6 +3,7 @@ package game;
 import com.google.gson.Gson;
 import game.logging.Log;
 import io.GameStatusResponse;
+import io.MoveRequest;
 import vo.GameAnimation;
 import vo.Hero;
 import vo.Message;
@@ -29,8 +30,6 @@ public class GameServer {
 
 	public GameServer(ServerDispatcher server) {
 		this.server = server;
-		// Start a thread that sends game status every second, this should be changed to when something happens in future
-//		startStatusThread();
 		spawnMinions();
 	}
 
@@ -96,7 +95,6 @@ public class GameServer {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					Log.i(TAG, "Sending game status");
 					spawnMinion();
 				}
 			}
@@ -123,7 +121,6 @@ public class GameServer {
 
 	private void clearSentAnimations() {
 		animations.clear();
-		Log.i(TAG, "Animations is cleared: " + animations.size());
 	}
 
 	public void attack(String userId, Integer minionId) {
@@ -150,5 +147,27 @@ public class GameServer {
 
 	private void minionDied(String userId, Integer minionId) {
 		animations.add(new GameAnimation("MINION_DIED", minionId, Integer.parseInt(userId)));
+	}
+
+	public void heroMove(MoveRequest parsedRequest) {
+		Log.i(TAG, "User wants to move : " + parsedRequest.getUser_id());
+		Hero usersHero = getHeroByUserId(parsedRequest.getUser_id());
+		if (usersHero != null) {
+			usersHero.setPositionX(parsedRequest.getPositionX());
+			usersHero.setPositionZ(parsedRequest.getPositionZ());
+			usersHero.setDesiredPositionX(parsedRequest.getDesiredPositionX());
+			usersHero.setDesiredPositionZ(parsedRequest.getDesiredPositionZ());
+			Log.i(TAG, "Hero : " + usersHero.toString());
+		}
+		sendGameStatus();
+	}
+
+	private Hero getHeroByUserId(String user_id) {
+		for(Hero hero : heroes){
+			if(hero.getUser_id() == Integer.parseInt(user_id)){
+				return hero;
+			}
+		}
+		return null;
 	}
 }
