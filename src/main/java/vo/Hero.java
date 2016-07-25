@@ -23,6 +23,8 @@ public class Hero {
 	// Hero stats
 	private Integer hp;
 	private Integer maxHp;
+	private Integer resource;
+	private Integer maxResource;
 	private transient Integer strength;
 	private transient Integer intelligence;
 	private transient Integer stamina;
@@ -66,6 +68,22 @@ public class Hero {
 
 	public void setLevel(Integer level) {
 		this.level = level;
+	}
+
+	public Integer getResource() {
+		return resource;
+	}
+
+	public void setResource(Integer resource) {
+		this.resource = resource;
+	}
+
+	public Integer getMaxResource() {
+		return maxResource;
+	}
+
+	public void setMaxResource(Integer maxResource) {
+		this.maxResource = maxResource;
 	}
 
 	public Integer getId() {
@@ -169,6 +187,27 @@ public class Hero {
 
 	}
 
+
+	public void heal(float healAmount) {
+		hp = hp + Math.round(healAmount);
+		if(hp > maxHp){
+			hp = maxHp;
+		}
+	}
+
+	public float calculateDamageReceived(float damage) {
+		float newDamage = damage;
+		return newDamage;
+	}
+
+	public boolean takeDamage(float damage) {
+		hp = hp - Math.round(damage);
+		if(hp <= 0){
+			return true;
+		}
+		return false;
+	}
+
 	public float getAttackDamage() {
 		float damage = CalculationUtil.getRandomInt(baseAttackDamage, baseMaxAttackDamage) * (1 + (getStrength() * attackStrScaling));
 		if(checkIfCritical()){
@@ -219,5 +258,10 @@ public class Hero {
 				", criticalMultiplier=" + criticalMultiplier +
 				", criticalChance=" + criticalChance +
 				'}';
+	}
+
+	public void setStartPosition(Vector3 freeStartPosition) {
+		positionX = freeStartPosition.getX();
+		positionZ = freeStartPosition.getZ();
 	}
 }

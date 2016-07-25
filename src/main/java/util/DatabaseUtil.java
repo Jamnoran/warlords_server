@@ -3,6 +3,7 @@ package util;
 import game.logging.Log;
 import vo.Hero;
 import vo.User;
+import vo.classes.Priest;
 import vo.classes.Warrior;
 
 import java.sql.*;
@@ -157,6 +158,7 @@ public class DatabaseUtil {
 						hero = new Warrior();
 					}else if(rs.getString("class_type").equals(Hero.PRIEST)){
 						Log.i(TAG, "Create priest instead");
+						hero = new Priest();
 					}
 					//Retrieve by column name
 					hero.setId(rs.getInt("id"));

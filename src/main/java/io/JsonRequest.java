@@ -17,7 +17,7 @@ public class JsonRequest implements Serializable {
 	public String user_id;
 
 
-	public static JsonRequest parse(GameServer gameServer, Message aMessage) {
+	public static JsonRequest parse(Message aMessage) {
         Gson gson = new GsonBuilder().create();
 
         JsonRequest request = null;
@@ -49,6 +49,14 @@ public class JsonRequest implements Serializable {
 				return parsedRequest;
 			}else if(request.getRequestType().equals("MOVE")){
 				MoveRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MoveRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				return parsedRequest;
+			}else if(request.getRequestType().equals("SPELL")){
+				SpellRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SpellRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				return parsedRequest;
+			}else if(request.getRequestType().equals("END_GAME")){
+				JsonRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JsonRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
 			}

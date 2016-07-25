@@ -1,7 +1,5 @@
 package game;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import game.logging.Log;
 import io.CreateHeroRequest;
 import io.CreateUserRequest;
@@ -10,9 +8,11 @@ import io.JsonRequest;
 import util.DatabaseUtil;
 import vo.Hero;
 import vo.Message;
+import vo.Minion;
 import vo.User;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Vector;
 
 
@@ -22,7 +22,7 @@ import java.util.Vector;
 public class LobbyServerDispatcher extends Thread {
 	private static final String TAG = LobbyServerDispatcher.class.getSimpleName();
 	private Vector mMessageQueue = new Vector();
-	private Vector mClients = new Vector();
+	private static Vector mClients = new Vector();
 	private int serverId = 0;
 
 	private static int CLIENTS_PER_SERVER = 3;
@@ -61,22 +61,10 @@ public class LobbyServerDispatcher extends Thread {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 	/**
 	 * Adds given client to the server's client list.
 	 */
-	public synchronized void addClient(ClientInfo aClientInfo) {
+	public static synchronized void addClient(ClientInfo aClientInfo) {
 		mClients.add(aClientInfo);
 	}
 
@@ -106,7 +94,7 @@ public class LobbyServerDispatcher extends Thread {
 	public synchronized void handleClientRequest(ClientInfo clientInfo, Message aMessage) {
 		JsonRequest request = null;
 		if (aMessage != null && aMessage.getMessage() != null) {
-			request = JsonRequest.parse(null, aMessage);
+			request = JsonRequest.parse(aMessage);
 		}
 		if (request != null && request.getRequestType() != null) {
 			Log.i(TAG, "Got this request" + request.toString());
@@ -137,7 +125,9 @@ public class LobbyServerDispatcher extends Thread {
 	private void clientJoinServer(ClientInfo clientInfo) {
 		// Get a server that the client can join.
         ServerDispatcher server = getAvailableServer();
-		server.setGameServer(new GameServer(server));
+		if (server.getGameServer() == null) {
+			server.setGameServer(new GameServer(server));
+		}
 
 		clientInfo.getClientSender().setServerDispatcher(server);
 		clientInfo.getClientSender().setLobbyServerDispatcher(null);
@@ -215,4 +205,14 @@ public class LobbyServerDispatcher extends Thread {
 		return serverId;
 	}
 
+	public void deleteServer(ServerDispatcher serverToDelete) {
+		Iterator<ServerDispatcher> ut = servers.iterator();
+		while (ut.hasNext()) {
+			ServerDispatcher serverDispatcher = ut.next();
+			if(serverDispatcher.getId() == serverToDelete.getId()){
+				Log.i(TAG, "Found serverDispatcher to delete : " + serverDispatcher.getId());
+				ut.remove();
+			}
+		}
+	}
 }

@@ -1,10 +1,7 @@
 package game;
 
 import game.logging.Log;
-import io.AttackRequest;
-import io.JoinServerRequest;
-import io.JsonRequest;
-import io.MoveRequest;
+import io.*;
 import util.DatabaseUtil;
 import vo.Hero;
 import vo.Message;
@@ -58,14 +55,13 @@ public class ServerDispatcher extends Thread {
 	}
 
 	public synchronized void handleClientRequest(Message aMessage) {
-		JsonRequest request = JsonRequest.parse(gameServer, aMessage);
+		JsonRequest request = JsonRequest.parse(aMessage);
         if (request != null) {
 	        Log.i(TAG, "JsonRequest: " + request.toString());
-
 	        if(request.isType("GET_STATUS")){
 		        JoinServerRequest parsedRequest = (JoinServerRequest) request;
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-		        gameServer.sendStatusToAllClients();
+		        gameServer.sendGameStatus();
 	        }else if (request.isType("ATTACK")){
 		        AttackRequest parsedRequest = (AttackRequest) request;
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
@@ -74,6 +70,13 @@ public class ServerDispatcher extends Thread {
 		        MoveRequest parsedRequest = (MoveRequest) request;
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.heroMove(parsedRequest);
+	        }else if (request.isType("SPELL")){
+		        SpellRequest parsedRequest = (SpellRequest) request;
+		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+		        gameServer.spell(parsedRequest);
+	        }else if (request.isType("END_GAME")){
+		        Log.i(TAG, "Got request to end game, this needs to be changed later so that last on leaving game will end the game as well.");
+		        endGame();
 	        }
             notify();
         }
@@ -122,17 +125,6 @@ public class ServerDispatcher extends Thread {
 		}
 	}
 
-	public Integer getNextClientId() {
-		int id = 1;
-		for (int i = 0; i < mClients.size(); i++) {
-			ClientInfo clientInfo = (ClientInfo) mClients.get(i);
-			if(clientInfo.id <= id){
-				id++;
-			}
-		}
-		return id;
-	}
-
 	public GameServer getGameServer() {
 		return gameServer;
 	}
@@ -152,4 +144,22 @@ public class ServerDispatcher extends Thread {
     public int getServerId() {
         return serverId;
     }
+
+	public void endGame() {
+		for (int i = 0; i < mClients.size(); i++) {
+			ClientInfo clientInfo = (ClientInfo) mClients.get(i);
+			clientInfo.getClientSender().setServerDispatcher(null);
+			clientInfo.getClientSender().setLobbyServerDispatcher(Server.getLobbyServerDispatcher());
+			clientInfo.getClientListener().setServerDispatcher(null);
+			clientInfo.getClientListener().setLobbyServerDispatcher(Server.getLobbyServerDispatcher());
+			Server.getLobbyServerDispatcher().addClient(clientInfo);
+			deleteClient(clientInfo);
+		}
+
+		Server.getLobbyServerDispatcher().deleteServer(this);
+	}
+
+	public Vector getClients() {
+		return mClients;
+	}
 }

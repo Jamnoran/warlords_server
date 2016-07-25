@@ -82,4 +82,7 @@ public class Server {
         return null;
     }
 
+	public static LobbyServerDispatcher getLobbyServerDispatcher() {
+		return lobbyServerDispatcher;
+	}
 }
