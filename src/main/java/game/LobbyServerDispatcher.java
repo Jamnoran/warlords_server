@@ -113,6 +113,24 @@ public class LobbyServerDispatcher extends Thread {
 				User user = DatabaseUtil.createUser(new User(createUserRequest.getUsername(), createUserRequest.getEmail(), createUserRequest.getPassword()));
 				Log.i(TAG, "Created user with this is: " + user.getId() + " We need to send that back to client");
 				dispatchMessage(new Message(clientInfo.getId(), "{\"response_type\":\"CREATE_USER\", \"user_id\" : \"" + user.getId() + "\"}"));
+			}else if (request.getRequestType().equals("GET_HEROES")){
+				Log.i(TAG, "User wants his heroes: " + request.toString());
+				String heroesJson = "";
+				ArrayList<Hero> heroes = DatabaseUtil.getHeroes(Integer.parseInt(request.getUser_id()));
+				if (heroes.size() > 0){
+					for (Hero hero : heroes){
+						if(heroesJson.length() > 2){
+							heroesJson = heroesJson + ",";
+						}
+						heroesJson = heroesJson + "{";
+
+						heroesJson = heroesJson + "\"id\": " + hero.getId() + ", \"level\": " + hero.getLevel() + ", \"class_type\": \"" + hero.getClass_type() + "\"";
+						heroesJson = heroesJson + "}";
+					}
+				}else {
+					heroesJson = "{}";
+				}
+				dispatchMessage(new Message(clientInfo.getId(), "{\"response_type\":\"HEROES\", \"heroes\" : [" + heroesJson + "]}"));
 			}
 		}
 
