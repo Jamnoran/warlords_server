@@ -20,6 +20,7 @@ import java.util.Iterator;
 public class GameServer {
 	private static final String TAG = GameServer.class.getSimpleName();
 	private boolean gameRunning = true;
+	private boolean gameStarted = false;
 	private ServerDispatcher server;
 
 	private int minionCount = 0;
@@ -33,7 +34,7 @@ public class GameServer {
 		Log.i(TAG, "Game server is initilized, creating world");
 		this.server = server;
 		createWorld();
-//		spawnMinions();
+		startAI();
 	}
 
 
@@ -61,6 +62,9 @@ public class GameServer {
 		}
 		Log.i(TAG, "Hero joined with this user id: " + hero.getUser_id() + " characters in game: " + heroes.size());
 		sendGameStatus();
+		if(!gameStarted){
+			gameStarted = true;
+		}
 	}
 
 	private Vector3 getFreeStartPosition() {
@@ -172,6 +176,7 @@ public class GameServer {
 			Log.i(TAG, "Hero is trying to attack a minion that is already dead or non existing");
 		}
 		Log.i(TAG, "Minion size now: " + minions.size());
+		animations.add(new GameAnimation("ATTACK", minionId, hero.id, null));
 		sendGameStatus();
 	}
 
@@ -229,7 +234,9 @@ public class GameServer {
 
 	public void endGame(){
 		gameRunning = false;
-		this.server.endGame();
+//		if (this.server != null) {
+//			this.server.endGame();
+//		}
 	}
 
 
@@ -247,6 +254,27 @@ public class GameServer {
 
 
 
+
+	// Living game world
+
+	public void startAI(){
+		Thread thread = new Thread(){
+			public void run(){
+				while(gameRunning){
+					for(Minion minion : minions){
+						minion.takeAction();
+					}
+					sendGameStatus();
+					try {
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		thread.start();
+	}
 
 
 
@@ -308,12 +336,9 @@ public class GameServer {
 		sendGameStatus();
 	}
 
-
-
-
-
-
-
+	public ArrayList<Hero> getHeroes() {
+		return heroes;
+	}
 
 
 	//          Warrior

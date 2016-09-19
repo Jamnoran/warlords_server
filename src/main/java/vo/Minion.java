@@ -4,6 +4,7 @@ import game.GameServer;
 import game.logging.Log;
 import util.CalculationUtil;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class Minion {
@@ -54,10 +55,7 @@ public class Minion {
 		Thread thread = new Thread(){
 			public void run(){
 				while(hp > 0){
-					if (hp > 0) {
-						findNewLocationToWalkTo();
-						attackIfHasEnemy();
-					}
+					takeAction();
 					try {
 						sleep(10000);
 					} catch (InterruptedException e) {
@@ -69,10 +67,31 @@ public class Minion {
 		thread.start();
 	}
 
-	private void attackIfHasEnemy() {
+	public void takeAction() {
+		if (hp > 0) {
+//			Log.i(TAG, "Minion tries to find new location to walk to");
+			if (!attackIfHasEnemy()) {
+				findNewLocationToWalkTo();
+			}
+		}
+	}
+
+	private boolean attackIfHasEnemy() {
 		Integer heroId = getHeroIdWithMostThreat();
 		if(heroId != null){
-			attack(heroId);
+			Hero hero = game.getHeroById(heroId);
+			// If hero is withing distance then attack, else walk there
+			double distance = distance(new Vector3(positionX, 0, positionZ), new Vector3(hero.getPositionX(), 0, hero.getPositionZ()));
+			Log.i(TAG, "Distance : " + distance);
+			if (distance <= 3) {
+				attack(heroId);
+			} else {
+				setDesiredPositionX(hero.getPositionX());
+				setDesiredPositionZ(hero.getPositionZ());
+			}
+			return true;
+		}else {
+			return false;
 		}
 	}
 
@@ -81,8 +100,8 @@ public class Minion {
 	}
 
 	private void findNewLocationToWalkTo() {
-		//setDesiredPositionX(getDesiredPositionX() + CalculationUtil.getRandomFloat(-1.0f, 1.0f));
-		//setDesiredPositionZ(getDesiredPositionZ() + CalculationUtil.getRandomFloat(-1.0f, 1.0f));
+		setDesiredPositionX(getDesiredPositionX() + CalculationUtil.getRandomFloat(-1.0f, 0.0f));
+		setDesiredPositionZ(getDesiredPositionZ() + CalculationUtil.getRandomFloat(-1.0f, 0.0f));
 
 		//Log.i(TAG, "Walking to new position " + getDesiredPositionX() + " x " + getDesiredPositionZ());
 	}
@@ -110,8 +129,24 @@ public class Minion {
 		if (currentHero != null) {
 			return currentHero.getHeroId();
 		} else {
-			return null;
+			// Check if a hero is in range, in that case add some threat on that (this will mean the first hero getting close will aggro this minion)
+			return heroInRange();
 		}
+	}
+
+	private Integer heroInRange() {
+		for (Hero hero: game.getHeroes()){
+			double distance = distance(new Vector3(positionX, 0, positionZ), new Vector3(hero.getPositionX(), 0, hero.getPositionZ()));
+			if(distance <= 10){
+				Log.i(TAG, "Found hero to attack");
+				return hero.getId();
+			}
+		}
+		return null;
+	}
+
+	private double distance(Vector3 p1, Vector3 p2){
+		return Point2D.distance(p1.getX(), p1.getZ(), p2.getX(), p2.getZ());
 	}
 
 	public Integer getLevel() {

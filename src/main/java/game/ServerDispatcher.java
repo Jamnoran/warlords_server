@@ -41,6 +41,9 @@ public class ServerDispatcher extends Thread {
 		if (clientIndex != -1){
 			mClients.removeElementAt(clientIndex);
 		}
+		if(mClients.size() == 0){
+			getGameServer().endGame();
+		}
 	}
 
 	/**
@@ -146,6 +149,9 @@ public class ServerDispatcher extends Thread {
     }
 
 	public void endGame() {
+		if (getGameServer() != null) {
+			getGameServer().endGame();
+		}
 		for (int i = 0; i < mClients.size(); i++) {
 			ClientInfo clientInfo = (ClientInfo) mClients.get(i);
 			clientInfo.getClientSender().setServerDispatcher(null);
