@@ -35,6 +35,9 @@ public class GameServer {
 	}
 
 
+	/**
+	 * Creates the world and all in it, minions, walls, lighting, stairs up and down.
+	 */
 	private void createWorld() {
 		// Call World.generate()
 		world = new World().generate(this, 100, 100, 1);
@@ -42,6 +45,10 @@ public class GameServer {
 	}
 
 
+	/**
+	 * When a player join he needs to have a hero, this makes sure his hero join as the correct class etc.
+	 * @param hero
+	 */
 	public void addHero(Hero hero) {
 		sendWorldOperation(hero.getId());
 		if (hero.isClass(Hero.WARRIOR)) {
@@ -64,6 +71,9 @@ public class GameServer {
 		}
 	}
 
+	/**
+	 * Loops through the different spawn points thats available to start on
+ 	 */
 	private Vector3 getFreeStartPosition() {
 		if(world.getSpawnPoints().size() > 0){
 			Vector3 spawnPoint = world.getSpawnPoints().get(0);
@@ -73,22 +83,10 @@ public class GameServer {
 		return null;
 	}
 
-	private void sendWorld(Integer heroId) {
-		Gson gson = new Gson();
-		String jsonInString = gson.toJson(new WorldResponse(world));
-		server.dispatchMessage(new Message(getClientIdByHeroId(heroId), jsonInString));
-	}
-
-	private Integer getClientIdByHeroId(Integer heroId) {
-		for (int i = 0; i < server.getClients().size(); i++) {
-			ClientInfo clientInfo = (ClientInfo) server.getClients().get(i);
-			if(clientInfo.getHeroId() == heroId){
-				return clientInfo.getId();
-			}
-		}
-		return null;
-	}
-
+	/**
+	 * Send the world to a specific hero, this is done when the client joins the game
+	 * @param heroIdToSend
+	 */
 	private void sendWorldOperation(final int heroIdToSend) {
 		Thread thread = new Thread(){
 			public void run(){
@@ -99,6 +97,21 @@ public class GameServer {
 	}
 
 
+	/**
+	 * Sends the created world down to a specific client
+	 * @param heroId
+	 */
+	private void sendWorld(Integer heroId) {
+		Gson gson = new Gson();
+		String jsonInString = gson.toJson(new WorldResponse(world));
+		server.dispatchMessage(new Message(getClientIdByHeroId(heroId), jsonInString));
+	}
+
+	/**
+	 * Spawns a minion at a specific point in the world, this is called from the World creation
+	 * @param posX
+	 * @param posZ
+	 */
 	public void spawnMinion(float posX, float posZ) {
 		minionCount++;
 		Minion minion = new Minion(this);
@@ -109,6 +122,9 @@ public class GameServer {
 		sendGameStatus();
 	}
 
+	/**
+	 * Sends the Game status down to the clients (this needs to improve that only new information is being sent, now everything is being sent)
+	 */
 	public void sendGameStatus(){
 		Gson gson = new Gson();
 		String jsonInString = gson.toJson(new GameStatusResponse(minions, heroes, animations));
@@ -116,12 +132,24 @@ public class GameServer {
 		clearSentAnimations();
 	}
 
+	/**
+	 * Removes all animations in list, this is done after animations have been sent to clients so we don't send them multiple times
+	 */
 	private void clearSentAnimations() {
 		animations.clear();
 	}
 
 
-
+	/**
+	 * Important method that handles the spells sent up from clients that a hero wants to initiate a spell
+	 * This method takes as parameters
+	 * heroId
+	 * spellId
+	 * targetFriendly
+	 * targetEnemy
+	 * Location
+	 * @param parsedRequest
+	 */
 	public void spell(SpellRequest parsedRequest) {
 		Log.i(TAG , "Handle spell " + parsedRequest.toString());
 		Hero hero = getHeroByUserId(parsedRequest.getUser_id());
@@ -145,7 +173,12 @@ public class GameServer {
 		}
 	}
 
-
+	/**
+	 * This method is called when a minion attacks a hero.
+	 * @param userId
+	 * @param damage
+	 * @param minionId
+	 */
 	public void attackHero(Integer userId, float damage, Integer minionId) {
 		Log.i(TAG, "Minion : " + minionId + " attacked hero: " + userId);
 		Hero hero = getHeroByUserId("" + userId);
@@ -155,8 +188,15 @@ public class GameServer {
 		sendGameStatus();
 	}
 
+	/**
+	 * This method is called when a hero wants to attack a minion,
+	 * @param userId
+	 * @param minionId
+	 */
 	public void attack(String userId, Integer minionId) {
 		Log.i(TAG, "User " + userId + " Hero attacked minion: " + minionId + " minions count : " + minions.size());
+
+		// TODO: Check that time since last time is correct
 		Hero hero = getHeroByUserId(userId);
 		Minion minion = getMinionById(minionId);
 		if (minion != null) {
@@ -243,7 +283,21 @@ public class GameServer {
 				return hero;
 			}
 		}
+		return null;
+	}
 
+	/**
+	 * Util method to get a client by his hero id, good to have if needing to send specified message to that client instead of to all clients
+	 * @param heroId
+	 * @return
+	 */
+	private Integer getClientIdByHeroId(Integer heroId) {
+		for (int i = 0; i < server.getClients().size(); i++) {
+			ClientInfo clientInfo = (ClientInfo) server.getClients().get(i);
+			if(clientInfo.getHeroId() == heroId){
+				return clientInfo.getId();
+			}
+		}
 		return null;
 	}
 
