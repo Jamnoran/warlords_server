@@ -409,6 +409,9 @@ public class GameServer {
 		}
 	}
 
+	public void clickPortal(int heroId){
+		Log.i(TAG, "This hero has clicked on the stairs " + heroId );
+	}
 	//          Warrior
 
 

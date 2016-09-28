@@ -86,7 +86,9 @@ public class ServerDispatcher extends Thread {
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.minionTargetInRange(parsedRequest);
 	        }else if (request.isType("CLICKED_PORTAL")){
-				
+				ClickPortalRequest parsedRequest = (ClickPortalRequest) request;
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				gameServer.clickPortal(parsedRequest.getHero_id());
 			}else if (request.isType("END_GAME")){
 		        Log.i(TAG, "Got request to end game, this needs to be changed later so that last on leaving game will end the game as well.");
 		        endGame();

@@ -67,6 +67,10 @@ public class JsonRequest implements Serializable {
 				JsonRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JsonRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
+			}else if(request.getRequestType().equals("CLICKED_PORTAL")){
+				ClickPortalRequest parsedRequest = gson.fromJson(aMessage.getMessage(), ClickPortalRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				return parsedRequest;
 			}
 		}
 
