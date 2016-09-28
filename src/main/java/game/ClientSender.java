@@ -69,7 +69,7 @@ public class ClientSender  extends Thread
      * Sends given message to the client's socket.
      */
     private void sendMessageToClient(String aMessage){
-    	System.out.println("Sending message to client: " + aMessage);
+    	//System.out.println("Sending message to client: " + aMessage);
         out.println(aMessage);
         out.flush();
     }

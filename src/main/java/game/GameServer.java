@@ -2,10 +2,7 @@ package game;
 
 import com.google.gson.Gson;
 import game.logging.Log;
-import io.GameStatusResponse;
-import io.MoveRequest;
-import io.SpellRequest;
-import io.WorldResponse;
+import io.*;
 import vo.*;
 import vo.classes.Priest;
 import vo.classes.Warrior;
@@ -92,10 +89,10 @@ public class GameServer {
 		return null;
 	}
 
-	private void sendWorldOperation(int heroId) {
+	private void sendWorldOperation(final int heroIdToSend) {
 		Thread thread = new Thread(){
 			public void run(){
-				sendWorld(heroId);
+				sendWorld(heroIdToSend);
 			}
 		};
 		thread.start();
@@ -159,7 +156,7 @@ public class GameServer {
 	}
 
 	public void attack(String userId, Integer minionId) {
-		Log.i(TAG, "User " + userId + " Hero attacked minion: " + minionId + " minons count : " + minions.size());
+		Log.i(TAG, "User " + userId + " Hero attacked minion: " + minionId + " minions count : " + minions.size());
 		Hero hero = getHeroByUserId(userId);
 		Minion minion = getMinionById(minionId);
 		if (minion != null) {
@@ -340,6 +337,23 @@ public class GameServer {
 		return heroes;
 	}
 
+	public void minionAggro(MinionAggroRequest parsedRequest) {
+		Minion minion = getMinionById(parsedRequest.getMinion_id());
+		if(minion.getHeroIdWithMostThreat() == null){
+			Log.i(TAG, "This minion had no aggro, add towards this hero [" + parsedRequest.getHero_id() + "] Since first to see it");
+			minion.addThreat(new Threat(parsedRequest.getHero_id(), Threat.inRangeThreath, 0 ,0));
+		}
+	}
+	public void minionTargetInRange(MinionAggroRequest parsedRequest) {
+		Minion minion = getMinionById(parsedRequest.getMinion_id());
+		if(parsedRequest.getHero_id() > 0){
+			Log.i(TAG, "Target is in range for an attack");
+			minion.targetInRangeForAttack = true;
+		}else{
+			Log.i(TAG, "Target is out of range for an attack");
+			minion.targetInRangeForAttack = false;
+		}
+	}
 
 	//          Warrior
 

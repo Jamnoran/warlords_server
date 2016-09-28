@@ -77,6 +77,14 @@ public class ServerDispatcher extends Thread {
 		        SpellRequest parsedRequest = (SpellRequest) request;
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.spell(parsedRequest);
+	        }else if (request.isType("MINION_AGGRO")){
+		        MinionAggroRequest parsedRequest = (MinionAggroRequest) request;
+		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+		        gameServer.minionAggro(parsedRequest);
+	        }else if (request.isType("MINION_TARGET_IN_RANGE")){
+		        MinionAggroRequest parsedRequest = (MinionAggroRequest) request;
+		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+		        gameServer.minionTargetInRange(parsedRequest);
 	        }else if (request.isType("END_GAME")){
 		        Log.i(TAG, "Got request to end game, this needs to be changed later so that last on leaving game will end the game as well.");
 		        endGame();

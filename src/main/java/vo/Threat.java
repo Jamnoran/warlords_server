@@ -10,6 +10,7 @@ public class Threat {
 	private float healingDoneWithinVision = 0.0f;
 	private float damageMultiplier = 1.0f;
 	private float healingMultiplier = 0.5f;
+	public static float inRangeThreath = 2.0f;
 
 	public Threat(Integer heroId, float amount, float damage, float healingDoneWithinVision) {
 		this.heroId = heroId;

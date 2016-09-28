@@ -55,6 +55,14 @@ public class JsonRequest implements Serializable {
 				SpellRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SpellRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
+			}else if(request.getRequestType().equals("MINION_AGGRO")){
+				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				return parsedRequest;
+			}else if(request.getRequestType().equals("MINION_TARGET_IN_RANGE")){
+				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				return parsedRequest;
 			}else if(request.getRequestType().equals("END_GAME")){
 				JsonRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JsonRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
