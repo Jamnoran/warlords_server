@@ -131,6 +131,8 @@ public class LobbyServerDispatcher extends Thread {
 					heroesJson = "{}";
 				}
 				dispatchMessage(new Message(clientInfo.getId(), "{\"response_type\":\"HEROES\", \"heroes\" : [" + heroesJson + "]}"));
+			}else if (request.getRequestType().equals("CLICKED_PORTAL")){
+				Log.i(TAG, "The server has detected a user that clicked the portal!");
 			}
 		}
 
