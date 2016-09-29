@@ -55,21 +55,21 @@ public class Minion {
 	}
 
 
-	public void startAI(){
-		Thread thread = new Thread(){
-			public void run(){
-				while(hp > 0){
-					takeAction();
-					try {
-						sleep(10000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-		thread.start();
-	}
+//	public void startAI(){
+//		Thread thread = new Thread(){
+//			public void run(){
+//				while(hp > 0){
+//					takeAction();
+//					try {
+//						sleep(10000);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		};
+//		thread.start();
+//	}
 
 	public void takeAction() {
 		if (hp > 0) {

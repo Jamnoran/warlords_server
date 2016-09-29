@@ -42,7 +42,9 @@ public class ServerDispatcher extends Thread {
 			mClients.removeElementAt(clientIndex);
 		}
 		if(mClients.size() == 0){
+			Log.i(TAG, "No players left in game, lets end it.");
 			getGameServer().endGame();
+			LobbyServerDispatcher.deleteServer(this);
 		}
 	}
 

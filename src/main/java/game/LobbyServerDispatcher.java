@@ -225,7 +225,7 @@ public class LobbyServerDispatcher extends Thread {
 		return serverId;
 	}
 
-	public void deleteServer(ServerDispatcher serverToDelete) {
+	public static void deleteServer(ServerDispatcher serverToDelete) {
 		Iterator<ServerDispatcher> ut = servers.iterator();
 		while (ut.hasNext()) {
 			ServerDispatcher serverDispatcher = ut.next();

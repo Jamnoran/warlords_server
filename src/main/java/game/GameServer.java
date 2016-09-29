@@ -117,7 +117,7 @@ public class GameServer {
 		Minion minion = new Minion(this);
 		minion.setId(minionCount);
 		minion.generateMinionInformation(posX, posZ);
-		minion.startAI();
+//		minion.startAI();
 		minions.add(minion);
 		sendGameStatus();
 	}
@@ -271,9 +271,6 @@ public class GameServer {
 
 	public void endGame(){
 		gameRunning = false;
-//		if (this.server != null) {
-//			this.server.endGame();
-//		}
 	}
 
 
