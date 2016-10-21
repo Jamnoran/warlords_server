@@ -175,17 +175,32 @@ public class GameServer {
 
 	/**
 	 * This method is called when a minion attacks a hero.
-	 * @param userId
+	 * @param heroId
 	 * @param damage
 	 * @param minionId
 	 */
-	public void attackHero(Integer userId, float damage, Integer minionId) {
-		Log.i(TAG, "Minion : " + minionId + " attacked hero: " + userId);
-		Hero hero = getHeroByUserId("" + userId);
-		damage = hero.calculateDamageReceived(damage);
-		hero.takeDamage(damage);
-		animations.add(new GameAnimation("MINION_ATTACK", userId, minionId, null));
-		sendGameStatus();
+	public void attackHero(Integer heroId, float damage, Integer minionId) {
+		Log.i(TAG, "Minion : " + minionId + " attacked hero: " + heroId);
+		Hero hero = getHeroById(heroId);
+		if (hero != null) {
+			damage = hero.calculateDamageReceived(damage);
+			hero.takeDamage(damage);
+			if(hero.getHp() <= 0){
+				Log.i(TAG, "Hero died, send death animation to client");
+				int numbersAlive = 0;
+				for (Hero listHero : heroes) {
+					if(listHero.getHp() > 0){
+						numbersAlive++;
+					}
+				}
+				if(numbersAlive == 0){
+					Log.i(TAG, "Nobody is alive, send endgame screen");
+				}
+			}
+			animations.add(new GameAnimation("MINION_ATTACK", heroId, minionId, null));
+			sendGameStatus();
+		}
+
 	}
 
 	/**
@@ -207,7 +222,7 @@ public class GameServer {
 				minionDied(userId, minion.getId());
 				removeMinion(minion.getId());
 			}else {
-				minion.addThreat(new Threat(Integer.parseInt(userId), 0.0f, totalDamage, 0.0f));
+				minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamage, 0.0f));
 			}
 		} else {
 			Log.i(TAG, "Hero is trying to attack a minion that is already dead or non existing");
