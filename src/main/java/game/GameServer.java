@@ -370,19 +370,21 @@ public class GameServer {
 
 	public void minionAggro(MinionAggroRequest parsedRequest) {
 		Minion minion = getMinionById(parsedRequest.getMinion_id());
-		if(minion.getHeroIdWithMostThreat() == null){
+		if(minion != null && minion.getHeroIdWithMostThreat() == null){
 			Log.i(TAG, "This minion had no aggro, add towards this hero [" + parsedRequest.getHero_id() + "] Since first to see it");
 			minion.addThreat(new Threat(parsedRequest.getHero_id(), Threat.inRangeThreath, 0 ,0));
 		}
 	}
 	public void minionTargetInRange(MinionAggroRequest parsedRequest) {
 		Minion minion = getMinionById(parsedRequest.getMinion_id());
-		if(parsedRequest.getHero_id() > 0){
+		if(minion != null && parsedRequest.getHero_id() > 0){
 			Log.i(TAG, "Target is in range for an attack");
 			minion.targetInRangeForAttack = true;
 		}else{
 			Log.i(TAG, "Target is out of range for an attack");
-			minion.targetInRangeForAttack = false;
+			if (minion != null) {
+				minion.targetInRangeForAttack = false;
+			}
 		}
 	}
 
