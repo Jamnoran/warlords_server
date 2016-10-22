@@ -123,6 +123,45 @@ public class GameServer {
 	}
 
 	/**
+	 * A hero has clicked a portal, check that all have then start new level
+	 * @param heroId
+	 */
+	public void clickPortal(int heroId){
+		Log.i(TAG, "This hero has clicked on the stairs " + heroId);
+		Hero hero = getHeroById(heroId);
+		hero.setStairsPressed();
+		boolean startNewGame = true;
+		for (Hero heroInList : heroes ) {
+			if(!heroInList.isStairsPressed()){
+				startNewGame = false;
+			}
+		}
+		// Start new level
+		if (startNewGame) {
+			clearWorld();
+			sendClearWorld();
+		} else {
+			Log.i(TAG, "Not all heroes has clicked the portal");
+		}
+	}
+
+	/**
+	 * Clear the world on server
+	 */
+	private void clearWorld() {
+		minions.clear();
+		world.getObstacles().clear();
+		world = null;
+	}
+
+	/**
+	 * Send message to clients that they should clear their local world
+	 */
+	private void sendClearWorld() {
+		server.dispatchMessage(new Message(new Gson().toJson(new ClearWorldResponse())));
+	}
+
+	/**
 	 * Sends the Game status down to the clients (this needs to improve that only new information is being sent, now everything is being sent)
 	 */
 	public void sendGameStatus(){
@@ -232,9 +271,10 @@ public class GameServer {
 		sendGameStatus();
 	}
 
-	public int getMinionCount() {
-		return minionCount;
+	public void endGame(){
+		gameRunning = false;
 	}
+
 
 	private Minion getMinionById(Integer minionId) {
 		for(Minion minion : minions) {
@@ -274,6 +314,22 @@ public class GameServer {
 	}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// Utility methods
+
 	private Hero getHeroByUserId(String user_id) {
 		for(Hero hero : heroes){
 			if(hero.getUser_id() == Integer.parseInt(user_id)){
@@ -281,11 +337,6 @@ public class GameServer {
 			}
 		}
 		return null;
-	}
-
-
-	public void endGame(){
-		gameRunning = false;
 	}
 
 
@@ -313,6 +364,31 @@ public class GameServer {
 		return null;
 	}
 
+	public ArrayList<Hero> getHeroes() {
+		return heroes;
+	}
+
+	public void minionAggro(MinionAggroRequest parsedRequest) {
+		Minion minion = getMinionById(parsedRequest.getMinion_id());
+		if(minion.getHeroIdWithMostThreat() == null){
+			Log.i(TAG, "This minion had no aggro, add towards this hero [" + parsedRequest.getHero_id() + "] Since first to see it");
+			minion.addThreat(new Threat(parsedRequest.getHero_id(), Threat.inRangeThreath, 0 ,0));
+		}
+	}
+	public void minionTargetInRange(MinionAggroRequest parsedRequest) {
+		Minion minion = getMinionById(parsedRequest.getMinion_id());
+		if(parsedRequest.getHero_id() > 0){
+			Log.i(TAG, "Target is in range for an attack");
+			minion.targetInRangeForAttack = true;
+		}else{
+			Log.i(TAG, "Target is out of range for an attack");
+			minion.targetInRangeForAttack = false;
+		}
+	}
+
+	public int getMinionCount() {
+		return minionCount;
+	}
 
 
 
@@ -399,31 +475,7 @@ public class GameServer {
 		sendGameStatus();
 	}
 
-	public ArrayList<Hero> getHeroes() {
-		return heroes;
-	}
 
-	public void minionAggro(MinionAggroRequest parsedRequest) {
-		Minion minion = getMinionById(parsedRequest.getMinion_id());
-		if(minion.getHeroIdWithMostThreat() == null){
-			Log.i(TAG, "This minion had no aggro, add towards this hero [" + parsedRequest.getHero_id() + "] Since first to see it");
-			minion.addThreat(new Threat(parsedRequest.getHero_id(), Threat.inRangeThreath, 0 ,0));
-		}
-	}
-	public void minionTargetInRange(MinionAggroRequest parsedRequest) {
-		Minion minion = getMinionById(parsedRequest.getMinion_id());
-		if(parsedRequest.getHero_id() > 0){
-			Log.i(TAG, "Target is in range for an attack");
-			minion.targetInRangeForAttack = true;
-		}else{
-			Log.i(TAG, "Target is out of range for an attack");
-			minion.targetInRangeForAttack = false;
-		}
-	}
-
-	public void clickPortal(int heroId){
-		Log.i(TAG, "This hero has clicked on the stairs " + heroId );
-	}
 	//          Warrior
 
 

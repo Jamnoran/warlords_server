@@ -34,6 +34,7 @@ public class Hero {
 	private transient float attackStrScaling = 0.1f;
 	private transient float criticalMultiplier = 2.0f;
 	private transient float criticalChance = 0.25f;
+	private transient  boolean stairsPressed;
 
 	public Hero() {
 	}
@@ -179,6 +180,14 @@ public class Hero {
 		this.dexterity = dexterity;
 	}
 
+	public void setStairsPressed() {
+		stairsPressed = true;
+	}
+
+	public boolean isStairsPressed() {
+		return stairsPressed;
+	}
+
 	public String getSqlInsertQuery() {
 		return "INSERT INTO `warlords`.`heroes` (`id`, `user_id`, `xp`, `level`, `class_type`) VALUES (NULL, '" + getUser_id() + "', '" + getXp() + "', '" + getLevel() + "', '" + getClass_type() + "')";
 	}
@@ -264,4 +273,5 @@ public class Hero {
 		positionX = freeStartPosition.getX();
 		positionZ = freeStartPosition.getZ();
 	}
+
 }

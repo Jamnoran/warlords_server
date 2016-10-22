@@ -35,39 +35,39 @@ public class JsonRequest implements Serializable {
 				JoinServerRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JoinServerRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
-			}else if(request.getRequestType().equals("CREATE_HERO")){
+			}else if(request.isType("CREATE_HERO")){
 				CreateHeroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), CreateHeroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
-			}else if(request.getRequestType().equals("CREATE_USER")){
+			}else if(request.isType("CREATE_USER")){
 				CreateUserRequest parsedRequest = gson.fromJson(aMessage.getMessage(), CreateUserRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
-			}else if(request.getRequestType().equals("ATTACK")){
+			}else if(request.isType("ATTACK")){
 				AttackRequest parsedRequest = gson.fromJson(aMessage.getMessage(), AttackRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
-			}else if(request.getRequestType().equals("MOVE")){
+			}else if(request.isType("MOVE")){
 				MoveRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MoveRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
-			}else if(request.getRequestType().equals("SPELL")){
+			}else if(request.isType("SPELL")){
 				SpellRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SpellRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
-			}else if(request.getRequestType().equals("MINION_AGGRO")){
+			}else if(request.isType("MINION_AGGRO")){
 				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
-			}else if(request.getRequestType().equals("MINION_TARGET_IN_RANGE")){
+			}else if(request.isType("MINION_TARGET_IN_RANGE")){
 				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
-			}else if(request.getRequestType().equals("END_GAME")){
+			}else if(request.isType("END_GAME")){
 				JsonRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JsonRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
-			}else if(request.getRequestType().equals("CLICKED_PORTAL")){
+			}else if(request.isType("CLICKED_PORTAL")){
 				ClickPortalRequest parsedRequest = gson.fromJson(aMessage.getMessage(), ClickPortalRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
