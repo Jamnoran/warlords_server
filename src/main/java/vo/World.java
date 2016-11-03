@@ -77,11 +77,6 @@ public class World {
 			}
 		}
 
-//		for (int i = 0; i < 2 ; i++){
-//			Room room = new Room();
-//			room.generate(obstacles, new Vector3(1.0f, 1.0f, 1.0f), 90, Room.INDOOR);
-//		}
-
 		// Maybe clear rooms list to save memory?
 		return this;
 	}

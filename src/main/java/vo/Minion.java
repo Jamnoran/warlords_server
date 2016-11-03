@@ -23,7 +23,8 @@ public class Minion {
 
 	public transient boolean targetInRangeForAttack = false;
 	private transient float baseDamage = 5;
-	private transient Integer hpPerLevel = 10;
+	private transient Integer baseHp = 10;
+	private transient Integer hpPerLevel = 5;
 	private transient Integer timeBetweenAttacks = 1200;
 	private transient Long timeLastAttack = null;
 	private transient ArrayList<Threat> threats = new ArrayList<Threat>();
@@ -37,7 +38,7 @@ public class Minion {
 	}
 
 	public void generateMinionInformation(float posX, float posZ){
-		setHp(hpPerLevel * level);
+		setHp(baseHp + (hpPerLevel * level));
 		setMaxHp(getHp());
 
 		if (posX == 0.0f)

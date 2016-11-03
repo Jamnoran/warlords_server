@@ -25,6 +25,7 @@ public class GameServer {
 	private ArrayList<Hero> heroes = new ArrayList<>();
 	private ArrayList<GameAnimation> animations = new ArrayList<>();
 	private World world;
+	private int gameLevel = 1;
 
 
 	public GameServer(ServerDispatcher server) {
@@ -40,7 +41,7 @@ public class GameServer {
 	 */
 	private void createWorld() {
 		// Call World.generate()
-		world = new World().generate(this, 100, 100, 1);
+		world = new World().generate(this, 100, 100, gameLevel);
 		Log.i(TAG, "World generated : " + world.toString());
 	}
 
@@ -116,6 +117,7 @@ public class GameServer {
 		minionCount++;
 		Minion minion = new Minion(this);
 		minion.setId(minionCount);
+		minion.setLevel(gameLevel);
 		minion.generateMinionInformation(posX, posZ);
 //		minion.startAI();
 		minions.add(minion);
@@ -138,6 +140,7 @@ public class GameServer {
 		}
 		// Start new level
 		if (startNewGame) {
+			gameLevel = gameLevel + 1;
 			clearWorld();
 			sendClearWorld();
 			Log.i(TAG, "World is cleared. spawning a new world with a higher level");
