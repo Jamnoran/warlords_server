@@ -140,9 +140,31 @@ public class GameServer {
 		if (startNewGame) {
 			clearWorld();
 			sendClearWorld();
+			Log.i(TAG, "World is cleared. spawning a new world with a higher level");
+			createWorld();
+			for(Hero heroLoop : heroes){
+				sendWorldOperation(heroLoop.getId());
+			}
+			// Send teleport operation to all heroes
+			int i = 0;
+			for(Hero teleportHero : getHeroes()){
+				Vector3 spawnPoint = world.getSpawnPoints().get(i);
+				teleportHero.setDesiredPositionX(spawnPoint.getX());
+				teleportHero.setDesiredPositionZ(spawnPoint.getZ());
+				teleportHero.setPositionX(spawnPoint.getX());
+				teleportHero.setPositionZ(spawnPoint.getZ());
+				Log.i(TAG, "Sending player : " + teleportHero.getId() + " to position : " + spawnPoint.toString());
+				i++;
+			}
+			sendTeleportPlayers();
 		} else {
 			Log.i(TAG, "Not all heroes has clicked the portal");
 		}
+	}
+
+	private void sendTeleportPlayers() {
+		String jsonInString = new Gson().toJson(new TeleportHeroesResponse(heroes));
+		server.dispatchMessage(new Message(jsonInString));
 	}
 
 	/**
@@ -165,8 +187,7 @@ public class GameServer {
 	 * Sends the Game status down to the clients (this needs to improve that only new information is being sent, now everything is being sent)
 	 */
 	public void sendGameStatus(){
-		Gson gson = new Gson();
-		String jsonInString = gson.toJson(new GameStatusResponse(minions, heroes, animations));
+		String jsonInString = new Gson().toJson(new GameStatusResponse(minions, heroes, animations));
 		server.dispatchMessage(new Message(jsonInString));
 		clearSentAnimations();
 	}
@@ -416,6 +437,8 @@ public class GameServer {
 		};
 		thread.start();
 	}
+
+
 
 
 

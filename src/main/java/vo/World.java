@@ -23,13 +23,16 @@ public class World {
 		server = gameServer;
 		worldLevel = lvl;
 		worldType = worldLevel;
-		spawnPoints.add(new Vector3(1.0f, 1.0f, 1.0f));
-		spawnPoints.add(new Vector3(3.0f, 1.0f, 1.0f));
-		spawnPoints.add(new Vector3(5.0f, 1.0f, 1.0f));
 		// 0 = top, 1 = left, 2 = right, 3 = bottom
 		ArrayList<Integer> doorList = new ArrayList();
 		int roomSizeX = 10;
 		int roomSizeZ = 10;
+
+
+		spawnPoints.add(new Vector3((roomSizeX / 2) + 2, 1.0f, (roomSizeZ / 2)));
+		spawnPoints.add(new Vector3((roomSizeX / 2) - 2, 1.0f, (roomSizeZ / 2)));
+		spawnPoints.add(new Vector3((roomSizeX / 2), 1.0f, (roomSizeZ / 2) + 2));
+		spawnPoints.add(new Vector3((roomSizeX / 2), 1.0f, (roomSizeZ / 2) - 2));
 
 		obstacles.add(new Obstacle(roomSizeX / 2, 0, roomSizeZ / 2, 0, Obstacle.START, null));
 
