@@ -91,6 +91,9 @@ public class ServerDispatcher extends Thread {
 				ClickPortalRequest parsedRequest = (ClickPortalRequest) request;
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				gameServer.clickPortal(parsedRequest.getHero_id());
+	        }else if (request.isType("GET_ABILITIES")){
+		        Log.i(TAG, "parsedRequest : " + request.toString());
+		        gameServer.sendAbilities(request.getUser_id());
 			}else if (request.isType("END_GAME")){
 		        Log.i(TAG, "Got request to end game, this needs to be changed later so that last on leaving game will end the game as well.");
 		        endGame();

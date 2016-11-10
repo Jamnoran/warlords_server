@@ -1,6 +1,7 @@
 package util;
 
 import game.logging.Log;
+import vo.Ability;
 import vo.Hero;
 import vo.User;
 import vo.classes.Priest;
@@ -178,5 +179,42 @@ public class DatabaseUtil {
 			Log.i(TAG, "Failed to make connection!");
 		}
 		return hero;
+	}
+
+
+	public static ArrayList<Ability> getAllAbilities(String classType){
+		ArrayList<Ability> abilities = new ArrayList<>();
+		Connection connection = getConnection();
+		if (connection != null) {
+			try {
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery("SELECT * FROM abilities where class_type LIKE \'" + classType + "\'");
+				while (rs.next()) {
+					Ability ability = new Ability();
+					//Retrieve by column name
+					ability.setId(rs.getInt("id"));
+					ability.setName(rs.getString("name"));
+					ability.setBaseDamage(rs.getInt("base_damage"));
+					ability.setClassType(rs.getString("class_type"));
+					ability.setCrittable(rs.getInt("crittable"));
+					ability.setLevelReq(rs.getInt("level_req"));
+					ability.setTargetType(rs.getString("target_type"));
+					ability.setImage(rs.getString("image"));
+					ability.setDescription(rs.getString("description"));
+					ability.setDamageType(rs.getString("damage_type"));
+					ability.setBaseCD(rs.getInt("base_cd"));
+					//Display values
+					abilities.add(ability);
+				}
+				rs.close();
+				stmt.close();
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.i(TAG, "Failed to make connection!");
+		}
+		return abilities;
 	}
 }

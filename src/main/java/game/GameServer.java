@@ -3,6 +3,7 @@ package game;
 import com.google.gson.Gson;
 import game.logging.Log;
 import io.*;
+import util.DatabaseUtil;
 import vo.*;
 import vo.classes.Priest;
 import vo.classes.Warrior;
@@ -67,6 +68,7 @@ public class GameServer {
 		}
 		Log.i(TAG, "Hero joined with this user id: " + hero.getUser_id() + " characters in game: " + heroes.size());
 		sendGameStatus();
+		sendAbilities("" + hero.getUser_id());
 		if(!gameStarted){
 			gameStarted = true;
 		}
@@ -168,6 +170,12 @@ public class GameServer {
 	private void sendTeleportPlayers() {
 		String jsonInString = new Gson().toJson(new TeleportHeroesResponse(heroes));
 		server.dispatchMessage(new Message(jsonInString));
+	}
+
+	public void sendAbilities(String userId) {
+		Gson gson = new Gson();
+		String jsonInString = gson.toJson(new AbilitiesResponse(DatabaseUtil.getAllAbilities(getHeroByUserId(userId).getClass_type())));
+		server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), jsonInString));
 	}
 
 	/**
