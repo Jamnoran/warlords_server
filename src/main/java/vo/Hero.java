@@ -3,6 +3,8 @@ package vo;
 import game.logging.Log;
 import util.CalculationUtil;
 
+import java.util.ArrayList;
+
 public class Hero {
 	public static final String WARRIOR = "WARRIOR";
 	public static final String PRIEST = "PRIEST";
@@ -18,6 +20,7 @@ public class Hero {
 	private float desiredPositionX = 6.0f;
 	private float desiredPositionZ = 5.0f;
 	private String class_type = "WARRIOR";
+	private transient ArrayList<Ability> abilities;
 
 
 	// Hero stats
@@ -188,6 +191,21 @@ public class Hero {
 		return stairsPressed;
 	}
 
+	public ArrayList<Ability> getAbilities() {
+		return abilities;
+	}
+
+	public void setAbilities(ArrayList<Ability> abilities) {
+		if (this.abilities == null) {
+			this.abilities = new ArrayList<>();
+		}
+		this.abilities = abilities;
+	}
+
+	public void addAbility(Ability ability){
+		this.abilities.add(ability);
+	}
+
 	public String getSqlInsertQuery() {
 		return "INSERT INTO `warlords`.`heroes` (`id`, `user_id`, `xp`, `level`, `class_type`) VALUES (NULL, '" + getUser_id() + "', '" + getXp() + "', '" + getLevel() + "', '" + getClass_type() + "')";
 	}
@@ -234,6 +252,10 @@ public class Hero {
 		return false;
 	}
 
+	public boolean hasManaForSpellHeal() {
+		return true;
+	}
+
 	public boolean isClass(String classCheck){
 		if(getClass_type().equals(classCheck)){
 			return true;
@@ -274,4 +296,12 @@ public class Hero {
 		positionZ = freeStartPosition.getZ();
 	}
 
+	public Ability getAbility(Integer spellId) {
+		for (Ability ability : getAbilities()){
+			if(ability.getId() == spellId){
+				return ability;
+			}
+		}
+		return null;
+	}
 }

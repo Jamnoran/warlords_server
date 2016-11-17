@@ -105,8 +105,17 @@ public class GameServer {
 	 * @param heroId
 	 */
 	private void sendWorld(Integer heroId) {
-		Gson gson = new Gson();
-		String jsonInString = gson.toJson(new WorldResponse(world));
+		String jsonInString = new Gson().toJson(new WorldResponse(world));
+		server.dispatchMessage(new Message(getClientIdByHeroId(heroId), jsonInString));
+	}
+
+	/**
+	 * Sending cool down use down to a specific user
+	 * @param abi
+	 * @param heroId
+	 */
+	private void sendCooldownInformation(Ability abi, Integer heroId){
+		String jsonInString = new Gson().toJson(new CooldownResponse(abi));
 		server.dispatchMessage(new Message(getClientIdByHeroId(heroId), jsonInString));
 	}
 
@@ -121,7 +130,6 @@ public class GameServer {
 		minion.setId(minionCount);
 		minion.setLevel(gameLevel);
 		minion.generateMinionInformation(posX, posZ);
-//		minion.startAI();
 		minions.add(minion);
 		sendGameStatus();
 	}
@@ -172,9 +180,15 @@ public class GameServer {
 		server.dispatchMessage(new Message(jsonInString));
 	}
 
+	/**
+	 * This will be called when a hero joins a game or when requested
+	 * @param userId
+	 */
 	public void sendAbilities(String userId) {
 		Gson gson = new Gson();
-		String jsonInString = gson.toJson(new AbilitiesResponse(DatabaseUtil.getAllAbilities(getHeroByUserId(userId).getClass_type())));
+		ArrayList<Ability> heroAbilities = DatabaseUtil.getAllAbilities(getHeroByUserId(userId).getClass_type());
+		getHeroByUserId(userId).setAbilities(heroAbilities);
+		String jsonInString = gson.toJson(new AbilitiesResponse(heroAbilities));
 		server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), jsonInString));
 	}
 
@@ -222,25 +236,19 @@ public class GameServer {
 	 * @param parsedRequest
 	 */
 	public void spell(SpellRequest parsedRequest) {
+		// TODO: This no longer uses same id for different classes but a unique id for the abilities
 		Log.i(TAG , "Handle spell " + parsedRequest.toString());
 		Hero hero = getHeroByUserId(parsedRequest.getUser_id());
-		if (hero.getClass_type().equals(Hero.PRIEST)){
-			switch (parsedRequest.getSpell_id()){
-				case 1:
-					Log.i(TAG, "Priest used Heal!");
-					priestHeal((Priest) hero, parsedRequest);
-					break;
-				default:
-					break;
-			}
-		}else if (hero.getClass_type().equals(Hero.WARRIOR)){
-			switch (parsedRequest.getSpell_id()){
-				case 1:
-					Log.i(TAG, "Warrior used cleave!");
-					break;
-				default:
-					break;
-			}
+		switch (parsedRequest.getSpell_id()){
+			case 1:
+				Log.i(TAG, "Warrior used cleave!");
+				break;
+			case 2:
+				Log.i(TAG, "Priest used Heal!");
+				priestHeal((Priest) hero, parsedRequest);
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -382,6 +390,25 @@ public class GameServer {
 	}
 
 	/**
+	 * Goes through the list of heroes and returning the hero that has the lowest hp
+	 * @return hero
+	 */
+	private Hero getHeroWithLowestHp() {
+		Hero targetHero = null;
+		for (Hero lowestHHpHero : heroes){
+			if(lowestHHpHero.getHp() < lowestHHpHero.getMaxHp()){
+				if(targetHero == null){
+					targetHero = lowestHHpHero;
+				}else if (lowestHHpHero.getHp() < targetHero.getHp()){
+					targetHero = lowestHHpHero;
+					Log.i(TAG, "Found a target with lower hp : " + lowestHHpHero.getId());
+				}
+			}
+		}
+		return targetHero;
+	}
+
+	/**
 	 * Util method to get a client by his hero id, good to have if needing to send specified message to that client instead of to all clients
 	 * @param heroId
 	 * @return
@@ -419,12 +446,6 @@ public class GameServer {
 			}
 		}
 	}
-
-	public int getMinionCount() {
-		return minionCount;
-	}
-
-
 
 
 
@@ -470,46 +491,44 @@ public class GameServer {
 
 
 	private void priestHeal(Priest hero, SpellRequest parsedRequest) {
-		Hero targetHero = null;
+		Hero targetHero;
 		// Check if has a friendly target
 		if(parsedRequest.getTarget_friendly() != null){
-			targetHero = getHeroById(parsedRequest.getTarget_friendly());
-			if (targetHero != null) {
-				Log.i(TAG, "Target hero : " + targetHero.getId());
-			}
+			targetHero = getHeroById(parsedRequest.getTarget_friendly().get(0));
+		}else{
+			// If not then heal lowest % hp ally
+			targetHero = getHeroWithLowestHp();
 		}
-		// If not then heal lowest % hp ally
-		if(targetHero == null){
-			for (Hero lowestHHpHero : heroes){
-				if(lowestHHpHero.getHp() < lowestHHpHero.getMaxHp()){
-					if(targetHero == null){
-						targetHero = lowestHHpHero;
-					}else if (lowestHHpHero.getHp() < targetHero.getHp()){
-						targetHero = lowestHHpHero;
-						Log.i(TAG, "Found a target with lower hp : " + lowestHHpHero.getId());
-					}
-				}
-			}
-		}
-		if (targetHero != null) {
+
+		Ability abi = hero.getAbility(parsedRequest.getSpell_id());
+
+		// Remove mana return false if cant use spell (should be handled on client side as well)
+		if (targetHero != null && hero.hasManaForSpellHeal() && abi.isAbilityOffCD(parsedRequest.getTime())) {
 			Log.i(TAG, "Target Hero to heal : " + targetHero.getId());
-		}
-		// Remove mana return false if cant use spell (should be handeled on client side as well)
-		if (targetHero != null && hero.hasManaForSpellHeal()) {
 			// Get heal amount
 			float healAmount = hero.getSpellHealAmount();
 			Log.i(TAG, "Healing for this amount : " + healAmount);
 
-			// Heal target (dont overheal)
-			if(targetHero != null){
-				targetHero.heal(healAmount);
-				animations.add(new GameAnimation("HEAL",targetHero.getId(), hero.getId(), null));
-			}
+			// Heal target (don't overheal)
+			targetHero.heal(healAmount);
+
+			// Set the cooldown for this ability
+			abi.setMillisLastUse(parsedRequest.getTime());
+			abi.setTimeWhenOffCooldown("" + (parsedRequest.getTime() + abi.getBaseCD()));
+			sendCooldownInformation(abi, hero.getId());
+
+			// Add animation to list
+			animations.add(new GameAnimation("HEAL",targetHero.getId(), hero.getId(), null));
 
 			// Add threat to all targets close by (of target location or healer location?)
+		}else if (targetHero != null && !hero.hasManaForSpellHeal()){
+			Log.i(TAG, "Hero does not have enough mana for use of ability");
+		}else if (targetHero != null && !abi.isAbilityOffCD(parsedRequest.getTime())){
+			Log.i(TAG, "Ability not of cooldown");
 		}
 		sendGameStatus();
 	}
+
 
 
 	//          Warrior

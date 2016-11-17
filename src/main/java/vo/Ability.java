@@ -1,9 +1,12 @@
 package vo;
 
+import game.logging.Log;
+
 /**
  * Created by Jamnoran on 10-Nov-16.
  */
 public class Ability {
+	private static final String TAG = Ability.class.getSimpleName();
 	private int id;
 	private String classType;
 	private String name;
@@ -14,7 +17,9 @@ public class Ability {
 	private int baseDamage;
 	private int crittable;
 	private String targetType;
+	private String timeWhenOffCooldown;
 	private int baseCD;
+	private transient long millisLastUse = -1000000;
 
 
 	public int getId() {
@@ -104,6 +109,23 @@ public class Ability {
 	public int getBaseCD() {
 		return baseCD;
 	}
+
+	public long getMillisLastUse() {
+		return millisLastUse;
+	}
+
+	public void setMillisLastUse(long millisLastUse) {
+		this.millisLastUse = millisLastUse;
+	}
+
+	public String getTimeWhenOffCooldown() {
+		return timeWhenOffCooldown;
+	}
+
+	public void setTimeWhenOffCooldown(String timeWhenOffCooldown) {
+		this.timeWhenOffCooldown = timeWhenOffCooldown;
+	}
+
 	@Override
 	public String toString() {
 		return "Ability{" +
@@ -117,8 +139,14 @@ public class Ability {
 				", baseDamage=" + baseDamage +
 				", crittable=" + crittable +
 				", targetType='" + targetType + '\'' +
-				", baseCD='" + baseCD + '\'' +
+				", baseCD=" + baseCD  + '\'' +
+				", millisLastUse=" + millisLastUse  + '\'' +
+				", timeWhenOffCooldown=" + timeWhenOffCooldown +
 				'}';
 	}
 
+	public boolean isAbilityOffCD(long time) {
+		Log.i(TAG, "Is ability off cd : " + (getMillisLastUse() + getBaseCD() <= time) + " " + getMillisLastUse() + " +  " + getBaseCD() + " <= " + time);
+		return (getMillisLastUse() + getBaseCD() <= time);
+	}
 }

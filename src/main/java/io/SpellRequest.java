@@ -3,6 +3,8 @@ package io;
 import com.google.gson.annotations.SerializedName;
 import vo.Vector3;
 
+import java.util.ArrayList;
+
 /**
  * Created by Jamnoran on 30-Jun-16.
  */
@@ -11,13 +13,15 @@ public class SpellRequest extends JsonRequest{
 	@SerializedName("spell_id")
 	private Integer spell_id;
 	@SerializedName("target_enemy")
-	private Integer target_enemy;
+	private ArrayList<Integer> target_enemy;
 	@SerializedName("target_friendly")
-	private Integer target_friendly;
+	private ArrayList<Integer> target_friendly;
 	@SerializedName("target_position_x")
 	private float target_position_x;
 	@SerializedName("target_position_z")
 	private float target_position_z;
+	@SerializedName("time")
+	private long time;
 
 	public Integer getSpell_id() {
 		return spell_id;
@@ -27,19 +31,19 @@ public class SpellRequest extends JsonRequest{
 		this.spell_id = spell_id;
 	}
 
-	public Integer getTarget_enemy() {
+	public ArrayList<Integer> getTarget_enemy() {
 		return target_enemy;
 	}
 
-	public void setTarget_enemy(Integer target_enemy) {
+	public void setTarget_enemy(ArrayList<Integer> target_enemy) {
 		this.target_enemy = target_enemy;
 	}
 
-	public Integer getTarget_friendly() {
+	public ArrayList<Integer> getTarget_friendly() {
 		return target_friendly;
 	}
 
-	public void setTarget_friendly(Integer target_friendly) {
+	public void setTarget_friendly(ArrayList<Integer> target_friendly) {
 		this.target_friendly = target_friendly;
 	}
 
@@ -59,6 +63,14 @@ public class SpellRequest extends JsonRequest{
 		this.target_position_z = target_position_z;
 	}
 
+	public long getTime() {
+		return time;
+	}
+
+	public void setTime(long time) {
+		this.time = time;
+	}
+
 	@Override
 	public String toString() {
 		return "SpellRequest{" +
@@ -67,6 +79,7 @@ public class SpellRequest extends JsonRequest{
 				", target_friendly=" + target_friendly +
 				", target_position_x=" + target_position_x +
 				", target_position_z=" + target_position_z +
+				", time=" + time +
 				'}';
 	}
 }

@@ -48,7 +48,4 @@ public class Priest extends Hero {
 		return heal;
 	}
 
-	public boolean hasManaForSpellHeal() {
-		return true;
-	}
 }
