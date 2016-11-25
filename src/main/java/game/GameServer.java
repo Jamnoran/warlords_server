@@ -529,12 +529,30 @@ public class GameServer {
 		sendGameStatus();
 	}
 
+	private void priestSmite(){
+
+	}
+
+	private void priesShield(){
+
+	}
+
 
 
 	//          Warrior
 
 
+	private void warriorTaunt(){
 
+	}
+
+	private void warriorCleave(){
+
+	}
+
+	private void warriorRetalliation(){
+
+	}
 
 
 
