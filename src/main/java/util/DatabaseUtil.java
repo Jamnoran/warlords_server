@@ -103,7 +103,7 @@ public class DatabaseUtil {
 	public static Hero createHero(Integer userId, String classType) {
 		Connection connection = getConnection();
 		Hero hero = new Hero(userId);
-		hero.setClass_type(classType);
+		hero.setClass_type(classType.trim());
 		if (connection != null) {
 			try {
 				Statement stmt = connection.createStatement();
@@ -183,11 +183,15 @@ public class DatabaseUtil {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery("SELECT * FROM heroes where id = " + id);
 				while (rs.next()) {
+					Log.i(TAG, "Class : " + rs.getString("class_type"));
 					if(rs.getString("class_type").equals(Hero.WARRIOR)){
 						hero = new Warrior();
+						Log.i(TAG, "Warrior user");
 					}else if(rs.getString("class_type").equals(Hero.PRIEST)){
 						Log.i(TAG, "Create priest instead");
 						hero = new Priest();
+					}else{
+						Log.i(TAG, "Cant find class: [" + rs.getString("class_type") + "]");
 					}
 					//Retrieve by column name
 					hero.setId(rs.getInt("id"));
