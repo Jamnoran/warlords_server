@@ -109,10 +109,16 @@ public class LobbyServerDispatcher extends Thread {
 				Log.i(TAG, "Created hero : " + hero.toString());
 			}else if (request.getRequestType().equals("CREATE_USER")){
 				CreateUserRequest createUserRequest = (CreateUserRequest) request;
-				Log.i(TAG, "User is trying to create class: " + createUserRequest.toString());
+				Log.i(TAG, "User is trying to create user: " + createUserRequest.toString());
 				User user = DatabaseUtil.createUser(new User(createUserRequest.getUsername(), createUserRequest.getEmail(), createUserRequest.getPassword()));
 				Log.i(TAG, "Created user with this is: " + user.getId() + " We need to send that back to client");
 				dispatchMessage(new Message(clientInfo.getId(), "{\"response_type\":\"CREATE_USER\", \"user_id\" : \"" + user.getId() + "\"}"));
+			}else if (request.getRequestType().equals("LOGIN_USER")){
+				CreateUserRequest createUserRequest = (CreateUserRequest) request;
+				Log.i(TAG, "User is trying to login: " + createUserRequest.toString());
+				User user = DatabaseUtil.getUser(createUserRequest.getEmail(), createUserRequest.getPassword());
+				Log.i(TAG, "Logged in user with this is: " + user.getId() + " We need to send that back to client");
+				dispatchMessage(new Message(clientInfo.getId(), "{\"response_type\":\"LOGIN_USER\", \"user_id\" : \"" + user.getId() + "\"}"));
 			}else if (request.getRequestType().equals("GET_HEROES")){
 				Log.i(TAG, "User wants his heroes: " + request.toString());
 				String heroesJson = "";

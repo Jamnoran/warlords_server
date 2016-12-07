@@ -2,6 +2,7 @@ package game;
 
 import com.google.gson.Gson;
 import game.logging.Log;
+import game.spells.PriestHeal;
 import io.*;
 import util.DatabaseUtil;
 import vo.*;
@@ -114,7 +115,7 @@ public class GameServer {
 	 * @param abi
 	 * @param heroId
 	 */
-	private void sendCooldownInformation(Ability abi, Integer heroId){
+	public void sendCooldownInformation(Ability abi, Integer heroId){
 		String jsonInString = new Gson().toJson(new CooldownResponse(abi));
 		server.dispatchMessage(new Message(getClientIdByHeroId(heroId), jsonInString));
 	}
@@ -389,11 +390,19 @@ public class GameServer {
 		return null;
 	}
 
+	public ArrayList<GameAnimation> getAnimations() {
+		return animations;
+	}
+
+	public void setAnimations(ArrayList<GameAnimation> animations) {
+		this.animations = animations;
+	}
+
 	/**
 	 * Goes through the list of heroes and returning the hero that has the lowest hp
 	 * @return hero
 	 */
-	private Hero getHeroWithLowestHp() {
+	public Hero getHeroWithLowestHp() {
 		Hero targetHero = null;
 		for (Hero lowestHHpHero : heroes){
 			if(lowestHHpHero.getHp() < lowestHHpHero.getMaxHp()){
@@ -491,6 +500,14 @@ public class GameServer {
 
 
 	private void priestHeal(Priest hero, SpellRequest parsedRequest) {
+		PriestHeal spell = new PriestHeal(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()),this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		if (spell.init()) {
+			spell.execute();
+			sendGameStatus();
+		} else {
+		}
+
+
 		Hero targetHero;
 		// Check if has a friendly target
 		if(parsedRequest.getTarget_friendly() != null){
@@ -536,24 +553,40 @@ public class GameServer {
 	private void priesShield(){
 
 	}
+	private void priesHealOverTime(){
+
+	}private void priesAOEHeal(){
+
+	}private void priesBuff(){
+
+	}
+
 
 
 
 	//          Warrior
+	private void warriorCleave(){
 
+	}
 
 	private void warriorTaunt(){
 
 	}
 
-	private void warriorCleave(){
+	private void warriorCharge(){
 
 	}
 
-	private void warriorRetalliation(){
+	private void warriorSlam(){
 
 	}
 
+	private void warriorBarricade(){
+
+	}
+	private void warriorBuff(){
+
+	}
 
 
 
