@@ -43,6 +43,10 @@ public class JsonRequest implements Serializable {
 				CreateUserRequest parsedRequest = gson.fromJson(aMessage.getMessage(), CreateUserRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
+			}else if(request.isType("LOGIN_USER")){
+				CreateUserRequest parsedRequest = gson.fromJson(aMessage.getMessage(), CreateUserRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				return parsedRequest;
 			}else if(request.isType("ATTACK")){
 				AttackRequest parsedRequest = gson.fromJson(aMessage.getMessage(), AttackRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
