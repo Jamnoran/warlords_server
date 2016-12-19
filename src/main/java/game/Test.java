@@ -1,6 +1,7 @@
 package game;
 
 import game.logging.Log;
+import util.CalculationUtil;
 import vo.Ability;
 import util.DatabaseUtil;
 
@@ -11,9 +12,9 @@ public class Test {
 	private static final String TAG = Test.class.getSimpleName();
 
 	public static void main(String[] args) {
-		ArrayList<Ability> abilities = DatabaseUtil.getAllAbilities("PRIEST");
-		for (Ability ab : abilities) {
-			Log.i(TAG, "Ability" + ab.toString());
-		}
+		Log.i(TAG, "Calc: " + CalculationUtil.getRandomInt(5,5));
+		Log.i(TAG, "Calc: " + CalculationUtil.getRandomInt(5,5));
+		Log.i(TAG, "Calc: " + CalculationUtil.getRandomInt(5,5));
+
 	}
 }

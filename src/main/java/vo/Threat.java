@@ -65,7 +65,7 @@ public class Threat {
 		if(threat.getDamage() > 0){
 			setAmount(getAmount() + (threat.getDamage() * damageMultiplier));
 		}else if (threat.getHealingDoneWithinVision() > 0){
-			setAmount(getAmount() + (threat.getHealingDoneWithinVision() * healingDoneWithinVision));
+			setAmount(getAmount() + (threat.getHealingDoneWithinVision() * healingMultiplier));
 		}else{
 			setAmount(getAmount() + threat.getAmount());
 		}

@@ -70,7 +70,7 @@ public class ServerDispatcher extends Thread {
 	        }else if (request.isType("ATTACK")){
 		        AttackRequest parsedRequest = (AttackRequest) request;
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-		        gameServer.attack(parsedRequest.getUser_id(), parsedRequest.getMinion_id());
+		        gameServer.attack(parsedRequest.getUser_id(), parsedRequest.getMinion_id(), parsedRequest.getTime());
 	        }else if (request.isType("MOVE")){
 		        MoveRequest parsedRequest = (MoveRequest) request;
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());

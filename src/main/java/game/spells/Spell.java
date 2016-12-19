@@ -2,10 +2,7 @@ package game.spells;
 
 import game.GameServer;
 import game.logging.Log;
-import vo.Ability;
-import vo.GameAnimation;
-import vo.Hero;
-import vo.Minion;
+import vo.*;
 
 import java.util.ArrayList;
 
@@ -66,6 +63,16 @@ public class Spell {
 
 	}
 
+	public void damageMinion(Minion minion, float damageAmount) {
+		float totalDamage = Math.round(minion.calculateDamageReceived(damageAmount));
+		if (minion.takeDamage(totalDamage)) {
+			Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
+			gameServer.minionDied(hero.getId(), minion.getId());
+			gameServer.removeMinion(minion.getId());
+		}else {
+			minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamage, 0.0f));
+		}
+	}
 
 	public Ability getAbility() {
 		return ability;

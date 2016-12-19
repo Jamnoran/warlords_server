@@ -26,19 +26,19 @@ public class PriestHeal extends Spell {
 			Log.i(TAG, "Target Hero to heal : " + hero.getId());
 			// Get heal amount
 			Priest priest = (Priest) getHero();
-			float healAmount = priest.getSpellHealAmount();
+			float healAmount = priest.getSpellDamage(getAbility());
 			Log.i(TAG, "Healing for this amount : " + healAmount);
 
 			// Heal target (don't overheal)
 			hero.heal(healAmount);
 
-			// Set the cooldown for this ability
-			getAbility().setMillisLastUse(getTime());
-			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
-
-
 			// Add animation to list
-			getGameServer().getAnimations().add(new GameAnimation("HEAL", hero.getId(), hero.getId(), null));
+			getGameServer().getAnimations().add(new GameAnimation("HEAL", hero.getId(), getHero().getId(), null));
 		}
+
+		// Set the cooldown for this ability
+		getAbility().setMillisLastUse(getTime());
+		getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
+
 	}
 }

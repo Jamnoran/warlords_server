@@ -11,7 +11,6 @@ public class Priest extends Hero {
 
 	private static final String TAG = Priest.class.getSimpleName();
 
-
 	// Base stats
 	private transient Integer hpPerLevel = 10;
 	private transient Integer strPerLevel = 1;
@@ -19,13 +18,6 @@ public class Priest extends Hero {
 	private transient Integer dexPerLevel = 1;
 	private transient Integer staPerLevel = 2;
 	private transient Integer resourcePerLevel = 10;
-
-	// Configurations for spell scaling
-
-
-	private transient float baseHealAmount = 10.0f;
-	private transient float baseMaxHealAmount = 12.0f;
-	private transient float healScalingInt = 0.1f;
 
 	public Priest() {
 		super();
@@ -42,10 +34,4 @@ public class Priest extends Hero {
 		setResource(resourcePerLevel * getLevel());
 		setMaxResource(getResource());
 	}
-
-	public float getSpellHealAmount() {
-		float heal = CalculationUtil.getRandomFloat(baseHealAmount, baseMaxHealAmount) * (1 + (getIntelligence() * healScalingInt));
-		return heal;
-	}
-
 }

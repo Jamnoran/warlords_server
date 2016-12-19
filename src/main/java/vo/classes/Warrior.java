@@ -10,7 +10,6 @@ public class Warrior extends Hero {
 
 	private static final String TAG = Warrior.class.getSimpleName();
 
-
 	// Base stats
 	private transient Integer hpPerLevel = 20;
 	private transient Integer strPerLevel = 3;

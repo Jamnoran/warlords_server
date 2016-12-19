@@ -3,6 +3,7 @@ package game;
 import com.google.gson.Gson;
 import game.logging.Log;
 import game.spells.PriestHeal;
+import game.spells.WarriorCleave;
 import io.*;
 import util.DatabaseUtil;
 import vo.*;
@@ -243,6 +244,7 @@ public class GameServer {
 		switch (parsedRequest.getSpell_id()){
 			case 1:
 				Log.i(TAG, "Warrior used cleave!");
+				warriorCleave((Warrior) hero, parsedRequest);
 				break;
 			case 2:
 				Log.i(TAG, "Priest used Heal!");
@@ -288,28 +290,33 @@ public class GameServer {
 	 * @param userId
 	 * @param minionId
 	 */
-	public void attack(String userId, Integer minionId) {
-		Log.i(TAG, "User " + userId + " Hero attacked minion: " + minionId + " minions count : " + minions.size());
-
-		// TODO: Check that time since last time is correct
+	public void attack(String userId, Integer minionId, long timeForAttackRequest) {
 		Hero hero = getHeroByUserId(userId);
-		Minion minion = getMinionById(minionId);
-		if (minion != null) {
-			Log.i(TAG, "Found hero that's attacking : " + hero.getClass_type() + " hp of minion is : " + minion.getHp());
-			float totalDamage = Math.round(minion.calculateDamageReceived(hero.getAttackDamage()));
-			if (minion.takeDamage(totalDamage)) {
-				Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
-				minionDied(userId, minion.getId());
-				removeMinion(minion.getId());
-			}else {
-				minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamage, 0.0f));
+		if (hero != null) {
+			Log.i(TAG, "Hero " + hero.getId() + " Hero attacked minion: " + minionId + " minions count : " + minions.size());
+		}
+		if (hero != null && hero.readyForAutoAttack(timeForAttackRequest)) {
+			Minion minion = getMinionById(minionId);
+			if (minion != null) {
+				Log.i(TAG, "Found hero that's attacking : " + hero.getClass_type() + " hp of minion is : " + minion.getHp());
+				float totalDamage = Math.round(minion.calculateDamageReceived(hero.getAttackDamage()));
+				if (minion.takeDamage(totalDamage)) {
+					Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
+					minionDied(hero.getId(), minion.getId());
+					removeMinion(minion.getId());
+				}else {
+					minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamage, 0.0f));
+				}
+				sendCooldownInformation(hero.getAbility(0), hero.getId());
+				Log.i(TAG, "Minion size now: " + minions.size());
+				animations.add(new GameAnimation("ATTACK", minionId, hero.id, null));
+				sendGameStatus();
+			} else {
+				Log.i(TAG, "Hero is trying to attack a minion that is already dead or non existing");
 			}
 		} else {
-			Log.i(TAG, "Hero is trying to attack a minion that is already dead or non existing");
+			Log.i(TAG, "Hero is not ready for auto attack");
 		}
-		Log.i(TAG, "Minion size now: " + minions.size());
-		animations.add(new GameAnimation("ATTACK", minionId, hero.id, null));
-		sendGameStatus();
 	}
 
 	public void endGame(){
@@ -326,7 +333,7 @@ public class GameServer {
 		return null;
 	}
 
-	private void removeMinion(Integer minionId) {
+	public void removeMinion(Integer minionId) {
 		Iterator<Minion> ut = minions.iterator();
 		while (ut.hasNext()) {
 			Minion minion = ut.next();
@@ -337,8 +344,8 @@ public class GameServer {
 		}
 	}
 
-	private void minionDied(String userId, Integer minionId) {
-		animations.add(new GameAnimation("MINION_DIED", minionId, Integer.parseInt(userId), null));
+	public void minionDied(int heroId, Integer minionId) {
+		animations.add(new GameAnimation("MINION_DIED", minionId, heroId, null));
 	}
 
 	public void heroMove(MoveRequest parsedRequest) {
@@ -505,45 +512,8 @@ public class GameServer {
 			spell.execute();
 			sendGameStatus();
 		} else {
+			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}
-
-
-		Hero targetHero;
-		// Check if has a friendly target
-		if(parsedRequest.getTarget_friendly() != null){
-			targetHero = getHeroById(parsedRequest.getTarget_friendly().get(0));
-		}else{
-			// If not then heal lowest % hp ally
-			targetHero = getHeroWithLowestHp();
-		}
-
-		Ability abi = hero.getAbility(parsedRequest.getSpell_id());
-
-		// Remove mana return false if cant use spell (should be handled on client side as well)
-		if (targetHero != null && hero.hasManaForSpellHeal() && abi.isAbilityOffCD(parsedRequest.getTime())) {
-			Log.i(TAG, "Target Hero to heal : " + targetHero.getId());
-			// Get heal amount
-			float healAmount = hero.getSpellHealAmount();
-			Log.i(TAG, "Healing for this amount : " + healAmount);
-
-			// Heal target (don't overheal)
-			targetHero.heal(healAmount);
-
-			// Set the cooldown for this ability
-			abi.setMillisLastUse(parsedRequest.getTime());
-			abi.setTimeWhenOffCooldown("" + (parsedRequest.getTime() + abi.getBaseCD()));
-			sendCooldownInformation(abi, hero.getId());
-
-			// Add animation to list
-			animations.add(new GameAnimation("HEAL",targetHero.getId(), hero.getId(), null));
-
-			// Add threat to all targets close by (of target location or healer location?)
-		}else if (targetHero != null && !hero.hasManaForSpellHeal()){
-			Log.i(TAG, "Hero does not have enough mana for use of ability");
-		}else if (targetHero != null && !abi.isAbilityOffCD(parsedRequest.getTime())){
-			Log.i(TAG, "Ability not of cooldown");
-		}
-		sendGameStatus();
 	}
 
 	private void priestSmite(){
@@ -565,8 +535,14 @@ public class GameServer {
 
 
 	//          Warrior
-	private void warriorCleave(){
-
+	private void warriorCleave(Warrior hero, SpellRequest parsedRequest){
+		WarriorCleave spell = new WarriorCleave(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()),this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		if (spell.init()) {
+			spell.execute();
+			sendGameStatus();
+		} else {
+			Log.i(TAG, "Could not send spell, probably because of mana or cd");
+		}
 	}
 
 	private void warriorTaunt(){

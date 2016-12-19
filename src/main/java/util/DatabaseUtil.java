@@ -227,6 +227,7 @@ public class DatabaseUtil {
 					ability.setId(rs.getInt("id"));
 					ability.setName(rs.getString("name"));
 					ability.setBaseDamage(rs.getInt("base_damage"));
+					ability.setTopDamage(rs.getInt("top_damage"));
 					ability.setClassType(rs.getString("class_type"));
 					ability.setCrittable(rs.getInt("crittable"));
 					ability.setLevelReq(rs.getInt("level_req"));
@@ -247,6 +248,14 @@ public class DatabaseUtil {
 		} else {
 			Log.i(TAG, "Failed to make connection!");
 		}
+
+		// Add Auto Attack ability at id 0
+		Ability ability = new Ability();
+		ability.setId(0);
+		ability.setName("Auto Attack");
+		ability.setImage("auto");
+		abilities.add(ability);
+
 		return abilities;
 	}
 }

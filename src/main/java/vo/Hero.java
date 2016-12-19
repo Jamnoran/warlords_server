@@ -35,9 +35,12 @@ public class Hero {
 	private transient Integer baseAttackDamage = 2;
 	private transient Integer baseMaxAttackDamage = 4;
 	private transient float attackStrScaling = 0.1f;
+	private transient float attackIntScaling = 0.1f;
 	private transient float criticalMultiplier = 2.0f;
 	private transient float criticalChance = 0.25f;
-	private transient  boolean stairsPressed;
+	private transient boolean stairsPressed = false;
+	private transient long timeLastAuto = 0;
+	private transient float baseAttackSpeed = 1.0f;
 
 	public Hero() {
 	}
@@ -235,6 +238,21 @@ public class Hero {
 		return false;
 	}
 
+	public float getSpellDamage(Ability ability) {
+		float multiplier;
+		if(ability.getDamageType().equals("MAGIC")){
+			multiplier = (1 + (getIntelligence() * attackIntScaling));
+		}else{ // PHYSICAL
+			multiplier = (1 + (getStrength() * attackStrScaling));
+		}
+		float damage = CalculationUtil.getRandomInt(ability.getBaseDamage(), ability.getTopDamage()) * multiplier;
+		if(ability.getCrittable() == 1 && checkIfCritical()){
+			Log.i(TAG, "Critical hit");
+			damage = damage * criticalMultiplier;
+		}
+		return damage;
+	}
+
 	public float getAttackDamage() {
 		float damage = CalculationUtil.getRandomInt(baseAttackDamage, baseMaxAttackDamage) * (1 + (getStrength() * attackStrScaling));
 		if(checkIfCritical()){
@@ -303,5 +321,20 @@ public class Hero {
 			}
 		}
 		return null;
+	}
+
+	public boolean readyForAutoAttack(long time) {
+		// TODO : Take into account items for attack speed and talents etc
+		long attackCD = (long) (baseAttackSpeed * 1000);
+		long timeWhenNextAttackIsReady = timeLastAuto + attackCD;
+		if(time >= timeWhenNextAttackIsReady){
+			Log.i(TAG, "Ready for attack, seconds since last attack : " + ((time - timeWhenNextAttackIsReady) / 1000));
+			timeLastAuto = time;
+			getAbility(0).setTimeWhenOffCooldown("" + (time + attackCD));
+			return true;
+		}else{
+			Log.i(TAG, "Time until next attack : " + timeWhenNextAttackIsReady);
+		}
+		return false;
 	}
 }

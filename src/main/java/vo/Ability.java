@@ -15,6 +15,7 @@ public class Ability {
 	private String description;
 	private String image;
 	private int baseDamage;
+	private int topDamage;
 	private int crittable;
 	private String targetType;
 	private String timeWhenOffCooldown;
@@ -86,6 +87,14 @@ public class Ability {
 		this.baseDamage = baseDamage;
 	}
 
+	public int getTopDamage() {
+		return topDamage;
+	}
+
+	public void setTopDamage(int topDamage) {
+		this.topDamage = topDamage;
+	}
+
 	public int getCrittable() {
 		return crittable;
 	}
@@ -122,8 +131,8 @@ public class Ability {
 		return timeWhenOffCooldown;
 	}
 
-	public void setTimeWhenOffCooldown(String timeWhenOffCooldown) {
-		this.timeWhenOffCooldown = timeWhenOffCooldown;
+	public void setTimeWhenOffCooldown(String timeWhenOffCoolDown) {
+		this.timeWhenOffCooldown = timeWhenOffCoolDown;
 	}
 
 	@Override
@@ -137,11 +146,12 @@ public class Ability {
 				", description='" + description + '\'' +
 				", image='" + image + '\'' +
 				", baseDamage=" + baseDamage +
+				", topDamage=" + topDamage +
 				", crittable=" + crittable +
 				", targetType='" + targetType + '\'' +
-				", baseCD=" + baseCD  + '\'' +
-				", millisLastUse=" + millisLastUse  + '\'' +
-				", timeWhenOffCooldown=" + timeWhenOffCooldown +
+				", timeWhenOffCooldown='" + timeWhenOffCooldown + '\'' +
+				", baseCD=" + baseCD +
+				", millisLastUse=" + millisLastUse +
 				'}';
 	}
 

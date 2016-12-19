@@ -8,6 +8,8 @@ import com.google.gson.annotations.SerializedName;
 public class AttackRequest  extends JsonRequest{
 	@SerializedName("minion_id")
 	public Integer minion_id;
+	@SerializedName("time")
+	public Long time;
 
 	public Integer getMinion_id() {
 		return minion_id;
@@ -17,10 +19,19 @@ public class AttackRequest  extends JsonRequest{
 		this.minion_id = minion_id;
 	}
 
+	public Long getTime() {
+		return time;
+	}
+
+	public void setTime(Long time) {
+		this.time = time;
+	}
+
 	@Override
 	public String toString() {
 		return "AttackRequest{" +
 				"minion_id=" + minion_id +
+				", time=" + time +
 				'}';
 	}
 }
