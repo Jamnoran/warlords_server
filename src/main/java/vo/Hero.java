@@ -15,6 +15,7 @@ public class Hero {
 	private Integer user_id = null;
 	private Integer xp = 0;
 	private Integer level = 1;
+	private boolean alive = true;
 	private float positionX = 6.0f;
 	private float positionZ = 5.0f;
 	private float desiredPositionX = 6.0f;
@@ -112,6 +113,14 @@ public class Hero {
 
 	public void setPositionZ(float positionZ) {
 		this.positionZ = positionZ;
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
 	}
 
 	public float getDesiredPositionX() {
@@ -296,6 +305,7 @@ public class Hero {
 				", desiredPositionZ=" + desiredPositionZ +
 				", class_type='" + class_type + '\'' +
 				", hp=" + hp +
+				", alive=" + alive +
 				", maxHp=" + maxHp +
 				", strength=" + strength +
 				", intelligence=" + intelligence +

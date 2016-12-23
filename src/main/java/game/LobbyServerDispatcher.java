@@ -117,8 +117,12 @@ public class LobbyServerDispatcher extends Thread {
 				CreateUserRequest createUserRequest = (CreateUserRequest) request;
 				Log.i(TAG, "User is trying to login: " + createUserRequest.toString());
 				User user = DatabaseUtil.getUser(createUserRequest.getEmail(), createUserRequest.getPassword());
-				Log.i(TAG, "Logged in user with this is: " + user.getId() + " We need to send that back to client");
-				dispatchMessage(new Message(clientInfo.getId(), "{\"response_type\":\"LOGIN_USER\", \"user_id\" : \"" + user.getId() + "\"}"));
+				if (user != null) {
+					Log.i(TAG, "Logged in user with this is: " + user.getId() + " We need to send that back to client");
+					dispatchMessage(new Message(clientInfo.getId(), "{\"response_type\":\"LOGIN_USER\", \"user_id\" : \"" + user.getId() + "\"}"));
+				} else {
+					Log.i(TAG, "Did not find this user, send error back");
+				}
 			}else if (request.getRequestType().equals("GET_HEROES")){
 				Log.i(TAG, "User wants his heroes: " + request.toString());
 				String heroesJson = "";
