@@ -153,28 +153,32 @@ public class GameServer {
 		// Start new level
 		if (startNewGame) {
 			gameLevel = gameLevel + 1;
-			clearWorld();
-			sendClearWorld();
-			Log.i(TAG, "World is cleared. spawning a new world with a higher level");
-			createWorld();
-			for(Hero heroLoop : heroes){
-				sendWorldOperation(heroLoop.getId());
-			}
-			// Send teleport operation to all heroes
-			int i = 0;
-			for(Hero teleportHero : getHeroes()){
-				Vector3 spawnPoint = world.getSpawnPoints().get(i);
-				teleportHero.setDesiredPositionX(spawnPoint.getX());
-				teleportHero.setDesiredPositionZ(spawnPoint.getZ());
-				teleportHero.setPositionX(spawnPoint.getX());
-				teleportHero.setPositionZ(spawnPoint.getZ());
-				Log.i(TAG, "Sending player : " + teleportHero.getId() + " to position : " + spawnPoint.toString());
-				i++;
-			}
-			sendTeleportPlayers();
+			startLevel();
 		} else {
 			Log.i(TAG, "Not all heroes has clicked the portal");
 		}
+	}
+
+	private void startLevel(){
+		clearWorld();
+		sendClearWorld();
+		Log.i(TAG, "World is cleared. spawning a new world with a higher level");
+		createWorld();
+		for(Hero heroLoop : heroes){
+			sendWorldOperation(heroLoop.getId());
+		}
+		// Send teleport operation to all heroes
+		int i = 0;
+		for(Hero teleportHero : getHeroes()){
+			Vector3 spawnPoint = world.getSpawnPoints().get(i);
+			teleportHero.setDesiredPositionX(spawnPoint.getX());
+			teleportHero.setDesiredPositionZ(spawnPoint.getZ());
+			teleportHero.setPositionX(spawnPoint.getX());
+			teleportHero.setPositionZ(spawnPoint.getZ());
+			Log.i(TAG, "Sending player : " + teleportHero.getId() + " to position : " + spawnPoint.toString());
+			i++;
+		}
+		sendTeleportPlayers();
 	}
 
 	private void sendTeleportPlayers() {
@@ -304,12 +308,15 @@ public class GameServer {
 					Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
 					minionDied(hero.getId(), minion.getId());
 					removeMinion(minion.getId());
+					// Send stop movement to all attacking this minion
+					stopHero(hero.id);
 				}else {
 					minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamage, 0.0f));
 				}
 				sendCooldownInformation(hero.getAbility(0), hero.getId());
 				Log.i(TAG, "Minion size now: " + minions.size());
 				animations.add(new GameAnimation("ATTACK", minionId, hero.id, null));
+				// Send updated status a while after animation is sent for mapping to animation hitting minion.
 				sendGameStatus();
 			} else {
 				Log.i(TAG, "Hero is trying to attack a minion that is already dead or non existing");
@@ -324,28 +331,22 @@ public class GameServer {
 	}
 
 
-	private Minion getMinionById(Integer minionId) {
-		for(Minion minion : minions) {
-			if (minion.getId() == minionId) {
-				return minion;
-			}
-		}
-		return null;
+	public void restartLevel() {
+		resetHeroes();
+		startLevel();
 	}
 
-	public void removeMinion(Integer minionId) {
-		Iterator<Minion> ut = minions.iterator();
-		while (ut.hasNext()) {
-			Minion minion = ut.next();
-			if (minion.getId() == minionId) {
-				ut.remove();
-				removeMinion(minion.getId());
-			}
-		}
+	private void resetHeroes() {
+		heroes.forEach(Hero::generateHeroInformation);
 	}
 
-	public void minionDied(int heroId, Integer minionId) {
-		animations.add(new GameAnimation("MINION_DIED", minionId, heroId, null));
+	public void stopHero(Integer heroId) {
+		Hero hero =  getHeroById(heroId);
+		hero.setDesiredPositionX(hero.getPositionX());
+		hero.setDesiredPositionZ(hero.getPositionZ());
+		Log.i(TAG, "Send stop hero to heroId : " + heroId);
+		String jsonInString = new Gson().toJson(new StopHeroResponse(heroId));
+		server.dispatchMessage(new Message(jsonInString));
 	}
 
 	public void heroMove(MoveRequest parsedRequest) {
@@ -395,6 +396,30 @@ public class GameServer {
 			}
 		}
 		return null;
+	}
+
+	private Minion getMinionById(Integer minionId) {
+		for(Minion minion : minions) {
+			if (minion.getId() == minionId) {
+				return minion;
+			}
+		}
+		return null;
+	}
+
+	public void removeMinion(Integer minionId) {
+		Iterator<Minion> ut = minions.iterator();
+		while (ut.hasNext()) {
+			Minion minion = ut.next();
+			if (minion.getId() == minionId) {
+				ut.remove();
+				removeMinion(minion.getId());
+			}
+		}
+	}
+
+	public void minionDied(int heroId, Integer minionId) {
+		animations.add(new GameAnimation("MINION_DIED", minionId, heroId, null));
 	}
 
 	public ArrayList<GameAnimation> getAnimations() {
@@ -563,16 +588,5 @@ public class GameServer {
 	private void warriorBuff(){
 
 	}
-
-
-
-
-
-
-
-
-
-
-
 
 }

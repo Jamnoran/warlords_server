@@ -67,6 +67,14 @@ public class JsonRequest implements Serializable {
 				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				return parsedRequest;
+			}else if(request.isType("STOP_HERO")){
+				StopHeroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), StopHeroRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				return parsedRequest;
+			}else if(request.isType("RESTART_LEVEL")){
+				JsonRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JsonRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				return parsedRequest;
 			}else if(request.isType("END_GAME")){
 				JsonRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JsonRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());

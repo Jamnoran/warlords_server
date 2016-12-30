@@ -143,6 +143,7 @@ public class DatabaseUtil {
 					hero.setXp(rs.getInt("xp"));
 					hero.setClass_type(rs.getString("class_type"));
 					hero.setLevel(rs.getInt("level"));
+					hero.setTopGameLvl(rs.getInt("top_game_lvl"));
 					//Display values
 					heroes.add(hero);
 				}
@@ -199,6 +200,7 @@ public class DatabaseUtil {
 					hero.setUser_id(rs.getInt("user_id"));
 					hero.setClass_type(rs.getString("class_type"));
 					hero.setLevel(rs.getInt("level"));
+					hero.setTopGameLvl(rs.getInt("top_game_lvl"));
 					//Display values
 				}
 				rs.close();
@@ -257,5 +259,23 @@ public class DatabaseUtil {
 		abilities.add(ability);
 
 		return abilities;
+	}
+
+	public static Hero updateHero(Hero hero) {
+		Connection connection = getConnection();
+		if (connection != null) {
+			try {
+				Statement stmt = connection.createStatement();
+				stmt.executeUpdate(hero.getSqlUpdateQuery());
+				Log.i(TAG, "Update hero_id : " + hero.getId());
+				stmt.close();
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.i(TAG, "Failed to make connection!");
+		}
+		return hero;
 	}
 }

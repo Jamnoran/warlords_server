@@ -28,6 +28,7 @@ public class Minion {
 	private transient Integer timeBetweenAttacks = 1200;
 	private transient Long timeLastAttack = null;
 	private transient ArrayList<Threat> threats = new ArrayList<Threat>();
+	private transient int baseXp = 100;
 
 	public Minion(GameServer game) {
 		this.game = game;
@@ -134,7 +135,9 @@ public class Minion {
 		Threat currentHero = null;
 		for(Threat threat : threats){
 			if(currentHero == null || (threat.getAmount() > currentHero.getAmount())){
-				currentHero = threat;
+				if (this.game.getHeroById(threat.getHeroId()).getHp() > 0) {
+					currentHero = threat;
+				}
 			}
 		}
 		if (currentHero != null) {
@@ -244,6 +247,11 @@ public class Minion {
 	public boolean takeDamage(float damageAfterMinionCalculation) {
 		hp = hp - Math.round(damageAfterMinionCalculation);
 		if(hp <= 0){
+			// Give xp to all that participated.
+			for(Threat threat : threats){
+				int calculatedXP = baseXp;
+				this.game.getHeroById(threat.getHeroId()).addExp(calculatedXP);
+			}
 			return true;
 		}
 		return false;

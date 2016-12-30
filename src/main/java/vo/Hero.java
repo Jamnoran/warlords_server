@@ -2,6 +2,7 @@ package vo;
 
 import game.logging.Log;
 import util.CalculationUtil;
+import util.DatabaseUtil;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,8 @@ public class Hero {
 	public Integer id = null;
 	private Integer user_id = null;
 	private Integer xp = 0;
+	private Integer topGameLvl = 0;
+	// Need xpToLevelUp as well
 	private Integer level = 1;
 	private boolean alive = true;
 	private float positionX = 6.0f;
@@ -42,6 +45,8 @@ public class Hero {
 	private transient boolean stairsPressed = false;
 	private transient long timeLastAuto = 0;
 	private transient float baseAttackSpeed = 1.0f;
+	private transient int baseXpForLevel = 1000;
+	private transient float xpScale = 0.1f;
 
 	public Hero() {
 	}
@@ -76,6 +81,14 @@ public class Hero {
 
 	public void setLevel(Integer level) {
 		this.level = level;
+	}
+
+	public Integer getTopGameLvl() {
+		return topGameLvl;
+	}
+
+	public void setTopGameLvl(Integer topGameLvl) {
+		this.topGameLvl = topGameLvl;
 	}
 
 	public Integer getResource() {
@@ -218,10 +231,6 @@ public class Hero {
 		this.abilities.add(ability);
 	}
 
-	public String getSqlInsertQuery() {
-		return "INSERT INTO `warlords`.`heroes` (`id`, `user_id`, `xp`, `level`, `class_type`) VALUES (NULL, '" + getUser_id() + "', '" + getXp() + "', '" + getLevel() + "', '" + getClass_type() + "')";
-	}
-
 	public void generateHeroInformation() {
 
 	}
@@ -299,6 +308,7 @@ public class Hero {
 				", user_id=" + user_id +
 				", xp=" + xp +
 				", level=" + level +
+				", topGameLvl=" + topGameLvl +
 				", positionX=" + positionX +
 				", positionZ=" + positionZ +
 				", desiredPositionX=" + desiredPositionX +
@@ -346,5 +356,26 @@ public class Hero {
 			Log.i(TAG, "Time until next attack : " + timeWhenNextAttackIsReady);
 		}
 		return false;
+	}
+
+	public void addExp(int calculatedXP) {
+		xp = xp + calculatedXP;
+		float xpForLevel = (baseXpForLevel + (level * (baseXpForLevel * xpScale)));
+		if(xp >= xpForLevel){
+			Log.i(TAG, "Level up!");
+			level++;
+			xp = xp - Math.round(xpForLevel);
+		}
+		// Update database
+		DatabaseUtil.updateHero(this);
+	}
+
+
+	public String getSqlInsertQuery() {
+		return "INSERT INTO `warlords`.`heroes` (`id`, `user_id`, `xp`, `level`, `class_type`, `top_game_lvl`) VALUES (NULL, '" + getUser_id() + "', '" + getXp() + "', '" + getLevel() + "', '" + getClass_type() +  "', '" + getTopGameLvl() + "')";
+	}
+
+	public String getSqlUpdateQuery() {
+		return "UPDATE `heroes` SET `level`=" + getLevel() + ",`xp`=" + getXp() + ",`top_game_lvl`=" + getTopGameLvl() + " WHERE id = " + getId();
 	}
 }
