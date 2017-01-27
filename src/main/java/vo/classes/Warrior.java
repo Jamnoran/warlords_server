@@ -11,11 +11,14 @@ public class Warrior extends Hero {
 	private static final String TAG = Warrior.class.getSimpleName();
 
 	// Base stats
+	private transient Integer resource = 100;
 	private transient Integer hpPerLevel = 20;
 	private transient Integer strPerLevel = 3;
 	private transient Integer intPerLevel = 1;
 	private transient Integer dexPerLevel = 1;
 	private transient Integer staPerLevel = 2;
+	private transient Integer hpRegen = 1;
+	private transient Integer resourceRegen = 2;
 
 	public Warrior() {
 		super();
@@ -23,12 +26,16 @@ public class Warrior extends Hero {
 
 	public void generateHeroInformation() {
 		setHp(hpPerLevel * getLevel());
+		setResource(resource);
+		setMaxResource(getResource());
 		setMaxHp(getHp());
 		Log.i(TAG, "Warrior is initialized with stats");
 		setStrength(strPerLevel * getLevel());
 		setStamina(staPerLevel * getLevel());
 		setDexterity(dexPerLevel * getLevel());
 		setIntelligence(intPerLevel * getLevel());
+		setHpRegen(hpRegen);
+		setResourceRegen(resourceRegen);
 	}
 
 }

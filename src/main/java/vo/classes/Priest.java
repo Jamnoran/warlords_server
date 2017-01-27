@@ -13,11 +13,11 @@ public class Priest extends Hero {
 
 	// Base stats
 	private transient Integer hpPerLevel = 10;
+	private transient Integer resourcePerLevel = 10;
 	private transient Integer strPerLevel = 1;
 	private transient Integer intPerLevel = 3;
 	private transient Integer dexPerLevel = 1;
 	private transient Integer staPerLevel = 2;
-	private transient Integer resourcePerLevel = 10;
 
 	public Priest() {
 		super();
@@ -26,12 +26,12 @@ public class Priest extends Hero {
 	public void generateHeroInformation() {
 		setHp(hpPerLevel * getLevel());
 		setMaxHp(getHp());
+		setResource(resourcePerLevel * getLevel());
+		setMaxResource(getResource());
 		Log.i(TAG, "Priest is initialized with stats");
 		setStrength(strPerLevel * getLevel());
 		setStamina(staPerLevel * getLevel());
 		setDexterity(dexPerLevel * getLevel());
 		setIntelligence(intPerLevel * getLevel());
-		setResource(resourcePerLevel * getLevel());
-		setMaxResource(getResource());
 	}
 }

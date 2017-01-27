@@ -32,6 +32,8 @@ public class Hero {
 	private Integer maxHp;
 	private Integer resource;
 	private Integer maxResource;
+	private transient Integer hpRegen = 0;
+	private transient Integer resourceRegen = 0;
 	private transient Integer strength;
 	private transient Integer intelligence;
 	private transient Integer stamina;
@@ -105,6 +107,22 @@ public class Hero {
 
 	public void setMaxResource(Integer maxResource) {
 		this.maxResource = maxResource;
+	}
+
+	public Integer getHpRegen() {
+		return hpRegen;
+	}
+
+	public void setHpRegen(Integer hpRegen) {
+		this.hpRegen = hpRegen;
+	}
+
+	public Integer getResourceRegen() {
+		return resourceRegen;
+	}
+
+	public void setResourceRegen(Integer resourceRegen) {
+		this.resourceRegen = resourceRegen;
 	}
 
 	public Integer getId() {
@@ -288,7 +306,7 @@ public class Hero {
 		return false;
 	}
 
-	public boolean hasManaForSpellHeal() {
+	public boolean hasResourceForSpellHeal() {
 		return true;
 	}
 
@@ -377,5 +395,27 @@ public class Hero {
 
 	public String getSqlUpdateQuery() {
 		return "UPDATE `heroes` SET `level`=" + getLevel() + ",`xp`=" + getXp() + ",`top_game_lvl`=" + getTopGameLvl() + " WHERE id = " + getId();
+	}
+
+	public void regenTick() {
+		// Calculate if amount is different based on talents etc.
+		Integer hpAmount = hpRegen;
+		if(hp < maxHp){
+			hp = hp + hpAmount;
+			Log.i(TAG, "Hp reg: " + hpAmount);
+			if(hp > maxHp){
+				hp = maxHp;
+			}
+		}
+		if (resourceRegen != null && resource != null) {
+			Integer resourceAmount = resourceRegen;
+			if(resource < maxResource){
+				Log.i(TAG, "Resource reg: " + resourceAmount);
+				resource = resource + resourceAmount;
+				if(resource > maxResource){
+					resource = maxResource;
+				}
+			}
+		}
 	}
 }

@@ -113,22 +113,6 @@ public class World {
 		this.worldLevel = worldLevel;
 	}
 
-//	public int getSizeX() {
-//		return sizeX;
-//	}
-//
-//	public void setSizeX(int sizeX) {
-//		this.sizeX = sizeX;
-//	}
-//
-//	public int getSizeZ() {
-//		return sizeZ;
-//	}
-//
-//	public void setSizeZ(int sizeZ) {
-//		this.sizeZ = sizeZ;
-//	}
-
 	public ArrayList<Vector3> getSpawnPoints() {
 		return spawnPoints;
 	}

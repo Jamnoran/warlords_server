@@ -496,9 +496,16 @@ public class GameServer {
 		Thread thread = new Thread(){
 			public void run(){
 				while(gameRunning){
+					// Minion logic
 					for(Minion minion : minions){
 						minion.takeAction();
 					}
+
+					// Hp and Resource regeneration (This needs to keep track on how often startAI is run)
+					for(Hero hero : heroes){
+						hero.regenTick();
+					}
+
 					sendGameStatus();
 					try {
 						sleep(1000);
@@ -537,7 +544,7 @@ public class GameServer {
 			spell.execute();
 			sendGameStatus();
 		} else {
-			Log.i(TAG, "Could not send spell, probably because of mana or cd");
+			Log.i(TAG, "Could not send spell, probably because of resource or cd");
 		}
 	}
 

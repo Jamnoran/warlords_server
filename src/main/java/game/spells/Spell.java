@@ -43,13 +43,13 @@ public class Spell {
 		}
 
 		// Remove mana return false if cant use spell (should be handled on client side as well)
-		if (targetFriendlyList != null && hero.hasManaForSpellHeal() && ability.isAbilityOffCD(time)) {
+		if (targetFriendlyList != null && hero.hasResourceForSpellHeal() && ability.isAbilityOffCD(time)) {
 
 			getGameServer().sendCooldownInformation(ability, hero.getId());
 
 			return true;
 			// Add threat to all targets close by (of target location or healer location?)
-		}else if (targetFriendlyList != null && !hero.hasManaForSpellHeal()){
+		}else if (targetFriendlyList != null && !hero.hasResourceForSpellHeal()){
 			Log.i(TAG, "Hero does not have enough mana for use of ability");
 			return false;
 		}else if (targetFriendlyList != null && !ability.isAbilityOffCD(getTime())){
