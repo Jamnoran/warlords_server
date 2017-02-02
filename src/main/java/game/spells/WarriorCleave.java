@@ -21,23 +21,25 @@ public class WarriorCleave extends Spell {
 
 
 	public void execute() {
-		for (Minion minion : getTargetEnemyList()) {
-			Log.i(TAG, "Target minion to damage : " + minion.getId());
-			// Get damage amount
-			Warrior warrior = (Warrior) getHero();
-			float damageAmount = warrior.getSpellDamage(getAbility());
-			Log.i(TAG, "Damage for this amount : " + damageAmount);
+		if (getTargetEnemyList() != null) {
+			for (Minion minion : getTargetEnemyList()) {
+				Log.i(TAG, "Target minion to damage : " + minion.getId());
+				// Get damage amount
+				Warrior warrior = (Warrior) getHero();
+				float damageAmount = warrior.getSpellDamage(getAbility());
+				Log.i(TAG, "Damage for this amount : " + damageAmount);
 
-			// Damage target
-			damageMinion(minion, damageAmount);
+				// Damage target
+				damageMinion(minion, damageAmount);
 
+			}
+			// Set the cooldown for this ability
+			getAbility().setMillisLastUse(getTime());
+			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
+
+			// Add animation to list
+			getGameServer().getAnimations().add(new GameAnimation("CLEAVE", 0, getHero().getId(), null));
 		}
-		// Set the cooldown for this ability
-		getAbility().setMillisLastUse(getTime());
-		getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
-
-		// Add animation to list
-		getGameServer().getAnimations().add(new GameAnimation("CLEAVE", 0, getHero().getId(), null));
 	}
 
 }

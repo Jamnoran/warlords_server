@@ -32,6 +32,7 @@ public class Hero {
 	private Integer maxHp;
 	private Integer resource;
 	private Integer maxResource;
+	private float attackRange = 3.0f;
 	private transient Integer hpRegen = 0;
 	private transient Integer resourceRegen = 0;
 	private transient Integer strength;
@@ -115,6 +116,14 @@ public class Hero {
 
 	public void setHpRegen(Integer hpRegen) {
 		this.hpRegen = hpRegen;
+	}
+
+	public float getAttackRange() {
+		return attackRange;
+	}
+
+	public void setAttackRange(float attackRange) {
+		this.attackRange = attackRange;
 	}
 
 	public Integer getResourceRegen() {
@@ -334,6 +343,7 @@ public class Hero {
 				", class_type='" + class_type + '\'' +
 				", hp=" + hp +
 				", alive=" + alive +
+				", attackRange=" + attackRange +
 				", maxHp=" + maxHp +
 				", strength=" + strength +
 				", intelligence=" + intelligence +
@@ -363,7 +373,7 @@ public class Hero {
 
 	public boolean readyForAutoAttack(long time) {
 		// TODO : Take into account items for attack speed and talents etc
-		long attackCD = (long) (baseAttackSpeed * 1000);
+		long attackCD = (long) (baseAttackSpeed * 1000); // Multiplies to get it in milliseconds
 		long timeWhenNextAttackIsReady = timeLastAuto + attackCD;
 		if(time >= timeWhenNextAttackIsReady){
 			Log.i(TAG, "Ready for attack, seconds since last attack : " + ((time - timeWhenNextAttackIsReady) / 1000));
@@ -402,7 +412,7 @@ public class Hero {
 		Integer hpAmount = hpRegen;
 		if(hp < maxHp){
 			hp = hp + hpAmount;
-			Log.i(TAG, "Hp reg: " + hpAmount);
+//			Log.i(TAG, "Hp reg: " + hpAmount);
 			if(hp > maxHp){
 				hp = maxHp;
 			}
@@ -410,7 +420,7 @@ public class Hero {
 		if (resourceRegen != null && resource != null) {
 			Integer resourceAmount = resourceRegen;
 			if(resource < maxResource){
-				Log.i(TAG, "Resource reg: " + resourceAmount);
+//				Log.i(TAG, "Resource reg: " + resourceAmount);
 				resource = resource + resourceAmount;
 				if(resource > maxResource){
 					resource = maxResource;

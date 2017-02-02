@@ -19,6 +19,7 @@ public class Warrior extends Hero {
 	private transient Integer staPerLevel = 2;
 	private transient Integer hpRegen = 1;
 	private transient Integer resourceRegen = 2;
+	private transient float attackRange = 2.0f;
 
 	public Warrior() {
 		super();
@@ -36,6 +37,7 @@ public class Warrior extends Hero {
 		setIntelligence(intPerLevel * getLevel());
 		setHpRegen(hpRegen);
 		setResourceRegen(resourceRegen);
+		setAttackRange(attackRange);
 	}
 
 }

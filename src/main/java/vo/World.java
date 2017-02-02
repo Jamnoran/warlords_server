@@ -18,16 +18,14 @@ public class World {
 	private ArrayList<Obstacle> obstacles = new ArrayList<>();
 	private transient ArrayList<Room> rooms = new ArrayList<>();
 	private transient ArrayList<Obstacle> openDoors = new ArrayList<>();
+	private transient int roomSizeX = 10;
+	private transient int roomSizeZ = 10;
 
 	public World generate(GameServer gameServer, int x, int z, int lvl) {
 		server = gameServer;
 		worldLevel = lvl;
 		worldType = worldLevel;
 		// 0 = top, 1 = left, 2 = right, 3 = bottom
-		ArrayList<Integer> doorList = new ArrayList();
-		int roomSizeX = 10;
-		int roomSizeZ = 10;
-
 
 		spawnPoints.add(new Vector3((roomSizeX / 2) + 2, 1.0f, (roomSizeZ / 2)));
 		spawnPoints.add(new Vector3((roomSizeX / 2) - 2, 1.0f, (roomSizeZ / 2)));
@@ -36,10 +34,25 @@ public class World {
 
 		obstacles.add(new Obstacle(roomSizeX / 2, 0, roomSizeZ / 2, 0, Obstacle.START, null));
 
+
+		// Different world types:
+
+		if(worldLevel == 1){ // Dungeon crawler
+			generateRoomsUntilComplete();
+		}else if (worldLevel == 2){ // Gauntlet
+			generateGauntlet();
+		}
+
+
+
+		// Maybe clear rooms list to save memory?
+		return this;
+	}
+
+	private void generateRoomsUntilComplete() {
+		ArrayList<Integer> doorList = new ArrayList();
 		Room startRoom = new Room();
 		obstacles.addAll(startRoom.generateObstacles(this, roomSizeX, roomSizeZ, doorList, true, 1.0f,1.0f));
-
-
 		Log.i(TAG, "Doors open left : " + openDoors.size());
 		boolean gotRoomsLeft = true;
 		if (openDoors.size() > 0){
@@ -76,10 +89,15 @@ public class World {
 				}
 			}
 		}
-
-		// Maybe clear rooms list to save memory?
-		return this;
 	}
+
+
+	private void generateGauntlet() {
+		Room startRoom = new Room();
+		startRoom.doorGenerationValue = 0;
+		obstacles.addAll(startRoom.generateObstacles(this, roomSizeX , roomSizeZ * 3, null, false, 1.0f,1.0f));
+	}
+
 
 	public GameServer getServer() {
 		return server;

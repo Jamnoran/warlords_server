@@ -27,6 +27,7 @@ public class Room {
 	private Integer roomSizeZ;
 	private float xStart;
 	private float zStart;
+	public int doorGenerationValue = 20;
 
 
 	public ArrayList<Obstacle> generateObstacles(World world, int sizeX, int sizeZ, ArrayList<Integer> doorPositions, boolean startRoom, float xStartPosition, float zStartPosition) {
@@ -39,20 +40,22 @@ public class Room {
 
 		// 0 = top, 1 = left, 2 = right, 3 = bottom
 
-		if (doorPositions.contains(TOP) && !startRoom){
-			Log.i(TAG, "Top");
-			xStart = xStart - (sizeX / 2);
-		}else if (doorPositions.contains(LEFT) && !startRoom){
-			Log.i(TAG, "left");
-			zStart = zStart - (sizeZ / 2);
-		}else if (doorPositions.contains(RIGHT) && !startRoom){
-			Log.i(TAG, "right");
-			xStart = xStart - sizeX;
-			zStart = zStart - (sizeZ / 2);
-		}else if (doorPositions.contains(BOTTOM) && !startRoom){
-			Log.i(TAG, "bottom");
-			zStart = zStart - sizeZ;
-			xStart = xStart - (sizeX / 2);
+		if (doorPositions != null) {
+			if (doorPositions.contains(TOP) && !startRoom){
+				Log.i(TAG, "Top");
+				xStart = xStart - (sizeX / 2);
+			}else if (doorPositions.contains(LEFT) && !startRoom){
+				Log.i(TAG, "left");
+				zStart = zStart - (sizeZ / 2);
+			}else if (doorPositions.contains(RIGHT) && !startRoom){
+				Log.i(TAG, "right");
+				xStart = xStart - sizeX;
+				zStart = zStart - (sizeZ / 2);
+			}else if (doorPositions.contains(BOTTOM) && !startRoom){
+				Log.i(TAG, "bottom");
+				zStart = zStart - sizeZ;
+				xStart = xStart - (sizeX / 2);
+			}
 		}
 
 		// Check if we should abort this room (if there already is a room here)
@@ -73,25 +76,24 @@ public class Room {
 
 
 		// Top wall
-		boolean shouldGenerateDoor = getValue(TOP, startRoom, doorPositions);
+		boolean shouldGenerateDoor = getValue(TOP, startRoom, doorPositions, doorGenerationValue);
 		for (int i = 0 ; i <= sizeX ; i++){
 			if(shouldGenerateDoor && ((i == sizeX / 2 || i == (sizeX / 2) - 1) || i == (sizeX / 2) + 1)){
-				if (!doorPositions.contains(TOP)){
+				if (doorPositions != null && !doorPositions.contains(TOP)){
 					if(i == sizeX / 2){
 						world.getOpenDoors().add(new Obstacle(i + xStart, wallHeight , zStart, 90, Obstacle.DOOR, null));
 					}
 				}
-//				world.removeObjectOnPosition(i + xStart, wallHeight , zStart);
 				obs.add(new Obstacle(i + xStart, wallHeight , zStart, 90, Obstacle.DOOR, null));
 			}else{
 				obs.add(new Obstacle(i + xStart, wallHeight , zStart, 90, Obstacle.WALL, null));
 			}
 		}
 		// Left wall
-		shouldGenerateDoor = getValue(LEFT, startRoom, doorPositions);
+		shouldGenerateDoor = getValue(LEFT, startRoom, doorPositions, doorGenerationValue);
 		for (int i = 1 ; i <= sizeZ ; i++){
 			if(shouldGenerateDoor && ((i == sizeZ / 2 || i == (sizeZ / 2) - 1) || i == (sizeZ / 2) + 1)){
-				if (!doorPositions.contains(LEFT)){
+				if (doorPositions != null && !doorPositions.contains(LEFT)){
 					if (i == sizeZ / 2) {
 						world.getOpenDoors().add(new Obstacle(xStart, wallHeight , i + zStart, 180, Obstacle.DOOR, null));
 					}
@@ -104,10 +106,10 @@ public class Room {
 
 		}
 		// Right wall
-		shouldGenerateDoor = getValue(RIGHT, startRoom, doorPositions);
+		shouldGenerateDoor = getValue(RIGHT, startRoom, doorPositions, doorGenerationValue);
 		for (int i = 1 ; i <= sizeZ ; i++){
 			if(shouldGenerateDoor && ((i == sizeZ / 2 || i == (sizeZ / 2) - 1) || i == (sizeZ / 2) + 1)){
-				if (!doorPositions.contains(RIGHT)){
+				if (doorPositions != null && !doorPositions.contains(RIGHT)){
 					if (i == sizeZ / 2) {
 						world.getOpenDoors().add(new Obstacle(sizeX + xStart, wallHeight, i + zStart, 270, Obstacle.DOOR, null));
 					}
@@ -119,10 +121,10 @@ public class Room {
 			}
 		}
 		// Bottom wall
-		shouldGenerateDoor = getValue(BOTTOM, startRoom, doorPositions);
+		shouldGenerateDoor = getValue(BOTTOM, startRoom, doorPositions, doorGenerationValue);
 		for (int i = 1 ; i < sizeX ; i++){
 			if(shouldGenerateDoor && ((i == sizeX / 2 || i == (sizeX / 2) - 1) || i == (sizeX / 2) + 1)){
-				if (!doorPositions.contains(BOTTOM)){
+				if (doorPositions != null && !doorPositions.contains(BOTTOM)){
 					if (i == sizeX / 2) {
 						world.getOpenDoors().add(new Obstacle(i + xStart, wallHeight , zStart + sizeZ, 0, Obstacle.DOOR, null));
 					}
@@ -150,14 +152,16 @@ public class Room {
 		return obs;
 	}
 
-	private boolean getValue(int i, boolean startRoom, ArrayList<Integer> doorPositions) {
-		if (doorPositions.contains(i)){
-			return true;
+	private boolean getValue(int i, boolean startRoom, ArrayList<Integer> doorPositions, int percentage) {
+		if (doorPositions != null) {
+			if (doorPositions.contains(i)){
+				return true;
+			}
 		}
 		if(startRoom){
 			return true;
 		}
-		if(CalculationUtil.rollDice(20)){
+		if(CalculationUtil.rollDice(percentage)){
 			return true;
 		}
 		return false;

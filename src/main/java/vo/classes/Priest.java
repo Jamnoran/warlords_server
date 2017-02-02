@@ -18,6 +18,7 @@ public class Priest extends Hero {
 	private transient Integer intPerLevel = 3;
 	private transient Integer dexPerLevel = 1;
 	private transient Integer staPerLevel = 2;
+	private transient float attackRange = 4.0f;
 
 	public Priest() {
 		super();
@@ -33,5 +34,6 @@ public class Priest extends Hero {
 		setStamina(staPerLevel * getLevel());
 		setDexterity(dexPerLevel * getLevel());
 		setIntelligence(intPerLevel * getLevel());
+		setAttackRange(attackRange);
 	}
 }
