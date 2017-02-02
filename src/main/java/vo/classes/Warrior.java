@@ -1,6 +1,7 @@
 package vo.classes;
 
 import game.logging.Log;
+import vo.Ability;
 import vo.Hero;
 
 /**
