@@ -3,6 +3,7 @@ package vo;
 import game.GameServer;
 import game.logging.Log;
 import util.CalculationUtil;
+import util.GameUtil;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -111,8 +112,10 @@ public class Minion {
 	}
 
 	private void findNewLocationToWalkTo() {
-		setDesiredPositionX(getDesiredPositionX() + CalculationUtil.getRandomFloat(-1.0f, 0.0f));
-		setDesiredPositionZ(getDesiredPositionZ() + CalculationUtil.getRandomFloat(-1.0f, 0.0f));
+		if (!GameUtil.isWorldType(GameUtil.GAUNTLET, game.getWorldLevel())) {
+			setDesiredPositionX(getDesiredPositionX() + CalculationUtil.getRandomFloat(-1.0f, 0.0f));
+			setDesiredPositionZ(getDesiredPositionZ() + CalculationUtil.getRandomFloat(-1.0f, 0.0f));
+		}
 
 		//Log.i(TAG, "Walking to new position " + getDesiredPositionX() + " x " + getDesiredPositionZ());
 	}

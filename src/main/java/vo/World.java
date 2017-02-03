@@ -2,6 +2,7 @@ package vo;
 
 import game.GameServer;
 import game.logging.Log;
+import util.GameUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,9 +38,9 @@ public class World {
 
 		// Different world types:
 
-		if(worldLevel == 1){ // Dungeon crawler
+		if(GameUtil.isWorldType(GameUtil.DUNGEON_CRAWLER, worldLevel)){ // Dungeon crawler
 			generateRoomsUntilComplete();
-		}else if (worldLevel == 2){ // Gauntlet
+		}else if (GameUtil.isWorldType(GameUtil.GAUNTLET, worldLevel)){ // Gauntlet
 			generateGauntlet();
 		}
 
@@ -96,6 +97,11 @@ public class World {
 		Room startRoom = new Room();
 		startRoom.doorGenerationValue = 0;
 		obstacles.addAll(startRoom.generateObstacles(this, roomSizeX , roomSizeZ * 3, null, false, 1.0f,1.0f));
+		obstacles.add(new Obstacle(5, 0, 10, 0, Obstacle.LIGHT, null));
+		obstacles.add(new Obstacle(5, 0, 15, 0, Obstacle.LIGHT, null));
+		obstacles.add(new Obstacle(5, 0, 20, 0, Obstacle.LIGHT, null));
+		obstacles.add(new Obstacle(5, 0, 25, 0, Obstacle.LIGHT, null));
+
 	}
 
 
