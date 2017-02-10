@@ -41,6 +41,8 @@ public class World {
 			generateRoomsUntilComplete();
 		}else if (GameUtil.isWorldType(GameUtil.GAUNTLET, worldLevel)){ // Gauntlet
 			generateGauntlet();
+		}else {
+			generateRoomsUntilComplete();
 		}
 
 		// Maybe clear rooms list to save memory?
