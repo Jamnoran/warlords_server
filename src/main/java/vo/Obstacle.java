@@ -14,6 +14,8 @@ public class Obstacle {
 	public static final int START = 3;
 	public static final int STAIRS = 4;
 	public static final int LIGHT = 5;
+	public static final int FLOOR = 6;
+
 
 	private transient boolean doorEmptyOtherSide;
 	private float positionX;

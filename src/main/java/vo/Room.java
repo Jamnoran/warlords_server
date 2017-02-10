@@ -139,6 +139,9 @@ public class Room {
 		// Add light
 		obs.add(new Obstacle(xStart + (5), 0, zStart + (5), 0, Obstacle.LIGHT, null));
 
+		// Add floor
+		obs.add(new Obstacle(xStart + (5), 0, zStart + (5), 0, Obstacle.FLOOR, null));
+
 		// Generate some monsters
 		if(!startRoom){
 			world.getServer().spawnMinion(xStart + CalculationUtil.getRandomInt(3, sizeX -3) , zStart + CalculationUtil.getRandomInt(3, sizeZ -3));
