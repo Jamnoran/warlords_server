@@ -140,7 +140,7 @@ public class Room {
 		obs.add(new Obstacle(xStart + (5), 0, zStart + (5), 0, Obstacle.LIGHT, null));
 
 		// Add floor
-		obs.add(new Obstacle(xStart + (5), 0, zStart + (5), 0, Obstacle.FLOOR, null));
+		obs.add(new Obstacle(xStart + (5), 0.01f, zStart + (5), 0, Obstacle.FLOOR, null));
 
 		// Generate some monsters
 		if(!startRoom){
