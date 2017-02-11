@@ -74,7 +74,6 @@ public class Room {
 			}
 		}
 
-
 		// Top wall
 		boolean shouldGenerateDoor = getValue(TOP, startRoom, doorPositions, doorGenerationValue);
 		for (int i = 0 ; i <= sizeX ; i++){
