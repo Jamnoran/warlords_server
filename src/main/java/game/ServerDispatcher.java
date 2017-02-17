@@ -28,8 +28,12 @@ public class ServerDispatcher extends Thread {
 	private void getClientsHero(Integer heroId) {
 		Log.i(TAG, "Add hero with id: " + heroId);
 		Hero hero = DatabaseUtil.getHero(heroId);
-		Log.i(TAG, "Got this hero: " + hero.toString());
-		gameServer.addHero(hero);
+		if (hero != null && hero.id > 0) {
+			Log.i(TAG, "Got this hero: " + hero.toString());
+			gameServer.addHero(hero);
+		}else {
+			Log.i(TAG, "Could not find hero");
+		}
 	}
 
 	/**
