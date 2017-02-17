@@ -3,6 +3,7 @@ package game;
 import com.google.gson.Gson;
 import game.logging.Log;
 import game.spells.PriestHeal;
+import game.spells.WarriorCharge;
 import game.spells.WarriorCleave;
 import game.spells.WarriorTaunt;
 import io.*;
@@ -588,8 +589,14 @@ public class GameServer {
 		}
 	}
 
-	private void warriorCharge(){
-
+	private void warriorCharge(Warrior hero, SpellRequest parsedRequest){
+		WarriorCharge spell = new WarriorCharge(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()),this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		if (spell.init()) {
+			spell.execute();
+			sendGameStatus();
+		} else {
+			Log.i(TAG, "Could not send spell, probably because of mana or cd");
+		}
 	}
 
 	private void warriorSlam(){
