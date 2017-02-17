@@ -74,7 +74,6 @@ public class Room {
 			}
 		}
 
-
 		// Top wall
 		boolean shouldGenerateDoor = getValue(TOP, startRoom, doorPositions, doorGenerationValue);
 		for (int i = 0 ; i <= sizeX ; i++){
@@ -98,7 +97,6 @@ public class Room {
 						world.getOpenDoors().add(new Obstacle(xStart, wallHeight , i + zStart, 180, Obstacle.DOOR, null));
 					}
 				}
-//				world.removeObjectOnPosition(xStart, wallHeight , i + zStart);
 				obs.add(new Obstacle(xStart, wallHeight , i + zStart, 180, Obstacle.DOOR, null));
 			}else{
 				obs.add(new Obstacle(xStart, wallHeight , i + zStart, 180, Obstacle.WALL, null));
@@ -114,7 +112,6 @@ public class Room {
 						world.getOpenDoors().add(new Obstacle(sizeX + xStart, wallHeight, i + zStart, 270, Obstacle.DOOR, null));
 					}
 				}
-//				world.removeObjectOnPosition(sizeX + xStart, wallHeight, i + zStart);
 				obs.add(new Obstacle(sizeX + xStart, wallHeight, i + zStart, 270, Obstacle.DOOR, null));
 			}else {
 				obs.add(new Obstacle(sizeX + xStart, wallHeight, i + zStart, 270, Obstacle.WALL, null));
@@ -129,7 +126,6 @@ public class Room {
 						world.getOpenDoors().add(new Obstacle(i + xStart, wallHeight , zStart + sizeZ, 0, Obstacle.DOOR, null));
 					}
 				}
-//				world.removeObjectOnPosition(i + xStart, wallHeight , zStart + sizeZ);
 				obs.add(new Obstacle(i + xStart, wallHeight , zStart + sizeZ, 0, Obstacle.DOOR, null));
 			}else {
 
@@ -142,8 +138,10 @@ public class Room {
 		// Add light
 		obs.add(new Obstacle(xStart + (5), 0, zStart + (5), 0, Obstacle.LIGHT, null));
 
+		// Add floor
+		obs.add(new Obstacle(xStart + (5), 0.01f, zStart + (5), 0, Obstacle.FLOOR, null));
+
 		// Generate some monsters
-		//if(!startRoom && world.getServer().getMinionCount() == 0) {
 		if(!startRoom){
 			world.getServer().spawnMinion(xStart + CalculationUtil.getRandomInt(3, sizeX -3) , zStart + CalculationUtil.getRandomInt(3, sizeZ -3));
 		}

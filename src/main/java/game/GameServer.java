@@ -30,7 +30,7 @@ public class GameServer {
 	private ArrayList<Hero> heroes = new ArrayList<>();
 	private ArrayList<GameAnimation> animations = new ArrayList<>();
 	private World world;
-	private int gameLevel = 2;
+	private int gameLevel = 1;
 
 
 	public GameServer(ServerDispatcher server) {
@@ -244,11 +244,14 @@ public class GameServer {
 	 * @param parsedRequest
 	 */
 	public void spell(SpellRequest parsedRequest) {
-		// TODO: This no longer uses same id for different classes but a unique id for the abilities
 		Log.i(TAG , "Handle spell " + parsedRequest.toString());
 		Hero hero = getHeroByUserId(parsedRequest.getUser_id());
 		switch (parsedRequest.getSpell_id()){
-			case 1:
+			case 8:
+				Log.i(TAG, "Warrior used taunt!");
+				warriorTaunt((Warrior) hero, parsedRequest);
+				break;
+			case 7:
 				Log.i(TAG, "Warrior used cleave!");
 				warriorCleave((Warrior) hero, parsedRequest);
 				break;
@@ -257,6 +260,7 @@ public class GameServer {
 				priestHeal((Priest) hero, parsedRequest);
 				break;
 			default:
+				Log.i(TAG, "Did not find spell with id: " + parsedRequest.getSpell_id());
 				break;
 		}
 	}
@@ -349,6 +353,9 @@ public class GameServer {
 		Log.i(TAG, "Send stop hero to heroId : " + heroId);
 		String jsonInString = new Gson().toJson(new StopHeroResponse(heroId));
 		server.dispatchMessage(new Message(jsonInString));
+
+		animations.add(new GameAnimation("HERO_IDLE", null, heroId, null));
+		sendGameStatus();
 	}
 
 	public void heroMove(MoveRequest parsedRequest) {
@@ -360,14 +367,16 @@ public class GameServer {
 			usersHero.setDesiredPositionX(parsedRequest.getDesiredPositionX());
 			usersHero.setDesiredPositionZ(parsedRequest.getDesiredPositionZ());
 			Log.i(TAG, "Hero : " + usersHero.toString());
+
+			animations.add(new GameAnimation("HERO_RUN", null, usersHero.getId(), null));
 		}
 		sendGameStatus();
 	}
 
-
-
-
-
+	public void heroIdle(MoveRequest parsedRequest){
+		Hero usersHero = getHeroByUserId(parsedRequest.getUser_id());
+		animations.add(new GameAnimation("HERO_IDLE", null, usersHero.getId(), null));
+	}
 
 
 
@@ -610,4 +619,7 @@ public class GameServer {
 
 	}
 
+	public int getWorldLevel() {
+		return world.getWorldLevel();
+	}
 }

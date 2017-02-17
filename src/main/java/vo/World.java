@@ -2,6 +2,8 @@ package vo;
 
 import game.GameServer;
 import game.logging.Log;
+import util.CalculationUtil;
+import util.GameUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,16 +36,14 @@ public class World {
 
 		obstacles.add(new Obstacle(roomSizeX / 2, 0, roomSizeZ / 2, 0, Obstacle.START, null));
 
-
 		// Different world types:
-
-		if(worldLevel == 1){ // Dungeon crawler
+		if(GameUtil.isWorldType(GameUtil.DUNGEON_CRAWLER, worldLevel)){ // Dungeon crawler
 			generateRoomsUntilComplete();
-		}else if (worldLevel == 2){ // Gauntlet
+		}else if (GameUtil.isWorldType(GameUtil.GAUNTLET, worldLevel)){ // Gauntlet
 			generateGauntlet();
+		}else {
+			generateRoomsUntilComplete();
 		}
-
-
 
 		// Maybe clear rooms list to save memory?
 		return this;
@@ -95,7 +95,21 @@ public class World {
 	private void generateGauntlet() {
 		Room startRoom = new Room();
 		startRoom.doorGenerationValue = 0;
+
+		// Base
 		obstacles.addAll(startRoom.generateObstacles(this, roomSizeX , roomSizeZ * 3, null, false, 1.0f,1.0f));
+
+		// Lights
+		obstacles.add(new Obstacle(5, 0, 10, 0, Obstacle.LIGHT, null));
+		obstacles.add(new Obstacle(5, 0, 15, 0, Obstacle.LIGHT, null));
+		obstacles.add(new Obstacle(5, 0, 20, 0, Obstacle.LIGHT, null));
+		obstacles.add(new Obstacle(5, 0, 25, 0, Obstacle.LIGHT, null));
+
+		// Monsters
+		getServer().spawnMinion(5 , 15);
+
+		// Stairs down
+		obstacles.add(new Obstacle(5, 0, 30, 0, Obstacle.STAIRS, null));
 	}
 
 
