@@ -1,6 +1,6 @@
 package game;
 
-import vo.Message;
+import game.vo.Message;
 
 import java.io.BufferedReader;
 import java.io.IOException;

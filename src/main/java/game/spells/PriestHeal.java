@@ -2,10 +2,10 @@ package game.spells;
 
 import game.GameServer;
 import game.logging.Log;
-import vo.Ability;
-import vo.GameAnimation;
-import vo.Hero;
-import vo.classes.Priest;
+import game.vo.Ability;
+import game.vo.GameAnimation;
+import game.vo.Hero;
+import game.vo.classes.Priest;
 
 import java.util.ArrayList;
 

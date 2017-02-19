@@ -1,8 +1,8 @@
 package game.spells;
 
 import game.GameServer;
-import game.logging.Log;
-import vo.*;
+import game.vo.Buff;
+import game.vo.*;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ public class WarriorCharge extends Spell {
 		Minion minion = getTargetEnemyList().get(0);
 
 		// Send charge ability (set that this hero target is the minion, set movement speed for a period of time)
-
+		getGameServer().sendHeroBuff(getHero().getId(), null, Buff.SPEED, 5.0f, 200);
 
 		// Set the cooldown for this ability
 		getAbility().setMillisLastUse(getTime());

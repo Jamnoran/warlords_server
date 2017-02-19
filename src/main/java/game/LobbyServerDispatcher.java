@@ -1,15 +1,14 @@
 package game;
 
 import game.logging.Log;
-import io.CreateHeroRequest;
-import io.CreateUserRequest;
-import io.JoinServerRequest;
-import io.JsonRequest;
-import util.DatabaseUtil;
-import vo.Hero;
-import vo.Message;
-import vo.Minion;
-import vo.User;
+import game.io.CreateHeroRequest;
+import game.io.CreateUserRequest;
+import game.io.JoinServerRequest;
+import game.io.JsonRequest;
+import game.util.DatabaseUtil;
+import game.vo.Hero;
+import game.vo.Message;
+import game.vo.User;
 
 import java.util.ArrayList;
 import java.util.Iterator;

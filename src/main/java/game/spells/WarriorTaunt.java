@@ -2,8 +2,7 @@ package game.spells;
 
 import game.GameServer;
 import game.logging.Log;
-import vo.*;
-import vo.classes.Warrior;
+import game.vo.*;
 
 import java.util.ArrayList;
 

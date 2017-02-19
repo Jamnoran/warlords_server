@@ -1,7 +1,7 @@
 package game;
 
 import game.logging.Log;
-import vo.Message;
+import game.vo.Message;
 
 import java.io.IOException;
 import java.net.ServerSocket;

@@ -1,10 +1,10 @@
 package game;
 
 import game.logging.Log;
-import io.*;
-import util.DatabaseUtil;
-import vo.Hero;
-import vo.Message;
+import game.io.*;
+import game.util.DatabaseUtil;
+import game.vo.Hero;
+import game.vo.Message;
 
 import java.util.Vector;
 

@@ -6,11 +6,11 @@ import game.spells.PriestHeal;
 import game.spells.WarriorCharge;
 import game.spells.WarriorCleave;
 import game.spells.WarriorTaunt;
-import io.*;
-import util.DatabaseUtil;
-import vo.*;
-import vo.classes.Priest;
-import vo.classes.Warrior;
+import game.io.*;
+import game.util.DatabaseUtil;
+import game.vo.*;
+import game.vo.classes.Priest;
+import game.vo.classes.Warrior;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -378,7 +378,10 @@ public class GameServer {
 		animations.add(new GameAnimation("HERO_IDLE", null, usersHero.getId(), null));
 	}
 
-
+	public void sendHeroBuff(Integer heroId, Integer minionId, Integer type, float value, long durationMillis) {
+		String jsonInString = new Gson().toJson(new HeroBuffResponse(heroId, minionId, type, value, durationMillis));
+		server.dispatchMessage(new Message(jsonInString));
+	}
 
 
 
@@ -427,6 +430,10 @@ public class GameServer {
 				removeMinion(minion.getId());
 			}
 		}
+	}
+
+	public int getWorldLevel() {
+		return world.getWorldLevel();
 	}
 
 	public void minionDied(int heroId, Integer minionId) {
@@ -619,7 +626,4 @@ public class GameServer {
 
 	}
 
-	public int getWorldLevel() {
-		return world.getWorldLevel();
-	}
 }

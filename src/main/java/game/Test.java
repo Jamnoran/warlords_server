@@ -1,13 +1,7 @@
 package game;
 
-import game.logging.Log;
-import util.CalculationUtil;
-import vo.Ability;
-import util.DatabaseUtil;
-import vo.Hero;
-import vo.classes.Warrior;
-
-import java.util.ArrayList;
+import game.vo.Hero;
+import game.vo.classes.Warrior;
 
 public class Test {
 
