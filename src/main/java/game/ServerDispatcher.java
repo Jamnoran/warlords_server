@@ -1,5 +1,7 @@
 package game;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import game.logging.Log;
 import game.io.*;
 import game.util.DatabaseUtil;
@@ -13,11 +15,14 @@ public class ServerDispatcher extends Thread {
 
 	private Vector mMessageQueue = new Vector();
 	private Vector mClients = new Vector();
-    private int serverId = 0;
+    private String serverId;
 
 	private GameServer gameServer;
+	private String gameType;
 
-    /**
+	private long createdAt = 0;
+
+	/**
 	 * Adds given client to the server's client list.
 	 */
 	public synchronized void addClient(ClientInfo aClientInfo) {
@@ -64,42 +69,43 @@ public class ServerDispatcher extends Thread {
 	}
 
 	public synchronized void handleClientRequest(Message aMessage) {
+		Gson gson = new GsonBuilder().create();
 		JsonRequest request = JsonRequest.parse(aMessage);
         if (request != null) {
 	        Log.i(TAG, "JsonRequest: " + request.toString());
 	        if(request.isType("GET_STATUS")){
-		        JoinServerRequest parsedRequest = (JoinServerRequest) request;
+				JoinServerRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JoinServerRequest.class);
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.sendGameStatus();
 	        }else if (request.isType("ATTACK")){
-		        AttackRequest parsedRequest = (AttackRequest) request;
+				AttackRequest parsedRequest = gson.fromJson(aMessage.getMessage(), AttackRequest.class);
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-		        gameServer.attack(parsedRequest.getUser_id(), parsedRequest.getMinion_id(), parsedRequest.getTime());
+		        gameServer.attack(parsedRequest.getHeroId(), parsedRequest.getMinion_id(), parsedRequest.getTime());
 	        }else if (request.isType("MOVE")){
-		        MoveRequest parsedRequest = (MoveRequest) request;
+				MoveRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MoveRequest.class);
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.heroMove(parsedRequest);
 	        }else if (request.isType("SPELL")){
-		        SpellRequest parsedRequest = (SpellRequest) request;
+				SpellRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SpellRequest.class);
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.spell(parsedRequest);
 	        }else if (request.isType("MINION_AGGRO")){
-		        MinionAggroRequest parsedRequest = (MinionAggroRequest) request;
+				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.minionAggro(parsedRequest);
 	        }else if (request.isType("MINION_TARGET_IN_RANGE")){
-		        MinionAggroRequest parsedRequest = (MinionAggroRequest) request;
+				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.minionTargetInRange(parsedRequest);
 	        }else if (request.isType("CLICKED_PORTAL")){
-				ClickPortalRequest parsedRequest = (ClickPortalRequest) request;
+				ClickPortalRequest parsedRequest = gson.fromJson(aMessage.getMessage(), ClickPortalRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				gameServer.clickPortal(parsedRequest.getHero_id());
 	        }else if (request.isType("GET_ABILITIES")){
 		        Log.i(TAG, "parsedRequest : " + request.toString());
 		        gameServer.sendAbilities(request.getUser_id());
 	        }else if (request.isType("STOP_HERO")){
-		        StopHeroRequest parsedRequest = (StopHeroRequest) request;
+				StopHeroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), StopHeroRequest.class);
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.stopHero(parsedRequest.getHeroId());
 	        }else if (request.isType("RESTART_LEVEL")){
@@ -168,11 +174,11 @@ public class ServerDispatcher extends Thread {
         return mClients.size();
     }
 
-    public void setServerId(int id) {
+    public void setServerId(String id) {
         this.serverId = id;
     }
 
-    public int getServerId() {
+    public String getServerId() {
         return serverId;
     }
 
@@ -195,5 +201,21 @@ public class ServerDispatcher extends Thread {
 
 	public Vector getClients() {
 		return mClients;
+	}
+
+	public void setGameType(String gameType) {
+		this.gameType = gameType;
+	}
+
+	public String getGameType() {
+		return gameType;
+	}
+
+	public void setCreatedAt() {
+		createdAt = System.currentTimeMillis();
+	}
+
+	public long getCreatedAt() {
+		return createdAt;
 	}
 }

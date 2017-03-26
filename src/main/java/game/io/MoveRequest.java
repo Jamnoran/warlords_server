@@ -7,6 +7,8 @@ import com.google.gson.annotations.SerializedName;
  */
 public class MoveRequest extends JsonRequest{
 
+	@SerializedName("hero_id")
+	private Integer heroId;
 	@SerializedName("position_x")
 	private float positionX = 6.0f;
 	@SerializedName("position_z")
@@ -48,10 +50,19 @@ public class MoveRequest extends JsonRequest{
 		this.desiredPositionZ = desiredPositionZ;
 	}
 
+	public Integer getHeroId() {
+		return heroId;
+	}
+
+	public void setHeroId(Integer heroId) {
+		this.heroId = heroId;
+	}
+
 	@Override
 	public String toString() {
 		return "MoveRequest{" +
-				"positionX=" + positionX +
+				"heroId=" + heroId +
+				", positionX=" + positionX +
 				", positionZ=" + positionZ +
 				", desiredPositionX=" + desiredPositionX +
 				", desiredPositionZ=" + desiredPositionZ +

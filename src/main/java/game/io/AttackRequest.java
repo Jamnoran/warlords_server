@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
  * Created by Jamnoran on 30-Jun-16.
  */
 public class AttackRequest  extends JsonRequest{
+	@SerializedName("hero_id")
+	public Integer heroId;
 	@SerializedName("minion_id")
 	public Integer minion_id;
 	@SerializedName("time")
@@ -27,10 +29,19 @@ public class AttackRequest  extends JsonRequest{
 		this.time = time;
 	}
 
+	public Integer getHeroId() {
+		return heroId;
+	}
+
+	public void setHeroId(Integer heroId) {
+		this.heroId = heroId;
+	}
+
 	@Override
 	public String toString() {
 		return "AttackRequest{" +
-				"minion_id=" + minion_id +
+				"heroId=" + heroId +
+				", minion_id=" + minion_id +
 				", time=" + time +
 				'}';
 	}

@@ -9,6 +9,8 @@ import java.util.ArrayList;
  */
 public class SpellRequest extends JsonRequest{
 
+	@SerializedName("hero_id")
+	private Integer heroId;
 	@SerializedName("spell_id")
 	private Integer spell_id;
 	@SerializedName("target_enemy")
@@ -70,10 +72,19 @@ public class SpellRequest extends JsonRequest{
 		this.time = time;
 	}
 
+	public Integer getHeroId() {
+		return heroId;
+	}
+
+	public void setHeroId(Integer heroId) {
+		this.heroId = heroId;
+	}
+
 	@Override
 	public String toString() {
 		return "SpellRequest{" +
-				"spell_id=" + spell_id +
+				"heroId=" + heroId +
+				", spell_id=" + spell_id +
 				", target_enemy=" + target_enemy +
 				", target_friendly=" + target_friendly +
 				", target_position_x=" + target_position_x +

@@ -410,14 +410,14 @@ public class Hero {
 	public void regenTick() {
 		// Calculate if amount is different based on talents etc.
 		Integer hpAmount = hpRegen;
-		if(hp < maxHp){
+		if(hp >= 1 && hp < maxHp){
 			hp = hp + hpAmount;
 //			Log.i(TAG, "Hp reg: " + hpAmount);
 			if(hp > maxHp){
 				hp = maxHp;
 			}
 		}
-		if (resourceRegen != null && resource != null) {
+		if (hp >= 1 && resourceRegen != null && resource != null) {
 			Integer resourceAmount = resourceRegen;
 			if(resource < maxResource){
 //				Log.i(TAG, "Resource reg: " + resourceAmount);

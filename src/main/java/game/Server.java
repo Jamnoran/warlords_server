@@ -1,33 +1,32 @@
 package game;
 
+import game.io.WebserviceCommunication;
 import game.logging.Log;
-import game.vo.Message;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
-
+/**
+ * Created by Eric on 2017-03-03.
+ */
 public class Server {
-
 	private static final String TAG = Server.class.getSimpleName();
 	// Configuration;
-    static int portNumber = 2055;
-    private static int CLIENTS_PER_SERVER = 3;
-    private static int idOfServerCounter = 1;
-
+	static int portNumber = 2060;
 	private static LobbyServerDispatcher lobbyServerDispatcher;
-
-    private static ArrayList<ServerDispatcher> servers = new ArrayList<ServerDispatcher>();
 
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Log.i(TAG, "warlords.game.Server is up and running!");
+		Log.i(TAG, "warlords.game.OldServer is up and running!");
 
+		// Register to webservice that we are a game server
+		WebserviceCommunication.sendGameServerOnline(portNumber);
+
+		// Open up connections for players to connect
 		lobbyServerDispatcher = new LobbyServerDispatcher();
 		lobbyServerDispatcher.start();
 		// Open server socket for listening
@@ -43,44 +42,40 @@ public class Server {
 
 		// Accept and handle client connections
 		while (true) {
-            Socket socket = null;
-            try {
-                socket = serverSocket.accept();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+			Socket socket = null;
+			try {
+				socket = serverSocket.accept();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			Log.i(TAG, "Incoming connection");
 
-            // Create the client
-            ClientInfo clientInfo = createClient(socket, lobbyServerDispatcher);
+			// Create the client
+			ClientInfo clientInfo = createClient(socket, lobbyServerDispatcher);
 
 			lobbyServerDispatcher.addClient(clientInfo);
-            // Add client to server
-//            server.addClient(clientInfo);
-			Log.i(TAG, "Added client to server : " + lobbyServerDispatcher.getServerId() + " That now has this many players: " + lobbyServerDispatcher.getClientCount());
-
-            // Dispatch message to all client that a client has joined
-			lobbyServerDispatcher.dispatchMessage(new Message(null, "{\"response_type\":\"SERVER_INFO\", \"clients\" : \"" + lobbyServerDispatcher.getClientCount() + "\"}"));
+			Log.i(TAG, "Added client to server : " + lobbyServerDispatcher.getServerId() + " size : " + lobbyServerDispatcher.getClientCount());
 		}
 	}
 
-    private static ClientInfo createClient(Socket socket, LobbyServerDispatcher server) {
-        try {
-            ClientInfo clientInfo = new ClientInfo();
-            clientInfo.mSocket = socket;
-            clientInfo.id = server.getNextClientId();
-            ClientListener clientListener = new ClientListener(clientInfo, server);
-            ClientSender clientSender = new ClientSender(clientInfo, server);
-            clientInfo.clientListener = clientListener;
-            clientInfo.clientSender = clientSender;
-            clientListener.start();
-            clientSender.start();
-            return clientInfo;
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        return null;
-    }
+
+	private static ClientInfo createClient(Socket socket, LobbyServerDispatcher server) {
+		try {
+			ClientInfo clientInfo = new ClientInfo();
+			clientInfo.mSocket = socket;
+			clientInfo.id = server.getNextClientId();
+			ClientListener clientListener = new ClientListener(clientInfo, server);
+			ClientSender clientSender = new ClientSender(clientInfo, server);
+			clientInfo.clientListener = clientListener;
+			clientInfo.clientSender = clientSender;
+			clientListener.start();
+			clientSender.start();
+			return clientInfo;
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+		return null;
+	}
 
 	public static LobbyServerDispatcher getLobbyServerDispatcher() {
 		return lobbyServerDispatcher;

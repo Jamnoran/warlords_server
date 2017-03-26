@@ -22,7 +22,6 @@ public class Ability {
 	private int baseCD;
 	private transient long millisLastUse = -1000000;
 
-
 	public int getId() {
 		return id;
 	}

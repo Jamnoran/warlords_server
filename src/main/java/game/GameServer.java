@@ -73,6 +73,7 @@ public class GameServer {
 		Log.i(TAG, "Hero joined with this user id: " + hero.getUser_id() + " characters in game: " + heroes.size());
 		sendGameStatus();
 		sendAbilities("" + hero.getUser_id());
+
 		if(!gameStarted){
 			gameStarted = true;
 		}
@@ -245,7 +246,7 @@ public class GameServer {
 	 */
 	public void spell(SpellRequest parsedRequest) {
 		Log.i(TAG , "Handle spell " + parsedRequest.toString());
-		Hero hero = getHeroByUserId(parsedRequest.getUser_id());
+		Hero hero = getHeroById(parsedRequest.getHeroId());
 		switch (parsedRequest.getSpell_id()){
 			case 8:
 				Log.i(TAG, "Warrior used taunt!");
@@ -297,11 +298,11 @@ public class GameServer {
 
 	/**
 	 * This method is called when a hero wants to attack a minion,
-	 * @param userId
+	 * @param heroId
 	 * @param minionId
 	 */
-	public void attack(String userId, Integer minionId, long timeForAttackRequest) {
-		Hero hero = getHeroByUserId(userId);
+	public void attack(Integer heroId, Integer minionId, long timeForAttackRequest) {
+		Hero hero = getHeroById(heroId);
 		if (hero != null) {
 			Log.i(TAG, "Hero " + hero.getId() + " Hero attacked minion: " + minionId + " minions count : " + minions.size());
 		}
@@ -359,8 +360,8 @@ public class GameServer {
 	}
 
 	public void heroMove(MoveRequest parsedRequest) {
-		Log.i(TAG, "User wants to move : " + parsedRequest.getUser_id());
-		Hero usersHero = getHeroByUserId(parsedRequest.getUser_id());
+		Log.i(TAG, "User wants to move : " + parsedRequest.getHeroId());
+		Hero usersHero = getHeroById(parsedRequest.getHeroId());
 		if (usersHero != null) {
 			usersHero.setPositionX(parsedRequest.getPositionX());
 			usersHero.setPositionZ(parsedRequest.getPositionZ());

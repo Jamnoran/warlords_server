@@ -1,10 +1,8 @@
 package game;
 
+import com.google.gson.Gson;
+import game.io.*;
 import game.logging.Log;
-import game.io.CreateHeroRequest;
-import game.io.CreateUserRequest;
-import game.io.JoinServerRequest;
-import game.io.JsonRequest;
 import game.util.DatabaseUtil;
 import game.vo.Hero;
 import game.vo.Message;
@@ -12,6 +10,7 @@ import game.vo.User;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.UUID;
 import java.util.Vector;
 
 
@@ -31,33 +30,33 @@ public class LobbyServerDispatcher extends Thread {
 	private static ArrayList<ServerDispatcher> servers = new ArrayList<ServerDispatcher>();
 
 
-	private static ServerDispatcher getAvailableServer() {
+	private static ServerDispatcher getServer(String id) {
 		// Start warlords.game.ServerDispatcher thread
 		if (servers.size() == 0) {
-			// First server.
-			return createServer();
+			return null;
 		} else {
-			for(ServerDispatcher server : servers){
-				if(server.getClientCount() < CLIENTS_PER_SERVER){
+			for (ServerDispatcher server : servers) {
+				if (server.getServerId().equals(id)) {
 					return server;
 				}
 			}
-			// Could not find any servers with free slots in create a new one
-			return createServer();
 		}
+		return null;
 	}
 
-	private static ServerDispatcher createServer() {
+	private static ServerDispatcher createServer(String gameType) {
 		ServerDispatcher serverDispatcher = new ServerDispatcher();
 		serverDispatcher.start();
-		serverDispatcher.setServerId(idOfServerCounter);
+
+		// Could not find any servers with free slots in create a new one
+		UUID uniqueKey = UUID.randomUUID();
+		serverDispatcher.setServerId(uniqueKey.toString());
+		serverDispatcher.setGameType(gameType);
+		serverDispatcher.setCreatedAt();
 		servers.add(serverDispatcher);
 		idOfServerCounter++;
 		return serverDispatcher;
 	}
-
-
-
 
 
 	/**
@@ -73,10 +72,10 @@ public class LobbyServerDispatcher extends Thread {
 	 */
 	public synchronized void deleteClient(ClientInfo aClientInfo) {
 		int clientIndex = mClients.indexOf(aClientInfo);
-		if (clientIndex != -1){
+		if (clientIndex != -1) {
 			mClients.removeElementAt(clientIndex);
+			Log.i(TAG, "Client left, size: " + mClients.size());
 		}
-		Log.i(TAG, "Client left, size: " + mClients.size());
 	}
 
 	/**
@@ -91,55 +90,29 @@ public class LobbyServerDispatcher extends Thread {
 	}
 
 	public synchronized void handleClientRequest(ClientInfo clientInfo, Message aMessage) {
+		Gson gson = new Gson();
 		JsonRequest request = null;
 		if (aMessage != null && aMessage.getMessage() != null) {
 			request = JsonRequest.parse(aMessage);
 		}
 		if (request != null && request.getRequestType() != null) {
 			Log.i(TAG, "Got this request" + request.toString());
-			if(request.getRequestType().equals("JOIN_SERVER")){
-				JoinServerRequest joinServerRequest = (JoinServerRequest) request;
-				clientInfo.setHeroId(Integer.parseInt(joinServerRequest.getHero_id()));
-				clientJoinServer(clientInfo);
-			}else if (request.getRequestType().equals("CREATE_HERO")){
-				CreateHeroRequest createHeroRequest = (CreateHeroRequest) request;
-				Log.i(TAG, "User is trying to create class: " + createHeroRequest.toString());
-				Hero hero = DatabaseUtil.createHero(Integer.parseInt(createHeroRequest.getUser_id()), createHeroRequest.getClass_type());
-				Log.i(TAG, "Created hero : " + hero.toString());
-			}else if (request.getRequestType().equals("CREATE_USER")){
-				CreateUserRequest createUserRequest = (CreateUserRequest) request;
-				Log.i(TAG, "User is trying to create user: " + createUserRequest.toString());
-				User user = DatabaseUtil.createUser(new User(createUserRequest.getUsername(), createUserRequest.getEmail(), createUserRequest.getPassword()));
-				Log.i(TAG, "Created user with this is: " + user.getId() + " We need to send that back to client");
-				dispatchMessage(new Message(clientInfo.getId(), "{\"response_type\":\"CREATE_USER\", \"user_id\" : \"" + user.getId() + "\"}"));
-			}else if (request.getRequestType().equals("LOGIN_USER")){
-				CreateUserRequest createUserRequest = (CreateUserRequest) request;
-				Log.i(TAG, "User is trying to login: " + createUserRequest.toString());
-				User user = DatabaseUtil.getUser(createUserRequest.getEmail(), createUserRequest.getPassword());
-				if (user != null) {
-					Log.i(TAG, "Logged in user with this is: " + user.getId() + " We need to send that back to client");
-					dispatchMessage(new Message(clientInfo.getId(), "{\"response_type\":\"LOGIN_USER\", \"user_id\" : \"" + user.getId() + "\"}"));
+			if (request.getRequestType().equals("JOIN_GAME")) {
+				JoinServerRequest joinServerRequest = gson.fromJson(aMessage.getMessage(), JoinServerRequest.class);
+				if (joinServerRequest.getHeroId() > 0 && joinServerRequest.getGameId() != null) {
+					clientInfo.setHeroId(joinServerRequest.getHeroId());
+					clientJoinServer(clientInfo, joinServerRequest.getGameId());
 				} else {
-					Log.i(TAG, "Did not find this user, send error back");
+					Log.i(TAG, "Could not game heroid or gameid : " + joinServerRequest.toString());
 				}
-			}else if (request.getRequestType().equals("GET_HEROES")){
-				Log.i(TAG, "User wants his heroes: " + request.toString());
-				String heroesJson = "";
-				ArrayList<Hero> heroes = DatabaseUtil.getHeroes(Integer.parseInt(request.getUser_id()));
-				if (heroes.size() > 0){
-					for (Hero hero : heroes){
-						if(heroesJson.length() > 2){
-							heroesJson = heroesJson + ",";
-						}
-						heroesJson = heroesJson + "{";
+			} else if (request.getRequestType().equals("GAME_SLOT_AVAILABLE")) {
+				GameSlotRequest gameSlotRequest = gson.fromJson(aMessage.getMessage(), GameSlotRequest.class);
 
-						heroesJson = heroesJson + "\"id\": " + hero.getId() + ", \"level\": " + hero.getLevel() + ", \"class_type\": \"" + hero.getClass_type() + "\"";
-						heroesJson = heroesJson + "}";
-					}
-				}else {
-					heroesJson = "{}";
-				}
-				dispatchMessage(new Message(clientInfo.getId(), "{\"response_type\":\"HEROES\", \"heroes\" : [" + heroesJson + "]}"));
+				// TODO: Go through all servers and remove games that's older than 10 minutes and have no players
+
+				ServerDispatcher serverDispatcher = createServer(gameSlotRequest.getGameType());
+				dispatchMessage(new Message(clientInfo.getId(), new Gson().toJson(new GameSlotResponse(true, serverDispatcher.getServerId()))));
+				Log.i(TAG, "Sending back we got room! (" + servers.size() + "/100)");
 			}
 		}
 
@@ -149,9 +122,11 @@ public class LobbyServerDispatcher extends Thread {
 		}
 	}
 
-	private void clientJoinServer(ClientInfo clientInfo) {
+	private void clientJoinServer(ClientInfo clientInfo, String serverId) {
 		// Get a server that the client can join.
-        ServerDispatcher server = getAvailableServer();
+		ServerDispatcher server = getServer(serverId);
+
+		// TODO: Check if its time to start game
 		if (server.getGameServer() == null) {
 			server.setGameServer(new GameServer(server));
 		}
@@ -164,12 +139,14 @@ public class LobbyServerDispatcher extends Thread {
 		server.addClient(clientInfo);
 
 		deleteClient(clientInfo);
+
+		Log.i(TAG, "Client joined server that has this many players now [" + server.getClientCount() + "] Clients left in limbo [" + getClientCount() + "]");
 	}
 
 	/**
 	 * @return and deletes the next message from the message queue. If there is
-	 *         no messages in the queue, falls in sleep until notified by
-	 *         dispatchMessage method.
+	 * no messages in the queue, falls in sleep until notified by
+	 * dispatchMessage method.
 	 */
 	private synchronized Message getNextMessageFromQueue() throws InterruptedException {
 		while (mMessageQueue.size() == 0)
@@ -188,7 +165,7 @@ public class LobbyServerDispatcher extends Thread {
 		for (int i = 0; i < mClients.size(); i++) {
 			ClientInfo clientInfo = (ClientInfo) mClients.get(i);
 			if ((aMessage.getRecipient() == null || (aMessage.getRecipient() != null && clientInfo.id == aMessage.getRecipient()))
-					|| aMessage.getRecipient() != null &&  aMessage.getRecipient() == -1 && i > 0 ) {
+					|| aMessage.getRecipient() != null && aMessage.getRecipient() == -1 && i > 0) {
 				clientInfo.clientSender.sendMessage(aMessage);
 			}
 		}
@@ -213,14 +190,14 @@ public class LobbyServerDispatcher extends Thread {
 		int id = 1;
 		for (int i = 0; i < mClients.size(); i++) {
 			ClientInfo clientInfo = (ClientInfo) mClients.get(i);
-			if(clientInfo.id <= id){
+			if (clientInfo.id <= id) {
 				id++;
 			}
 		}
 		return id;
 	}
 
-	public int getClientCount(){
+	public int getClientCount() {
 		return mClients.size();
 	}
 
@@ -236,7 +213,7 @@ public class LobbyServerDispatcher extends Thread {
 		Iterator<ServerDispatcher> ut = servers.iterator();
 		while (ut.hasNext()) {
 			ServerDispatcher serverDispatcher = ut.next();
-			if(serverDispatcher.getId() == serverToDelete.getId()){
+			if (serverDispatcher.getId() == serverToDelete.getId()) {
 				Log.i(TAG, "Found serverDispatcher to delete : " + serverDispatcher.getId());
 				ut.remove();
 			}

@@ -7,20 +7,31 @@ import com.google.gson.annotations.SerializedName;
  */
 public class JoinServerRequest extends JsonRequest {
 	@SerializedName("hero_id")
-	public String hero_id;
+	public int heroId;
+	@SerializedName("game_id")
+	public String gameId;
 
-	public String getHero_id() {
-		return hero_id;
+	public int getHeroId() {
+		return heroId;
 	}
 
-	public void setHero_id(String hero_id) {
-		this.hero_id = hero_id;
+	public void setHeroId(int heroId) {
+		this.heroId = heroId;
+	}
+
+	public String getGameId() {
+		return gameId;
+	}
+
+	public void setGameId(String gameId) {
+		this.gameId = gameId;
 	}
 
 	@Override
 	public String toString() {
 		return "JoinServerRequest{" +
-				"hero_id='" + hero_id + '\'' +
+				"heroId=" + heroId +
+				", gameId='" + gameId + '\'' +
 				'}';
 	}
 }
