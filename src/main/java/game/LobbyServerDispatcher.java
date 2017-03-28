@@ -23,9 +23,7 @@ public class LobbyServerDispatcher extends Thread {
 	private static Vector mClients = new Vector();
 	private int serverId = 0;
 
-	private static int CLIENTS_PER_SERVER = 3;
-	private static int idOfServerCounter = 1;
-
+	private static int gameCounter = 0;
 
 	private static ArrayList<ServerDispatcher> servers = new ArrayList<ServerDispatcher>();
 
@@ -54,7 +52,8 @@ public class LobbyServerDispatcher extends Thread {
 		serverDispatcher.setGameType(gameType);
 		serverDispatcher.setCreatedAt();
 		servers.add(serverDispatcher);
-		idOfServerCounter++;
+		gameCounter++;
+		Log.i(TAG, "This is game sever number : " + gameCounter);
 		return serverDispatcher;
 	}
 
