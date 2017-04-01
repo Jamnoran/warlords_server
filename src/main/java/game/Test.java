@@ -1,6 +1,8 @@
 package game;
 
+import game.logging.Log;
 import game.vo.Hero;
+import game.vo.Minion;
 import game.vo.classes.Warrior;
 
 public class Test {
@@ -8,19 +10,18 @@ public class Test {
 	private static final String TAG = Test.class.getSimpleName();
 
 	public static void main(String[] args) {
-		Warrior warrior = new Warrior();
-		warrior.setLevel(1);
-		warrior.setId(5);
-		warrior.setUser_id(8);
-		warrior.setClass_type("WARRIOR");
-		warrior.setXp(200);
 
-		warrior.generateHeroInformation();
-
-		warrior.setHp(warrior.getHp() - 5);
-
-		Hero hero = warrior;
-
-		hero.regenTick();
+		Log.i(TAG, "Send animation");
+		Thread thread = new Thread(){
+			public void run(){
+				try {
+					sleep(300);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				Log.i(TAG, "Deal damage");
+			}
+		};
+		thread.start();
 	}
 }

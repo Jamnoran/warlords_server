@@ -168,7 +168,10 @@ public class DatabaseUtil {
 			return null;
 		}
 		try {
-			return DriverManager.getConnection("jdbc:mysql://localhost:8889/warlords", "root", "root");
+			String ip = "192.168.0.215";
+			String user = "ErCa";
+			String password = "test";
+			return DriverManager.getConnection("jdbc:mysql://" + ip + ":8889/warlords", user, password);
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();
