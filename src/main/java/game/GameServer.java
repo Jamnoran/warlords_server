@@ -276,22 +276,36 @@ public class GameServer {
 		Log.i(TAG, "Minion : " + minionId + " attacked hero: " + heroId);
 		Hero hero = getHeroById(heroId);
 		if (hero != null) {
-			damage = hero.calculateDamageReceived(damage);
-			hero.takeDamage(damage);
-			if(hero.getHp() <= 0){
-				Log.i(TAG, "Hero died, send death animation to client");
-				int numbersAlive = 0;
-				for (Hero listHero : heroes) {
-					if(listHero.getHp() > 0){
-						numbersAlive++;
-					}
-				}
-				if(numbersAlive == 0){
-					Log.i(TAG, "Nobody is alive, send endgame screen");
-				}
-			}
 			animations.add(new GameAnimation("MINION_ATTACK", heroId, minionId, null));
 			sendGameStatus();
+
+			final float fDamage = hero.calculateDamageReceived(damage);
+			Thread thread = new Thread(){
+				public void run(){
+					int timeAfterAnimationHasStartedToDamageIsDealt = 1100;
+					try {
+						sleep(timeAfterAnimationHasStartedToDamageIsDealt);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+					hero.takeDamage(fDamage);
+					if(hero.getHp() <= 0){
+						Log.i(TAG, "Hero died, send death animation to client");
+						int numbersAlive = 0;
+						for (Hero listHero : heroes) {
+							if(listHero.getHp() > 0){
+								numbersAlive++;
+							}
+						}
+						if(numbersAlive == 0){
+							Log.i(TAG, "Nobody is alive, send endgame screen");
+						}
+					}
+					sendGameStatus();
+				}
+			};
+			thread.start();
 		}
 
 	}
@@ -309,22 +323,38 @@ public class GameServer {
 		if (hero != null && hero.readyForAutoAttack(timeForAttackRequest)) {
 			Minion minion = getMinionById(minionId);
 			if (minion != null) {
-				Log.i(TAG, "Found hero that's attacking : " + hero.getClass_type() + " hp of minion is : " + minion.getHp());
-				float totalDamage = Math.round(minion.calculateDamageReceived(hero.getAttackDamage()));
-				if (minion.takeDamage(totalDamage)) {
-					Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
-					minionDied(hero.getId(), minion.getId());
-					removeMinion(minion.getId());
-					// Send stop movement to all attacking this minion
-					stopHero(hero.id);
-				}else {
-					minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamage, 0.0f));
-				}
-				sendCooldownInformation(hero.getAbility(0), hero.getId());
-				Log.i(TAG, "Minion size now: " + minions.size());
+
 				animations.add(new GameAnimation("ATTACK", minionId, hero.id, null));
-				// Send updated status a while after animation is sent for mapping to animation hitting minion.
 				sendGameStatus();
+
+				//final float fDamage = hero.calculateDamageReceived(damage);
+				Thread thread = new Thread() {
+					public void run() {
+						int timeAfterAnimationHasStartedToDamageIsDealt = 600;
+						try {
+							sleep(timeAfterAnimationHasStartedToDamageIsDealt);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+
+						Log.i(TAG, "Found hero that's attacking : " + hero.getClass_type() + " hp of minion is : " + minion.getHp());
+						float totalDamage = Math.round(minion.calculateDamageReceived(hero.getAttackDamage()));
+						if (minion.takeDamage(totalDamage)) {
+							Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
+							minionDied(hero.getId(), minion.getId());
+							removeMinion(minion.getId());
+							// Send stop movement to all attacking this minion
+							stopHero(hero.id);
+						}else {
+							minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamage, 0.0f));
+						}
+						sendCooldownInformation(hero.getAbility(0), hero.getId());
+						Log.i(TAG, "Minion size now: " + minions.size());
+						// Send updated status a while after animation is sent for mapping to animation hitting minion.
+						sendGameStatus();
+					}
+				};
+				thread.start();
 			} else {
 				Log.i(TAG, "Hero is trying to attack a minion that is already dead or non existing");
 			}
@@ -515,6 +545,7 @@ public class GameServer {
 		Thread thread = new Thread(){
 			public void run(){
 				while(gameRunning){
+					Log.i(TAG, "Ai running Minions["+minions.size()+"] Heroes["+heroes.size()+"]");
 					// Minion logic
 					for(Minion minion : minions){
 						minion.takeAction();
