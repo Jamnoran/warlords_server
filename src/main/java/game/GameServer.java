@@ -310,6 +310,11 @@ public class GameServer {
 
 	}
 
+	public void sendMinionMoveAnimation(Integer minionId) {
+		animations.add(new GameAnimation("MINION_RUN", null, minionId, null));
+	}
+
+
 	/**
 	 * This method is called when a hero wants to attack a minion,
 	 * @param heroId
@@ -524,6 +529,7 @@ public class GameServer {
 			minion.addThreat(new Threat(parsedRequest.getHero_id(), Threat.inRangeThreath, 0 ,0));
 		}
 	}
+
 	public void minionTargetInRange(MinionAggroRequest parsedRequest) {
 		Minion minion = getMinionById(parsedRequest.getMinion_id());
 		if(minion != null && parsedRequest.getHero_id() > 0){

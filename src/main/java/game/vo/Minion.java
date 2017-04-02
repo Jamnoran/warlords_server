@@ -86,18 +86,11 @@ public class Minion {
 	private boolean attackIfHasEnemy() {
 		Integer heroId = getHeroIdWithMostThreat();
 		if(heroId != null){
-			//Hero hero = game.getHeroById(heroId);
-			// If hero is withing distance then attack, else walk there
-			//double distance = distance(new Vector3(positionX, 0, positionZ), new Vector3(hero.getPositionX(), 0, hero.getPositionZ()));
-			//Log.i(TAG, "Distance to hero to attack : " + distance);
 			if (targetInRangeForAttack) {
 				long time = System.currentTimeMillis();
 				if (timeLastAttack == null || ((time - timeLastAttack) >= timeBetweenAttacks)) {
 					attack(heroId);
 				}
-			} else {
-//				setDesiredPositionX(hero.getPositionX());
-//				setDesiredPositionZ(hero.getPositionZ());
 			}
 			return true;
 		}else {
@@ -113,8 +106,21 @@ public class Minion {
 
 	private void findNewLocationToWalkTo() {
 		if (!GameUtil.isWorldType(GameUtil.GAUNTLET, game.getWorldLevel())) {
-			setDesiredPositionX(getDesiredPositionX() + CalculationUtil.getRandomFloat(-1.0f, 0.0f));
-			setDesiredPositionZ(getDesiredPositionZ() + CalculationUtil.getRandomFloat(-1.0f, 0.0f));
+
+			float newX = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
+			float newZ = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
+//			float newX = CalculationUtil.getRandomFloat(-2.0f, 1.0f);
+//			float newZ = CalculationUtil.getRandomFloat(-2.0f, 1.0f);
+
+			double distance = Math.hypot(getDesiredPositionX()-newX, getDesiredPositionZ()-newZ);
+
+			setDesiredPositionX(getDesiredPositionX() + newX);
+			setDesiredPositionZ(getDesiredPositionZ() + newZ);
+
+			if (distance >= 32.0f) {
+				Log.i(TAG, "Sending run animation for minion distance" + distance);
+				this.game.sendMinionMoveAnimation(getId());
+			}
 		}
 
 		//Log.i(TAG, "Walking to new position " + getDesiredPositionX() + " x " + getDesiredPositionZ());
@@ -152,22 +158,6 @@ public class Minion {
 			return null;
 		}
 	}
-
-	private Integer heroInRange() {
-		for (Hero hero: game.getHeroes()){
-			double distance = distance(new Vector3(positionX, 0, positionZ), new Vector3(hero.getPositionX(), 0, hero.getPositionZ()));
-			if(distance <= 10){
-				Log.i(TAG, "Found hero to attack");
-				return hero.getId();
-			}
-		}
-		return null;
-	}
-
-	private double distance(Vector3 p1, Vector3 p2){
-		return Point2D.distance(p1.getX(), p1.getZ(), p2.getX(), p2.getZ());
-	}
-
 	public Integer getLevel() {
 		return level;
 	}
