@@ -118,7 +118,7 @@ public class Minion {
 			setDesiredPositionZ(getDesiredPositionZ() + newZ);
 
 			if (distance >= 32.0f) {
-				Log.i(TAG, "Sending run animation for minion distance" + distance);
+				//Log.i(TAG, "Sending run animation for minion distance" + distance);
 				this.game.sendMinionMoveAnimation(getId());
 			}
 		}

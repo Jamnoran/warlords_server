@@ -2,10 +2,7 @@ package game;
 
 import com.google.gson.Gson;
 import game.logging.Log;
-import game.spells.PriestHeal;
-import game.spells.WarriorCharge;
-import game.spells.WarriorCleave;
-import game.spells.WarriorTaunt;
+import game.spells.*;
 import game.io.*;
 import game.util.DatabaseUtil;
 import game.vo.*;
@@ -259,6 +256,10 @@ public class GameServer {
 			case 2:
 				Log.i(TAG, "Priest used Heal!");
 				priestHeal((Priest) hero, parsedRequest);
+				break;
+			case 3:
+				Log.i(TAG, "Priest used Smite!");
+				priestSmite((Priest) hero, parsedRequest);
 				break;
 			default:
 				Log.i(TAG, "Did not find spell with id: " + parsedRequest.getSpell_id());
@@ -551,7 +552,7 @@ public class GameServer {
 		Thread thread = new Thread(){
 			public void run(){
 				while(gameRunning){
-					Log.i(TAG, "Ai running Minions["+minions.size()+"] Heroes["+heroes.size()+"]");
+					//Log.i(TAG, "Ai running Minions["+minions.size()+"] Heroes["+heroes.size()+"]");
 					// Minion logic
 					for(Minion minion : minions){
 						minion.takeAction();
@@ -604,8 +605,14 @@ public class GameServer {
 		}
 	}
 
-	private void priestSmite(){
-
+	private void priestSmite(Priest hero, SpellRequest parsedRequest){
+		PriestSmite spell = new PriestSmite(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()),this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		if (spell.init()) {
+			spell.execute();
+			sendGameStatus();
+		} else {
+			Log.i(TAG, "Could not send spell, probably because of mana or cd");
+		}
 	}
 
 	private void priesShield(){

@@ -21,11 +21,13 @@ public class WarriorTaunt extends Spell {
 		// Taunt amount
 		float tauntAmount = getAbility().getBaseDamage();
 
-		for (Minion minion : getTargetEnemyList()) {
-			Log.i(TAG, "Target minion to taunt : " + minion.getId());
-			Log.i(TAG, "Taunting for this amount : " + tauntAmount);
+		if (getTargetEnemyList() != null) {
+			for (Minion minion : getTargetEnemyList()) {
+				Log.i(TAG, "Target minion to taunt : " + minion.getId());
+				Log.i(TAG, "Taunting for this amount : " + tauntAmount);
 
-			minion.addThreat(new Threat(getHero().getId(), tauntAmount, 0, 0));
+				minion.addThreat(new Threat(getHero().getId(), tauntAmount, 0, 0));
+			}
 		}
 		// Set the cooldown for this ability
 		getAbility().setMillisLastUse(getTime());
