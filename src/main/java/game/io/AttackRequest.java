@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Jamnoran on 30-Jun-16.
  */
-public class AttackRequest  extends JsonRequest{
+public class AttackRequest extends JsonRequest{
 	@SerializedName("hero_id")
 	public Integer heroId;
 	@SerializedName("minion_id")

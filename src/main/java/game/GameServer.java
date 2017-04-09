@@ -192,10 +192,25 @@ public class GameServer {
 	 */
 	public void sendAbilities(String userId) {
 		Gson gson = new Gson();
-		ArrayList<Ability> heroAbilities = DatabaseUtil.getAllAbilities(getHeroByUserId(userId).getClass_type());
+		Hero hero = getHeroByUserId(userId);
+		ArrayList<Ability> heroAbilities = DatabaseUtil.getAllAbilities(hero.getClass_type());
+		ArrayList<AbilityPosition> abilityPositions = DatabaseUtil.getHeroAbilityPositions(hero.getId());
+		for(AbilityPosition abilityPosition : abilityPositions){
+			for(Ability ability : heroAbilities){
+				if(abilityPosition.getAbilityId() == ability.getId()){
+					ability.setPosition(abilityPosition.getPosition());
+				}
+			}
+		}
+
 		getHeroByUserId(userId).setAbilities(heroAbilities);
 		String jsonInString = gson.toJson(new AbilitiesResponse(heroAbilities));
 		server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), jsonInString));
+	}
+
+
+	public void updateAbilityPosition(AbilityPositionRequest request) {
+		DatabaseUtil.updateAbilityPosition(request.getHeroId(), request.getAbilityId(), request.getPosition());
 	}
 
 	/**

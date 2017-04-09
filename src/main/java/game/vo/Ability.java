@@ -20,6 +20,7 @@ public class Ability {
 	private String targetType;
 	private String timeWhenOffCooldown;
 	private int baseCD;
+	private int position = 0;
 	private transient long millisLastUse = -1000000;
 
 	public int getId() {
@@ -134,6 +135,20 @@ public class Ability {
 		this.timeWhenOffCooldown = timeWhenOffCoolDown;
 	}
 
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+	public boolean isAbilityOffCD(long time) {
+		Log.i(TAG, "Time until next time we can use ability: " + (time - (getMillisLastUse() + getBaseCD())));
+		Log.i(TAG, "Can use ability : " + (getMillisLastUse() + getBaseCD() <= time) + " negative number is its not yet off cd");
+		return (getMillisLastUse() + getBaseCD() <= time);
+	}
+
 	@Override
 	public String toString() {
 		return "Ability{" +
@@ -150,13 +165,8 @@ public class Ability {
 				", targetType='" + targetType + '\'' +
 				", timeWhenOffCooldown='" + timeWhenOffCooldown + '\'' +
 				", baseCD=" + baseCD +
+				", position=" + position +
 				", millisLastUse=" + millisLastUse +
 				'}';
-	}
-
-	public boolean isAbilityOffCD(long time) {
-		Log.i(TAG, "Time until next time we can use ability: " + (time - (getMillisLastUse() + getBaseCD())));
-		Log.i(TAG, "Can use ability : " + (getMillisLastUse() + getBaseCD() <= time) + " negative number is its not yet off cd");
-		return (getMillisLastUse() + getBaseCD() <= time);
 	}
 }

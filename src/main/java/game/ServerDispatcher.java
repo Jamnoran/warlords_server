@@ -104,6 +104,10 @@ public class ServerDispatcher extends Thread {
 	        }else if (request.isType("GET_ABILITIES")){
 		        Log.i(TAG, "parsedRequest : " + request.toString());
 		        gameServer.sendAbilities(request.getUser_id());
+			}else if (request.isType("UPDATE_ABILITY_POSITION")){
+				AbilityPositionRequest abilityPositionRequest =  gson.fromJson(aMessage.getMessage(), AbilityPositionRequest.class);
+				Log.i(TAG, "parsedRequest : " + request.toString());
+				gameServer.updateAbilityPosition(abilityPositionRequest);
 	        }else if (request.isType("STOP_HERO")){
 				StopHeroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), StopHeroRequest.class);
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());

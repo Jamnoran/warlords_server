@@ -2,6 +2,7 @@ package game.util;
 
 import game.logging.Log;
 import game.vo.Ability;
+import game.vo.AbilityPosition;
 import game.vo.Hero;
 import game.vo.User;
 import game.vo.classes.Priest;
@@ -129,56 +130,6 @@ public class DatabaseUtil {
 		return hero;
 	}
 
-	public static ArrayList<Hero> getHeroes(Integer userId) {
-		ArrayList<Hero> heroes = new ArrayList<>();
-		Connection connection = getConnection();
-		if (connection != null) {
-			try {
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT * FROM heroes where user_id = " + userId);
-				while (rs.next()) {
-					Hero hero = new Hero(userId);
-					//Retrieve by column name
-					hero.setId(rs.getInt("id"));
-					hero.setXp(rs.getInt("xp"));
-					hero.setClass_type(rs.getString("class_type"));
-					hero.setLevel(rs.getInt("level"));
-					hero.setTopGameLvl(rs.getInt("top_game_lvl"));
-					//Display values
-					heroes.add(hero);
-				}
-				rs.close();
-				stmt.close();
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} else {
-			Log.i(TAG, "Failed to make connection!");
-		}
-		return heroes;
-	}
-
-	public static Connection getConnection() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			System.out.println("Where is your MySQL JDBC Driver?");
-			e.printStackTrace();
-			return null;
-		}
-		try {
-			String ip = "192.168.0.215";
-			String user = "ErCa";
-			String password = "test";
-			return DriverManager.getConnection("jdbc:mysql://" + ip + ":8889/warlords", user, password);
-		} catch (SQLException e) {
-			System.out.println("Connection Failed! Check output console");
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	public static Hero getHero(Integer id) {
 		Hero hero = null;
 		Connection connection = getConnection();
@@ -264,6 +215,72 @@ public class DatabaseUtil {
 		return abilities;
 	}
 
+	public static ArrayList<AbilityPosition> getHeroAbilityPositions(Integer heroId){
+		ArrayList<AbilityPosition> abilityPositions = new ArrayList<>();
+		Connection connection = getConnection();
+		if (connection != null) {
+			try {
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery("SELECT * FROM hero_ability where hero_id = " + heroId);
+				while (rs.next()) {
+					AbilityPosition ability = new AbilityPosition();
+					//Retrieve by column name
+					ability.setId(rs.getInt("id"));
+					ability.setAbilityId(rs.getInt("ability_id"));
+					ability.setHeroId(rs.getInt("hero_id"));
+					ability.setPosition(rs.getInt("position"));
+
+					//Display values
+					abilityPositions.add(ability);
+				}
+				rs.close();
+				stmt.close();
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.i(TAG, "Failed to make connection!");
+		}
+		return abilityPositions;
+	}
+
+
+	public static void updateAbilityPosition(Integer heroId, Integer abilityId, Integer position) {
+		boolean update = false;
+		ArrayList<AbilityPosition> abilityPositions = DatabaseUtil.getHeroAbilityPositions(heroId);
+		for(AbilityPosition abilityPosition : abilityPositions){
+			if(abilityPosition.getAbilityId() == abilityId){
+				update = true;
+				break;
+			}
+		}
+
+		Log.i(TAG, "Updating heroId " + heroId + " ability " + abilityId + " With position : " + position);
+		Connection connection = getConnection();
+		if (connection != null) {
+			try {
+
+				Statement stmt;
+				if (update) {
+					stmt = connection.createStatement();
+					AbilityPosition abilityPosition = new AbilityPosition(heroId, abilityId, position);
+					stmt.executeUpdate(abilityPosition.getSqlUpdateQuery());
+				} else {
+					stmt = connection.createStatement();
+					AbilityPosition abilityPosition = new AbilityPosition(heroId, abilityId, position);
+					stmt.executeUpdate(abilityPosition.getSqlInsertQuery());
+				}
+				stmt.close();
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.i(TAG, "Failed to make connection!");
+		}
+	}
+
 	public static Hero updateHero(Hero hero) {
 		Connection connection = getConnection();
 		if (connection != null) {
@@ -281,4 +298,27 @@ public class DatabaseUtil {
 		}
 		return hero;
 	}
+
+
+
+	public static Connection getConnection() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			System.out.println("Where is your MySQL JDBC Driver?");
+			e.printStackTrace();
+			return null;
+		}
+		try {
+			String ip = "192.168.0.215";
+			String user = "ErCa";
+			String password = "test";
+			return DriverManager.getConnection("jdbc:mysql://" + ip + ":8889/warlords", user, password);
+		} catch (SQLException e) {
+			System.out.println("Connection Failed! Check output console");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }
