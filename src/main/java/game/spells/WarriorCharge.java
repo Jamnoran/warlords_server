@@ -18,11 +18,9 @@ public class WarriorCharge extends Spell {
 	}
 
 	public void execute() {
-		// Find target
-		Minion minion = getTargetEnemyList().get(0);
 
 		// Send charge ability (set that this hero target is the minion, set movement speed for a period of time)
-		getGameServer().sendHeroBuff(getHero().getId(), null, Buff.SPEED, 5.0f, 200);
+		getGameServer().sendHeroBuff(getHero().getId(), null, Buff.SPEED, getAbility().getValue(), 250);
 
 		// Set the cooldown for this ability
 		getAbility().setMillisLastUse(getTime());

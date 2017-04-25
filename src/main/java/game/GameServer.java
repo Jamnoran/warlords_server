@@ -268,6 +268,10 @@ public class GameServer {
 				Log.i(TAG, "Warrior used cleave!");
 				warriorCleave((Warrior) hero, parsedRequest);
 				break;
+			case 1:
+				Log.i(TAG, "Warrior used Charge!");
+				warriorCharge((Warrior) hero, parsedRequest);
+				break;
 			case 2:
 				Log.i(TAG, "Priest used Heal!");
 				priestHeal((Priest) hero, parsedRequest);

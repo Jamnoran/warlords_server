@@ -16,6 +16,7 @@ public class Ability {
 	private String image;
 	private int baseDamage;
 	private int topDamage;
+	private int value;
 	private int crittable;
 	private String targetType;
 	private String timeWhenOffCooldown;
@@ -119,6 +120,14 @@ public class Ability {
 		return baseCD;
 	}
 
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
+	}
+
 	public long getMillisLastUse() {
 		return millisLastUse;
 	}
@@ -149,6 +158,7 @@ public class Ability {
 		return (getMillisLastUse() + getBaseCD() <= time);
 	}
 
+
 	@Override
 	public String toString() {
 		return "Ability{" +
@@ -161,6 +171,7 @@ public class Ability {
 				", image='" + image + '\'' +
 				", baseDamage=" + baseDamage +
 				", topDamage=" + topDamage +
+				", value=" + value +
 				", crittable=" + crittable +
 				", targetType='" + targetType + '\'' +
 				", timeWhenOffCooldown='" + timeWhenOffCooldown + '\'' +
