@@ -21,7 +21,7 @@ public class Server {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Log.i(TAG, "warlords.game.OldServer is up and running!");
+		Log.i(TAG, "Server is up and running!");
 
 		// Register to webservice that we are a game server
 		WebserviceCommunication.sendGameServerOnline(portNumber);
