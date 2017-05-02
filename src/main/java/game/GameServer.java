@@ -50,6 +50,7 @@ public class GameServer {
 
 	/**
 	 * When a player join he needs to have a hero, this makes sure his hero join as the correct class etc.
+	 *
 	 * @param hero
 	 */
 	public void addHero(Hero hero) {
@@ -58,43 +59,75 @@ public class GameServer {
 			Log.i(TAG, "Added a warrior");
 			Warrior warrior = (Warrior) hero;
 			warrior.generateHeroInformation();
-			warrior.setStartPosition(getFreeStartPosition());
+			//warrior.setStartPosition(getFreeStartPosition());
 			heroes.add(warrior);
-		} else if (hero.isClass(Hero.PRIEST)){
+		} else if (hero.isClass(Hero.PRIEST)) {
 			Log.i(TAG, "Added a priest");
 			Priest priest = (Priest) hero;
 			priest.generateHeroInformation();
-			priest.setStartPosition(getFreeStartPosition());
+			//priest.setStartPosition(getFreeStartPosition());
 			heroes.add(priest);
 		}
 		Log.i(TAG, "Hero joined with this user id: " + hero.getUser_id() + " characters in game: " + heroes.size());
 		sendGameStatus();
 		sendAbilities("" + hero.getUser_id());
 
-		if(!gameStarted){
+		if (!gameStarted) {
 			gameStarted = true;
 		}
 	}
 
 	/**
 	 * Loops through the different spawn points thats available to start on
- 	 */
+	 */
 	private Vector3 getFreeStartPosition() {
-		if(world.getSpawnPoints().size() > 0){
-			Vector3 spawnPoint = world.getSpawnPoints().get(0);
-			world.getSpawnPoints().remove(0);
-			return spawnPoint;
+		for (Point point : world.getSpawnPoints()) {
+			if (!point.isUsed()) {
+				Vector3 spawnPoint = point.getLocation();
+				point.setUsed(true);
+				Log.i(TAG, "Found spawnpoint to use: " + point.toString());
+				return spawnPoint;
+			}
 		}
 		return null;
 	}
 
+	public void addSpawnPoints(ArrayList<Point> points) {
+		boolean pointAdded = false;
+		for (Point point : points) {
+			if (world.getSpawnPoint(point.getLocation()) == null) {
+				Log.i(TAG, "Adding point of type : " + point.getPointType() + " position: " + point.getLocation().toString());
+				if (point.getPointType() == Point.SPAWN_POINT) {
+					pointAdded = true;
+					world.addSpawPoint(point);
+				} else if (point.getPointType() == Point.ENEMY_POINT) {
+					world.addSpawPoint(point);
+				}
+			}
+		}
+
+		if (pointAdded) {
+			Log.i(TAG, "Sending new spawn location for heroes");
+			for (Hero hero : heroes) {
+				if (hero.getPositionX() == 0.0f && hero.getPositionZ() == 0.0f) {
+					Vector3 location = getFreeStartPosition();
+					hero.setPositionX(location.getX());
+					hero.setPositionZ(location.getX());
+					Log.i(TAG, "Setting new location for hero " + hero.getId() + " " + hero.getPositionX() + "x" + hero.getPositionZ());
+				}
+			}
+			sendTeleportPlayers();
+		}
+	}
+
 	/**
 	 * Send the world to a specific hero, this is done when the client joins the game
+	 *
 	 * @param heroIdToSend
 	 */
 	private void sendWorldOperation(final int heroIdToSend) {
-		Thread thread = new Thread(){
-			public void run(){
+		Thread thread = new Thread() {
+			public void run() {
 				sendWorld(heroIdToSend);
 			}
 		};
@@ -104,6 +137,7 @@ public class GameServer {
 
 	/**
 	 * Sends the created world down to a specific client
+	 *
 	 * @param heroId
 	 */
 	private void sendWorld(Integer heroId) {
@@ -113,16 +147,18 @@ public class GameServer {
 
 	/**
 	 * Sending cool down use down to a specific user
+	 *
 	 * @param abi
 	 * @param heroId
 	 */
-	public void sendCooldownInformation(Ability abi, Integer heroId){
+	public void sendCooldownInformation(Ability abi, Integer heroId) {
 		String jsonInString = new Gson().toJson(new CooldownResponse(abi));
 		server.dispatchMessage(new Message(getClientIdByHeroId(heroId), jsonInString));
 	}
 
 	/**
 	 * Spawns a minion at a specific point in the world, this is called from the World creation
+	 *
 	 * @param posX
 	 * @param posZ
 	 */
@@ -138,15 +174,16 @@ public class GameServer {
 
 	/**
 	 * A hero has clicked a portal, check that all have then start new level
+	 *
 	 * @param heroId
 	 */
-	public void clickPortal(int heroId){
+	public void clickPortal(int heroId) {
 		Log.i(TAG, "This hero has clicked on the stairs " + heroId);
 		Hero hero = getHeroById(heroId);
 		hero.setStairsPressed();
 		boolean startNewGame = true;
-		for (Hero heroInList : heroes ) {
-			if(!heroInList.isStairsPressed()){
+		for (Hero heroInList : heroes) {
+			if (!heroInList.isStairsPressed()) {
 				startNewGame = false;
 			}
 		}
@@ -159,18 +196,18 @@ public class GameServer {
 		}
 	}
 
-	private void startLevel(){
+	private void startLevel() {
 		clearWorld();
 		sendClearWorld();
 		Log.i(TAG, "World is cleared. spawning a new world with a higher level");
 		createWorld();
-		for(Hero heroLoop : heroes){
+		for (Hero heroLoop : heroes) {
 			sendWorldOperation(heroLoop.getId());
 		}
 		// Send teleport operation to all heroes
 		int i = 0;
-		for(Hero teleportHero : getHeroes()){
-			Vector3 spawnPoint = world.getSpawnPoints().get(i);
+		for (Hero teleportHero : getHeroes()) {
+			Vector3 spawnPoint = world.getSpawnPoints().get(i).getLocation();
 			teleportHero.setDesiredPositionX(spawnPoint.getX());
 			teleportHero.setDesiredPositionZ(spawnPoint.getZ());
 			teleportHero.setPositionX(spawnPoint.getX());
@@ -188,6 +225,7 @@ public class GameServer {
 
 	/**
 	 * This will be called when a hero joins a game or when requested
+	 *
 	 * @param userId
 	 */
 	public void sendAbilities(String userId) {
@@ -195,9 +233,9 @@ public class GameServer {
 		Hero hero = getHeroByUserId(userId);
 		ArrayList<Ability> heroAbilities = DatabaseUtil.getAllAbilities(hero.getClass_type());
 		ArrayList<AbilityPosition> abilityPositions = DatabaseUtil.getHeroAbilityPositions(hero.getId());
-		for(AbilityPosition abilityPosition : abilityPositions){
-			for(Ability ability : heroAbilities){
-				if(abilityPosition.getAbilityId() == ability.getId()){
+		for (AbilityPosition abilityPosition : abilityPositions) {
+			for (Ability ability : heroAbilities) {
+				if (abilityPosition.getAbilityId() == ability.getId()) {
 					ability.setPosition(abilityPosition.getPosition());
 				}
 			}
@@ -232,7 +270,7 @@ public class GameServer {
 	/**
 	 * Sends the Game status down to the clients (this needs to improve that only new information is being sent, now everything is being sent)
 	 */
-	public void sendGameStatus(){
+	public void sendGameStatus() {
 		String jsonInString = new Gson().toJson(new GameStatusResponse(minions, heroes, animations));
 		server.dispatchMessage(new Message(jsonInString));
 		clearSentAnimations();
@@ -254,12 +292,13 @@ public class GameServer {
 	 * targetFriendly
 	 * targetEnemy
 	 * Location
+	 *
 	 * @param parsedRequest
 	 */
 	public void spell(SpellRequest parsedRequest) {
-		Log.i(TAG , "Handle spell " + parsedRequest.toString());
+		Log.i(TAG, "Handle spell " + parsedRequest.toString());
 		Hero hero = getHeroById(parsedRequest.getHeroId());
-		switch (parsedRequest.getSpell_id()){
+		switch (parsedRequest.getSpell_id()) {
 			case 8:
 				Log.i(TAG, "Warrior used taunt!");
 				warriorTaunt((Warrior) hero, parsedRequest);
@@ -267,6 +306,10 @@ public class GameServer {
 			case 7:
 				Log.i(TAG, "Warrior used cleave!");
 				warriorCleave((Warrior) hero, parsedRequest);
+				break;
+			case 1:
+				Log.i(TAG, "Warrior used Charge!");
+				warriorCharge((Warrior) hero, parsedRequest);
 				break;
 			case 2:
 				Log.i(TAG, "Priest used Heal!");
@@ -284,6 +327,7 @@ public class GameServer {
 
 	/**
 	 * This method is called when a minion attacks a hero.
+	 *
 	 * @param heroId
 	 * @param damage
 	 * @param minionId
@@ -296,8 +340,8 @@ public class GameServer {
 			sendGameStatus();
 
 			final float fDamage = hero.calculateDamageReceived(damage);
-			Thread thread = new Thread(){
-				public void run(){
+			Thread thread = new Thread() {
+				public void run() {
 					int timeAfterAnimationHasStartedToDamageIsDealt = 1100;
 					try {
 						sleep(timeAfterAnimationHasStartedToDamageIsDealt);
@@ -306,15 +350,15 @@ public class GameServer {
 					}
 
 					hero.takeDamage(fDamage);
-					if(hero.getHp() <= 0){
+					if (hero.getHp() <= 0) {
 						Log.i(TAG, "Hero died, send death animation to client");
 						int numbersAlive = 0;
 						for (Hero listHero : heroes) {
-							if(listHero.getHp() > 0){
+							if (listHero.getHp() > 0) {
 								numbersAlive++;
 							}
 						}
-						if(numbersAlive == 0){
+						if (numbersAlive == 0) {
 							Log.i(TAG, "Nobody is alive, send endgame screen");
 						}
 					}
@@ -333,6 +377,7 @@ public class GameServer {
 
 	/**
 	 * This method is called when a hero wants to attack a minion,
+	 *
 	 * @param heroId
 	 * @param minionId
 	 */
@@ -366,7 +411,7 @@ public class GameServer {
 							removeMinion(minion.getId());
 							// Send stop movement to all attacking this minion
 							stopHero(hero.id);
-						}else {
+						} else {
 							minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamage, 0.0f));
 						}
 						sendCooldownInformation(hero.getAbility(0), hero.getId());
@@ -384,7 +429,7 @@ public class GameServer {
 		}
 	}
 
-	public void endGame(){
+	public void endGame() {
 		gameRunning = false;
 	}
 
@@ -399,7 +444,7 @@ public class GameServer {
 	}
 
 	public void stopHero(Integer heroId) {
-		Hero hero =  getHeroById(heroId);
+		Hero hero = getHeroById(heroId);
 		hero.setDesiredPositionX(hero.getPositionX());
 		hero.setDesiredPositionZ(hero.getPositionZ());
 		Log.i(TAG, "Send stop hero to heroId : " + heroId);
@@ -425,7 +470,7 @@ public class GameServer {
 		sendGameStatus();
 	}
 
-	public void heroIdle(MoveRequest parsedRequest){
+	public void heroIdle(MoveRequest parsedRequest) {
 		Hero usersHero = getHeroByUserId(parsedRequest.getUser_id());
 		animations.add(new GameAnimation("HERO_IDLE", null, usersHero.getId(), null));
 	}
@@ -436,18 +481,11 @@ public class GameServer {
 	}
 
 
-
-
-
-
-
-
-
 	// Utility methods
 
 	private Hero getHeroByUserId(String user_id) {
-		for(Hero hero : heroes){
-			if(hero.getUser_id() == Integer.parseInt(user_id)){
+		for (Hero hero : heroes) {
+			if (hero.getUser_id() == Integer.parseInt(user_id)) {
 				return hero;
 			}
 		}
@@ -456,8 +494,8 @@ public class GameServer {
 
 
 	public Hero getHeroById(Integer heroId) {
-		for(Hero hero : heroes){
-			if(hero.getId() == heroId){
+		for (Hero hero : heroes) {
+			if (hero.getId() == heroId) {
 				return hero;
 			}
 		}
@@ -465,7 +503,7 @@ public class GameServer {
 	}
 
 	private Minion getMinionById(Integer minionId) {
-		for(Minion minion : minions) {
+		for (Minion minion : minions) {
 			if (minion.getId() == minionId) {
 				return minion;
 			}
@@ -502,15 +540,16 @@ public class GameServer {
 
 	/**
 	 * Goes through the list of heroes and returning the hero that has the lowest hp
+	 *
 	 * @return hero
 	 */
 	public Hero getHeroWithLowestHp() {
 		Hero targetHero = null;
-		for (Hero lowestHHpHero : heroes){
-			if(lowestHHpHero.getHp() < lowestHHpHero.getMaxHp()){
-				if(targetHero == null){
+		for (Hero lowestHHpHero : heroes) {
+			if (lowestHHpHero.getHp() < lowestHHpHero.getMaxHp()) {
+				if (targetHero == null) {
 					targetHero = lowestHHpHero;
-				}else if (lowestHHpHero.getHp() < targetHero.getHp()){
+				} else if (lowestHHpHero.getHp() < targetHero.getHp()) {
 					targetHero = lowestHHpHero;
 					Log.i(TAG, "Found a target with lower hp : " + lowestHHpHero.getId());
 				}
@@ -521,13 +560,14 @@ public class GameServer {
 
 	/**
 	 * Util method to get a client by his hero id, good to have if needing to send specified message to that client instead of to all clients
+	 *
 	 * @param heroId
 	 * @return
 	 */
 	private Integer getClientIdByHeroId(Integer heroId) {
 		for (int i = 0; i < server.getClients().size(); i++) {
 			ClientInfo clientInfo = (ClientInfo) server.getClients().get(i);
-			if(clientInfo.getHeroId() == heroId){
+			if (clientInfo.getHeroId() == heroId) {
 				return clientInfo.getId();
 			}
 		}
@@ -540,18 +580,18 @@ public class GameServer {
 
 	public void minionAggro(MinionAggroRequest parsedRequest) {
 		Minion minion = getMinionById(parsedRequest.getMinion_id());
-		if(minion != null && minion.getHeroIdWithMostThreat() == null){
+		if (minion != null && minion.getHeroIdWithMostThreat() == null) {
 			Log.i(TAG, "This minion had no aggro, add towards this hero [" + parsedRequest.getHero_id() + "] Since first to see it");
-			minion.addThreat(new Threat(parsedRequest.getHero_id(), Threat.inRangeThreath, 0 ,0));
+			minion.addThreat(new Threat(parsedRequest.getHero_id(), Threat.inRangeThreath, 0, 0));
 		}
 	}
 
 	public void minionTargetInRange(MinionAggroRequest parsedRequest) {
 		Minion minion = getMinionById(parsedRequest.getMinion_id());
-		if(minion != null && parsedRequest.getHero_id() > 0){
+		if (minion != null && parsedRequest.getHero_id() > 0) {
 			Log.i(TAG, "Target is in range for an attack");
 			minion.targetInRangeForAttack = true;
-		}else{
+		} else {
 			Log.i(TAG, "Target is out of range for an attack");
 			if (minion != null) {
 				minion.targetInRangeForAttack = false;
@@ -560,21 +600,20 @@ public class GameServer {
 	}
 
 
-
 	// Living game world
 
-	public void startAI(){
-		Thread thread = new Thread(){
-			public void run(){
-				while(gameRunning){
+	public void startAI() {
+		Thread thread = new Thread() {
+			public void run() {
+				while (gameRunning) {
 					//Log.i(TAG, "Ai running Minions["+minions.size()+"] Heroes["+heroes.size()+"]");
 					// Minion logic
-					for(Minion minion : minions){
+					for (Minion minion : minions) {
 						minion.takeAction();
 					}
 
 					// Hp and Resource regeneration (This needs to keep track on how often startAI is run)
-					for(Hero hero : heroes){
+					for (Hero hero : heroes) {
 						hero.regenTick();
 					}
 
@@ -591,27 +630,14 @@ public class GameServer {
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 	// All spells
-
 
 
 	//          Priest
 
 
 	private void priestHeal(Priest hero, SpellRequest parsedRequest) {
-		PriestHeal spell = new PriestHeal(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()),this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		PriestHeal spell = new PriestHeal(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
 			sendGameStatus();
@@ -620,8 +646,8 @@ public class GameServer {
 		}
 	}
 
-	private void priestSmite(Priest hero, SpellRequest parsedRequest){
-		PriestSmite spell = new PriestSmite(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()),this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+	private void priestSmite(Priest hero, SpellRequest parsedRequest) {
+		PriestSmite spell = new PriestSmite(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
 			sendGameStatus();
@@ -630,23 +656,26 @@ public class GameServer {
 		}
 	}
 
-	private void priesShield(){
-
-	}
-	private void priesHealOverTime(){
-
-	}private void priesAOEHeal(){
-
-	}private void priesBuff(){
+	private void priesShield() {
 
 	}
 
+	private void priesHealOverTime() {
 
+	}
+
+	private void priesAOEHeal() {
+
+	}
+
+	private void priesBuff() {
+
+	}
 
 
 	//          Warrior
-	private void warriorCleave(Warrior hero, SpellRequest parsedRequest){
-		WarriorCleave spell = new WarriorCleave(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()),this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+	private void warriorCleave(Warrior hero, SpellRequest parsedRequest) {
+		WarriorCleave spell = new WarriorCleave(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
 			sendGameStatus();
@@ -655,8 +684,8 @@ public class GameServer {
 		}
 	}
 
-	private void warriorTaunt(Warrior hero, SpellRequest parsedRequest){
-		WarriorTaunt spell = new WarriorTaunt(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()),this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+	private void warriorTaunt(Warrior hero, SpellRequest parsedRequest) {
+		WarriorTaunt spell = new WarriorTaunt(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
 			sendGameStatus();
@@ -665,8 +694,8 @@ public class GameServer {
 		}
 	}
 
-	private void warriorCharge(Warrior hero, SpellRequest parsedRequest){
-		WarriorCharge spell = new WarriorCharge(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()),this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+	private void warriorCharge(Warrior hero, SpellRequest parsedRequest) {
+		WarriorCharge spell = new WarriorCharge(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
 			sendGameStatus();
@@ -675,14 +704,15 @@ public class GameServer {
 		}
 	}
 
-	private void warriorSlam(){
+	private void warriorSlam() {
 
 	}
 
-	private void warriorBarricade(){
+	private void warriorBarricade() {
 
 	}
-	private void warriorBuff(){
+
+	private void warriorBuff() {
 
 	}
 

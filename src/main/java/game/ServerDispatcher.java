@@ -77,7 +77,11 @@ public class ServerDispatcher extends Thread {
 				JoinServerRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JoinServerRequest.class);
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.sendGameStatus();
-	        }else if (request.isType("ATTACK")){
+	        }else if (request.isType("SPAWN_POINTS")){
+				SpawnPointsRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SpawnPointsRequest.class);
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				gameServer.addSpawnPoints(parsedRequest.getPoints());
+			}else if (request.isType("ATTACK")){
 				AttackRequest parsedRequest = gson.fromJson(aMessage.getMessage(), AttackRequest.class);
 		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 		        gameServer.attack(parsedRequest.getHeroId(), parsedRequest.getMinion_id(), parsedRequest.getTime());

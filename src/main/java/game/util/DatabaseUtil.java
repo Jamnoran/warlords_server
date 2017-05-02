@@ -184,6 +184,7 @@ public class DatabaseUtil {
 					ability.setName(rs.getString("name"));
 					ability.setBaseDamage(rs.getInt("base_damage"));
 					ability.setTopDamage(rs.getInt("top_damage"));
+					ability.setValue(rs.getInt("value"));
 					ability.setClassType(rs.getString("class_type"));
 					ability.setCrittable(rs.getInt("crittable"));
 					ability.setLevelReq(rs.getInt("level_req"));

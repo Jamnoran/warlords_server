@@ -6,12 +6,12 @@ package game.io;
  */
 public class HeroBuffResponse extends JsonRequest{
 
-	private String responseType = "HERO_BUFF";
-	private Integer heroId;
-	private Integer minionId;
-	private Integer type;
-	private float value;
-	private long durationMillis;
+	public String response_type = "HERO_BUFF";
+	public Integer heroId;
+	public Integer minionId;
+	public Integer type;
+	public float value;
+	public long durationMillis;
 
 	public HeroBuffResponse() {
 	}
@@ -24,12 +24,12 @@ public class HeroBuffResponse extends JsonRequest{
 		this.durationMillis = durationMillis;
 	}
 
-	public String getResponseType() {
-		return responseType;
+	public String getResponse_type() {
+		return response_type;
 	}
 
-	public void setResponseType(String responseType) {
-		this.responseType = responseType;
+	public void setResponse_type(String response_type) {
+		this.response_type = response_type;
 	}
 
 	public Integer getMinionId() {
@@ -75,7 +75,7 @@ public class HeroBuffResponse extends JsonRequest{
 	@Override
 	public String toString() {
 		return "HeroBuffResponse{" +
-				"responseType='" + responseType + '\'' +
+				"response_type='" + response_type + '\'' +
 				", heroId=" + heroId +
 				", minionId=" + minionId +
 				", type=" + type +

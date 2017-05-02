@@ -17,7 +17,13 @@ public class Test {
 		//ArrayList<AbilityPosition> data = DatabaseUtil.getHeroAbilityPositions(16);
 		//Log.i(TAG, "Data : " + data.toString());
 
-		DatabaseUtil.updateAbilityPosition(13, 8,2);
+		//DatabaseUtil.updateAbilityPosition(13, 8,2);
+
+		int highestLevel = 14;
+		int levelDivider = 5;
+
+		int levelToPlay = highestLevel - (highestLevel % levelDivider) + 1;
+		Log.i(TAG, "Level to play : " + levelToPlay);
 
 	}
 }

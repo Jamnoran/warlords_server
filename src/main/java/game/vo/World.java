@@ -6,6 +6,7 @@ import game.util.GameUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 /**
  * Created by Jamnoran on 08-Jul-16.
@@ -14,9 +15,12 @@ public class World {
 	private static final String TAG = World.class.getSimpleName();
 	private transient GameServer server;
 	private int worldLevel = 1;
-	private int worldType = 1; // 1 = normal, 2 = time limit, 3 = horde, 4 = tanky? 5 = boss
-	private ArrayList<Vector3> spawnPoints = new ArrayList<>();
-	private ArrayList<Obstacle> obstacles = new ArrayList<>();
+	private int worldType = 1; // 1 = normal, 2 = gauntlet, 3 = horde, 4 = tanky? 5 = boss
+	private ArrayList<Point> spawnPoints = new ArrayList<>();
+	private int seed = 0;
+
+
+	private transient ArrayList<Obstacle> obstacles = new ArrayList<>();
 	private transient ArrayList<Room> rooms = new ArrayList<>();
 	private transient ArrayList<Obstacle> openDoors = new ArrayList<>();
 	private transient int roomSizeX = 10;
@@ -28,25 +32,51 @@ public class World {
 		worldType = worldLevel;
 		// 0 = top, 1 = left, 2 = right, 3 = bottom
 
-		spawnPoints.add(new Vector3((roomSizeX / 2) + 2, 1.0f, (roomSizeZ / 2)));
-		spawnPoints.add(new Vector3((roomSizeX / 2) - 2, 1.0f, (roomSizeZ / 2)));
-		spawnPoints.add(new Vector3((roomSizeX / 2), 1.0f, (roomSizeZ / 2) + 2));
-		spawnPoints.add(new Vector3((roomSizeX / 2), 1.0f, (roomSizeZ / 2) - 2));
+//		spawnPoints.add(new Vector3((roomSizeX / 2) + 2, 1.0f, (roomSizeZ / 2)));
+//		spawnPoints.add(new Vector3((roomSizeX / 2) - 2, 1.0f, (roomSizeZ / 2)));
+//		spawnPoints.add(new Vector3((roomSizeX / 2), 1.0f, (roomSizeZ / 2) + 2));
+//		spawnPoints.add(new Vector3((roomSizeX / 2), 1.0f, (roomSizeZ / 2) - 2));
+//
+//		obstacles.add(new Obstacle(roomSizeX / 2, 0, roomSizeZ / 2, 0, Obstacle.START, null));
+//
+//		// Different world types:
+//		if(GameUtil.isWorldType(GameUtil.DUNGEON_CRAWLER, worldLevel)){ // Dungeon crawler
+//			generateRoomsUntilComplete();
+//		}else if (GameUtil.isWorldType(GameUtil.GAUNTLET, worldLevel)){ // Gauntlet
+//			generateGauntlet();
+//		}else {
+//			generateRoomsUntilComplete();
+//		}
 
-		obstacles.add(new Obstacle(roomSizeX / 2, 0, roomSizeZ / 2, 0, Obstacle.START, null));
-
-		// Different world types:
-		if(GameUtil.isWorldType(GameUtil.DUNGEON_CRAWLER, worldLevel)){ // Dungeon crawler
-			generateRoomsUntilComplete();
-		}else if (GameUtil.isWorldType(GameUtil.GAUNTLET, worldLevel)){ // Gauntlet
-			generateGauntlet();
-		}else {
-			generateRoomsUntilComplete();
+		Random rand = new Random(System.currentTimeMillis());
+		seed = rand.nextInt();
+		if(seed < 0){
+			seed = seed * -1;
 		}
+		Log.i(TAG, "Seed is set to " + seed);
+
 
 		// Maybe clear rooms list to save memory?
 		return this;
 	}
+
+	public void addSpawPoint(Point location){
+		spawnPoints.add(location);
+	}
+
+	public void addEnemySpawnPoint(Vector3 location){
+		spawnPoints.add(new Point(location, Point.ENEMY_POINT));
+	}
+
+	public Point getSpawnPoint(Vector3 location){
+		for(Point point: spawnPoints){
+			if(point.getLocation().getX() == location.getX() && point.getLocation().getZ() == location.getZ()){
+				return point;
+			}
+		}
+		return null;
+	}
+
 
 	private void generateRoomsUntilComplete() {
 		ArrayList<Integer> doorList = new ArrayList();
@@ -144,11 +174,11 @@ public class World {
 		this.worldLevel = worldLevel;
 	}
 
-	public ArrayList<Vector3> getSpawnPoints() {
+	public ArrayList<Point> getSpawnPoints() {
 		return spawnPoints;
 	}
 
-	public void setSpawnPoints(ArrayList<Vector3> spawnPoints) {
+	public void setSpawnPoints(ArrayList<Point> spawnPoints) {
 		this.spawnPoints = spawnPoints;
 	}
 

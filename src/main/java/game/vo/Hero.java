@@ -19,10 +19,10 @@ public class Hero {
 	// Need xpToLevelUp as well
 	private Integer level = 1;
 	private boolean alive = true;
-	private float positionX = 6.0f;
-	private float positionZ = 5.0f;
-	private float desiredPositionX = 6.0f;
-	private float desiredPositionZ = 5.0f;
+	private float positionX = 0.0f;
+	private float positionZ = 0.0f;
+	private float desiredPositionX = 0.0f;
+	private float desiredPositionZ = 0.0f;
 	private String class_type = "WARRIOR";
 	private transient ArrayList<Ability> abilities;
 
