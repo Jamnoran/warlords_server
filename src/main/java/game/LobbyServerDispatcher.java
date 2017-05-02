@@ -104,6 +104,7 @@ public class LobbyServerDispatcher extends Thread {
 				} else {
 					Log.i(TAG, "Could not game heroid or gameid : " + joinServerRequest.toString());
 				}
+				Log.i(TAG, "Done with join_game");
 			} else if (request.getRequestType().equals("GAME_SLOT_AVAILABLE")) {
 				GameSlotRequest gameSlotRequest = gson.fromJson(aMessage.getMessage(), GameSlotRequest.class);
 
