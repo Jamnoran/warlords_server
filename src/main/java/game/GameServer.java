@@ -9,8 +9,7 @@ import game.vo.*;
 import game.vo.classes.Priest;
 import game.vo.classes.Warrior;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 
 /**
@@ -81,8 +80,9 @@ public class GameServer {
 	 * Loops through the different spawn points thats available to start on
 	 */
 	private Vector3 getFreeStartPosition() {
+		Collections.shuffle(world.getSpawnPoints(), new Random(System.nanoTime()));
 		for (Point point : world.getSpawnPoints()) {
-			if (!point.isUsed()) {
+			if (!point.isUsed() && point.getPointType() == Point.SPAWN_POINT) {
 				Vector3 spawnPoint = point.getLocation();
 				point.setUsed(true);
 				Log.i(TAG, "Found spawnpoint to use: " + point.toString());
@@ -102,6 +102,7 @@ public class GameServer {
 					world.addSpawPoint(point);
 				} else if (point.getPointType() == Point.ENEMY_POINT) {
 					world.addSpawPoint(point);
+					spawnMinion(point.getPosX(), point.getPosZ());
 				}
 			}
 		}
@@ -112,7 +113,7 @@ public class GameServer {
 				if (hero.getPositionX() == 0.0f && hero.getPositionZ() == 0.0f) {
 					Vector3 location = getFreeStartPosition();
 					hero.setPositionX(location.getX());
-					hero.setPositionZ(location.getX());
+					hero.setPositionZ(location.getZ());
 					Log.i(TAG, "Setting new location for hero " + hero.getId() + " " + hero.getPositionX() + "x" + hero.getPositionZ());
 				}
 			}
@@ -169,6 +170,7 @@ public class GameServer {
 		minion.setLevel(gameLevel);
 		minion.generateMinionInformation(posX, posZ);
 		minions.add(minion);
+		Log.i(TAG, "Minions spawned : " + minion.toString());
 		sendGameStatus();
 	}
 
