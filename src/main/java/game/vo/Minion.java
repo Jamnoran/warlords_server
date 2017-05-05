@@ -42,15 +42,6 @@ public class Minion {
 	public void generateMinionInformation(float posX, float posZ){
 		setHp(baseHp + (hpPerLevel * level));
 		setMaxHp(getHp());
-
-		if (posX == 0.0f)
-		{
-			posX = (CalculationUtil.getRandomFloat(5, 15));
-		}
-		if(posZ == 0.0f){
-			posZ = (CalculationUtil.getRandomFloat(5, 15));
-		}
-
 		setPositionX(posX);
 		setDesiredPositionX(posX);
 		setPositionZ(posZ);
