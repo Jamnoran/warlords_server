@@ -135,7 +135,7 @@ public class World {
 		obstacles.add(new Obstacle(5, 0, 25, 0, Obstacle.LIGHT, null));
 
 		// Monsters
-		getServer().spawnMinion(5 , 15);
+		//getServer().spawnMinion(5 , 15);
 
 		// Stairs down
 		obstacles.add(new Obstacle(5, 0, 30, 0, Obstacle.STAIRS, null));

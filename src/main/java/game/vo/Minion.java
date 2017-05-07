@@ -14,8 +14,10 @@ public class Minion {
 	private Integer id = 1;
 	private float positionX = 10.0f;
 	private float positionZ = 10.0f;
+	private float positionY = 10.0f;
 	private float desiredPositionX = 10.0f;
 	private float desiredPositionZ = 10.0f;
+	private float desiredPositionY = 10.0f;
 	private Integer level = 1;
 	private Integer hp = null;
 	private Integer maxHp = null;
@@ -39,13 +41,15 @@ public class Minion {
 		this.id = id;
 	}
 
-	public void generateMinionInformation(float posX, float posZ){
+	public void generateMinionInformation(float posX, float posZ, float posY){
 		setHp(baseHp + (hpPerLevel * level));
 		setMaxHp(getHp());
 		setPositionX(posX);
 		setDesiredPositionX(posX);
 		setPositionZ(posZ);
 		setDesiredPositionZ(posZ);
+		setPositionY(posY);
+		setDesiredPositionY(posY);
 	}
 
 
@@ -67,9 +71,8 @@ public class Minion {
 
 	public void takeAction() {
 		if (hp > 0) {
-//			Log.i(TAG, "Minion tries to find new location to walk to");
 			if (!attackIfHasEnemy()) {
-				findNewLocationToWalkTo();
+				//findNewLocationToWalkTo();
 			}
 		}
 	}
@@ -206,22 +209,28 @@ public class Minion {
 		this.desiredPositionZ = desiredPositionZ;
 	}
 
+	public float getPositionY() {
+		return positionY;
+	}
+
+	public void setPositionY(float positionY) {
+		this.positionY = positionY;
+	}
+
+	public float getDesiredPositionY() {
+		return desiredPositionY;
+	}
+
+	public void setDesiredPositionY(float desiredPositionY) {
+		this.desiredPositionY = desiredPositionY;
+	}
+
 	public Integer getId() {
 		return id;
 	}
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public void move() {
-		if (positionX <= 15f) {
-			positionX = positionX + 1.0f;
-			positionZ = positionZ + 1.0f;
-		}else {
-			positionX = 1.0f;
-			positionZ = 1.0f;
-		}
 	}
 
 	public float calculateDamageReceived(float damage) {
