@@ -102,7 +102,7 @@ public class GameServer {
 					world.addSpawPoint(point);
 				} else if (point.getPointType() == Point.ENEMY_POINT) {
 					world.addSpawPoint(point);
-					spawnMinion(point.getPosX(), point.getPosZ());
+					spawnMinion(point.getPosX(), point.getPosZ(), point.getPosY());
 				}
 			}
 		}
@@ -114,7 +114,11 @@ public class GameServer {
 					Vector3 location = getFreeStartPosition();
 					hero.setPositionX(location.getX());
 					hero.setPositionZ(location.getZ());
-					Log.i(TAG, "Setting new location for hero " + hero.getId() + " " + hero.getPositionX() + "x" + hero.getPositionZ());
+					hero.setPositionY(location.getY());
+					hero.setDesiredPositionY(location.getY());
+					hero.setDesiredPositionX(location.getX());
+					hero.setDesiredPositionZ(location.getZ());
+					Log.i(TAG, "Setting new location for hero " + hero.getId() + " " + hero.getPositionX() + "x" + hero.getPositionZ() + "y" + hero.getPositionY());
 				}
 			}
 			sendTeleportPlayers();
@@ -163,12 +167,12 @@ public class GameServer {
 	 * @param posX
 	 * @param posZ
 	 */
-	public void spawnMinion(float posX, float posZ) {
+	public void spawnMinion(float posX, float posZ, float posY) {
 		minionCount++;
 		Minion minion = new Minion(this);
 		minion.setId(minionCount);
 		minion.setLevel(gameLevel);
-		minion.generateMinionInformation(posX, posZ);
+		minion.generateMinionInformation(posX, posZ, posY);
 		minions.add(minion);
 		Log.i(TAG, "Minions spawned : " + minion.toString());
 		sendGameStatus();
@@ -206,18 +210,20 @@ public class GameServer {
 		for (Hero heroLoop : heroes) {
 			sendWorldOperation(heroLoop.getId());
 		}
-		// Send teleport operation to all heroes
-		int i = 0;
-		for (Hero teleportHero : getHeroes()) {
-			Vector3 spawnPoint = world.getSpawnPoints().get(i).getLocation();
-			teleportHero.setDesiredPositionX(spawnPoint.getX());
-			teleportHero.setDesiredPositionZ(spawnPoint.getZ());
-			teleportHero.setPositionX(spawnPoint.getX());
-			teleportHero.setPositionZ(spawnPoint.getZ());
-			Log.i(TAG, "Sending player : " + teleportHero.getId() + " to position : " + spawnPoint.toString());
-			i++;
-		}
-		sendTeleportPlayers();
+//		 Send teleport operation to all heroes
+//		int i = 0;
+//		for (Hero teleportHero : getHeroes()) {
+//			Vector3 spawnPoint = world.getSpawnPoints().get(i).getLocation();
+//			teleportHero.setDesiredPositionX(spawnPoint.getX());
+//			teleportHero.setDesiredPositionZ(spawnPoint.getZ());
+//			teleportHero.setDesiredPositionY(spawnPoint.getY());
+//			teleportHero.setPositionX(spawnPoint.getX());
+//			teleportHero.setPositionZ(spawnPoint.getZ());
+//			teleportHero.setPositionY(spawnPoint.getY());
+//			Log.i(TAG, "Sending player : " + teleportHero.getId() + " to position : " + spawnPoint.toString());
+//			i++;
+//		}
+//		sendTeleportPlayers();
 	}
 
 	private void sendTeleportPlayers() {
@@ -259,7 +265,17 @@ public class GameServer {
 	private void clearWorld() {
 		minions.clear();
 		world.getObstacles().clear();
+		world.setSpawnPoints(null);
 		world = null;
+
+		for (Hero hero : heroes) {
+			hero.setDesiredPositionY(0.0f);
+			hero.setDesiredPositionX(0.0f);
+			hero.setDesiredPositionZ(0.0f);
+			hero.setPositionY(0.0f);
+			hero.setPositionX(0.0f);
+			hero.setPositionZ(0.0f);
+		}
 	}
 
 	/**

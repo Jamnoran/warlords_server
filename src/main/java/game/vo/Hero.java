@@ -21,8 +21,10 @@ public class Hero {
 	private boolean alive = true;
 	private float positionX = 0.0f;
 	private float positionZ = 0.0f;
+	private float positionY = 0.0f;
 	private float desiredPositionX = 0.0f;
 	private float desiredPositionZ = 0.0f;
+	private float desiredPositionY = 0.0f;
 	private String class_type = "WARRIOR";
 	private transient ArrayList<Ability> abilities;
 
@@ -153,6 +155,22 @@ public class Hero {
 
 	public void setPositionZ(float positionZ) {
 		this.positionZ = positionZ;
+	}
+
+	public float getPositionY() {
+		return positionY;
+	}
+
+	public void setPositionY(float positionY) {
+		this.positionY = positionY;
+	}
+
+	public float getDesiredPositionY() {
+		return desiredPositionY;
+	}
+
+	public void setDesiredPositionY(float desiredPositionY) {
+		this.desiredPositionY = desiredPositionY;
 	}
 
 	public boolean isAlive() {
@@ -355,11 +373,6 @@ public class Hero {
 				", criticalMultiplier=" + criticalMultiplier +
 				", criticalChance=" + criticalChance +
 				'}';
-	}
-
-	public void setStartPosition(Vector3 freeStartPosition) {
-		positionX = freeStartPosition.getX();
-		positionZ = freeStartPosition.getZ();
 	}
 
 	public Ability getAbility(Integer spellId) {

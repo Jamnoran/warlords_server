@@ -11,6 +11,7 @@ public class Point {
 	private transient Vector3 location;
 	private float posX;
 	private float posZ;
+	private float posY;
 	private int pointType;
 	private boolean used = false;
 
@@ -23,7 +24,7 @@ public class Point {
 	}
 
 	public Vector3 getLocation() {
-		location = new Vector3(posX, 0, posZ);
+		location = new Vector3(posX, posY, posZ);
 		return location;
 	}
 
@@ -63,12 +64,21 @@ public class Point {
 		this.posZ = posZ;
 	}
 
+	public float getPosY() {
+		return posY;
+	}
+
+	public void setPosY(float posY) {
+		this.posY = posY;
+	}
+
 	@Override
 	public String toString() {
 		return "Point{" +
 				"location=" + location +
 				", posX=" + posX +
 				", posZ=" + posZ +
+				", posY=" + posY +
 				", pointType=" + pointType +
 				", used=" + used +
 				'}';
