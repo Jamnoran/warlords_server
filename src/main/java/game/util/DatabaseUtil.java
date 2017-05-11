@@ -1,10 +1,7 @@
 package game.util;
 
 import game.logging.Log;
-import game.vo.Ability;
-import game.vo.AbilityPosition;
-import game.vo.Hero;
-import game.vo.User;
+import game.vo.*;
 import game.vo.classes.Priest;
 import game.vo.classes.Warrior;
 
@@ -299,6 +296,99 @@ public class DatabaseUtil {
 		}
 		return hero;
 	}
+
+
+
+	public static ArrayList<Talent> getTalents(Integer heroId){
+		ArrayList<Talent> talents = new ArrayList<>();
+		Connection connection = getConnection();
+		if (connection != null) {
+			try {
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery("SELECT * FROM talents");
+				while (rs.next()) {
+					Talent talent = new Talent();
+					//Retrieve by column name
+					talent.setId(rs.getInt("id"));
+					talent.setDescription(rs.getString("description"));
+					talent.setBase(rs.getFloat("base"));
+					talent.setScaling(rs.getFloat("scaling"));
+					talent.setSpellId(rs.getInt("spell_id"));
+
+					//Display values
+					talents.add(talent);
+				}
+				rs.close();
+				stmt.close();
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.i(TAG, "Failed to make connection!");
+		}
+		return talents;
+	}
+
+
+	public static ArrayList<Talent> getHeroTalents(Integer heroId){
+		ArrayList<Talent> talents = new ArrayList<>();
+		Connection connection = getConnection();
+		if (connection != null) {
+			try {
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery("SELECT * FROM user_talents where hero_id = " + heroId);
+				while (rs.next()) {
+					Talent talent = new Talent();
+					//Retrieve by column name
+					talent.setId(rs.getInt("id"));
+					talent.setDescription(rs.getString("description"));
+					talent.setHeroId(rs.getInt("hero_id"));
+					talent.setPointAdded(rs.getInt("points"));
+					talent.setBase(rs.getFloat("base"));
+					talent.setScaling(rs.getFloat("scaling"));
+					talent.setSpellId(rs.getInt("spell_id"));
+
+					//Display values
+					talents.add(talent);
+				}
+				rs.close();
+				stmt.close();
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.i(TAG, "Failed to make connection!");
+		}
+		return talents;
+	}
+
+	public static Talent addTalentPoint(Talent talent) {
+		Connection connection = getConnection();
+		if (connection != null) {
+			try {
+				if(talent.getPointAdded() == 0){
+
+				}else{
+					Statement stmt = connection.createStatement();
+					talent.setPointAdded(talent.getPointAdded() + 1);
+					stmt.executeUpdate(talent.getSqlUpdateQuery());
+					Log.i(TAG, "Update talent_id : " + talent.getId());
+					stmt.close();
+					connection.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.i(TAG, "Failed to make connection!");
+		}
+		return talent;
+	}
+
+
+
 
 
 
