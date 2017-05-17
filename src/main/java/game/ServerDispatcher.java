@@ -7,6 +7,7 @@ import game.io.*;
 import game.util.DatabaseUtil;
 import game.vo.Hero;
 import game.vo.Message;
+import game.io.SendMessageRequest;
 
 import java.util.Vector;
 
@@ -119,6 +120,10 @@ public class ServerDispatcher extends Thread {
 	        }else if (request.isType("RESTART_LEVEL")){
 		        Log.i(TAG, "parsedRequest : " + request.toString());
 		        gameServer.restartLevel();
+	        }else if (request.isType("SEND_MESSAGE")){
+		        SendMessageRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SendMessageRequest.class);
+		        Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+		        gameServer.addMessage(parsedRequest.getMessage());
 			}else if (request.isType("END_GAME")){
 		        Log.i(TAG, "Got request to end game, this needs to be changed later so that last on leaving game will end the game as well.");
 		        endGame();
