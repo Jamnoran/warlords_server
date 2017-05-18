@@ -20,22 +20,11 @@ public class Test {
 
 		//DatabaseUtil.updateAbilityPosition(13, 8,2);
 
-
-		DatabaseUtil.addTalentPoint(new Talent(0, 12, 2));
-		//DatabaseUtil.addTalentPoint(new Talent(2, 12, 1));
-
-		ArrayList<Talent> talents = DatabaseUtil.getHeroTalents(12);
-		for(Talent tal: talents){
-			Log.i(TAG, "Talent : " + tal.toString());
-		}
-
-
-
-		int highestLevel = 14;
-		int levelDivider = 5;
-
-		int levelToPlay = highestLevel - (highestLevel % levelDivider) + 1;
-		Log.i(TAG, "Level to play : " + levelToPlay);
+//		int highestLevel = 14;
+//		int levelDivider = 5;
+//
+//		int levelToPlay = highestLevel - (highestLevel % levelDivider) + 1;
+//		Log.i(TAG, "Level to play : " + levelToPlay);
 
 	}
 }
