@@ -299,17 +299,17 @@ public class DatabaseUtil {
 
 
 
-	public static ArrayList<Talent> getTalents(Integer heroId){
+	public static ArrayList<Talent> getTalents(){
 		ArrayList<Talent> talents = new ArrayList<>();
 		Connection connection = getConnection();
 		if (connection != null) {
 			try {
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT * FROM talents");
+				ResultSet rs = stmt.executeQuery("SELECT * from talents");
 				while (rs.next()) {
 					Talent talent = new Talent();
 					//Retrieve by column name
-					talent.setId(rs.getInt("id"));
+					talent.setTalentId(rs.getInt("id"));
 					talent.setDescription(rs.getString("description"));
 					talent.setBase(rs.getFloat("base"));
 					talent.setScaling(rs.getFloat("scaling"));
@@ -332,25 +332,28 @@ public class DatabaseUtil {
 
 
 	public static ArrayList<Talent> getHeroTalents(Integer heroId){
-		ArrayList<Talent> talents = new ArrayList<>();
+		ArrayList<Talent> talents = getTalents();
 		Connection connection = getConnection();
 		if (connection != null) {
 			try {
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT * FROM user_talents where hero_id = " + heroId);
+				ResultSet rs = stmt.executeQuery("SELECT warlords.talents.id, user_talents.id, description, points, base, talent_id, scaling, hero_id, spell_id FROM warlords.talents, warlords.user_talents where hero_id = " + heroId + " and talent_id = warlords.talents.id");
 				while (rs.next()) {
-					Talent talent = new Talent();
-					//Retrieve by column name
-					talent.setId(rs.getInt("id"));
-					talent.setDescription(rs.getString("description"));
-					talent.setHeroId(rs.getInt("hero_id"));
-					talent.setPointAdded(rs.getInt("points"));
-					talent.setBase(rs.getFloat("base"));
-					talent.setScaling(rs.getFloat("scaling"));
-					talent.setSpellId(rs.getInt("spell_id"));
-
-					//Display values
-					talents.add(talent);
+					for(Talent talent : talents){
+						if (talent.getTalentId() == rs.getInt("talent_id")) {
+							//Retrieve by column name
+							if (rs.getInt("hero_id") > 0) {
+								talent.setId(rs.getInt("user_talents.id"));
+								talent.setHeroId(rs.getInt("hero_id"));
+								talent.setPointAdded(rs.getInt("points"));
+							}
+							talent.setDescription(rs.getString("description"));
+							talent.setBase(rs.getFloat("base"));
+							talent.setScaling(rs.getFloat("scaling"));
+							talent.setSpellId(rs.getInt("spell_id"));
+							talent.setTalentId(rs.getInt("talent_id"));
+						}
+					}
 				}
 				rs.close();
 				stmt.close();
@@ -364,20 +367,34 @@ public class DatabaseUtil {
 		return talents;
 	}
 
+	public static void addTalentPoints(ArrayList<Talent> talents){
+		for (Talent talent : talents){
+			addTalentPoint(talent);
+		}
+	}
+
 	public static Talent addTalentPoint(Talent talent) {
 		Connection connection = getConnection();
 		if (connection != null) {
 			try {
+				Statement stmt = connection.createStatement();
 				if(talent.getPointAdded() == 0){
-
+					stmt.executeUpdate(talent.getSqlInsertQuery());
+					int autoIncKeyFromApi = -1;
+					ResultSet rs = stmt.getGeneratedKeys();
+					if (rs.next()) {
+						autoIncKeyFromApi = rs.getInt(1);
+						talent.setId(autoIncKeyFromApi);
+					} else {
+						// throw an exception from here
+						Log.i(TAG, "Could not get user_id");
+					}
 				}else{
-					Statement stmt = connection.createStatement();
-					talent.setPointAdded(talent.getPointAdded() + 1);
 					stmt.executeUpdate(talent.getSqlUpdateQuery());
 					Log.i(TAG, "Update talent_id : " + talent.getId());
 					stmt.close();
-					connection.close();
 				}
+				connection.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

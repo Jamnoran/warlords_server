@@ -14,6 +14,15 @@ public class Talent {
 	private float scaling;
 	private int pointAdded;
 
+	public Talent() {
+	}
+
+	public Talent(int id, int heroId, int talentId) {
+		this.id = id;
+		this.heroId = heroId;
+		this.talentId = talentId;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -93,7 +102,11 @@ public class Talent {
 	}
 
 	public String getSqlUpdateQuery() {
-		return "UPDATE `talents` SET `points`=" + getPointAdded() + " WHERE id = " + getId();
+		return "UPDATE `user_talents` SET `points`= points + 1 WHERE id = " + getId();
+	}
+
+	public String getSqlInsertQuery() {
+		return "INSERT into user_talents SET points = 1 , hero_id = " + getHeroId()+ ", talent_id = " + getTalentId();
 	}
 
 
