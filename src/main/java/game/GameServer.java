@@ -8,6 +8,7 @@ import game.util.DatabaseUtil;
 import game.vo.*;
 import game.vo.classes.Priest;
 import game.vo.classes.Warrior;
+import game.io.MessageResponse;
 
 import java.util.*;
 
@@ -25,6 +26,7 @@ public class GameServer {
 	private ArrayList<Minion> minions = new ArrayList<>();
 	private ArrayList<Hero> heroes = new ArrayList<>();
 	private ArrayList<GameAnimation> animations = new ArrayList<>();
+	private ArrayList<Message> messages = new ArrayList<>();
 	private World world;
 	private int gameLevel = 1;
 
@@ -276,6 +278,16 @@ public class GameServer {
 			hero.setPositionX(0.0f);
 			hero.setPositionZ(0.0f);
 		}
+	}
+
+	public void addMessage(Message message){
+		messages.add(message);
+		String jsonInString = new Gson().toJson(new MessageResponse(message));
+		server.dispatchMessage(new Message(jsonInString));
+	}
+
+	public ArrayList<Message> getAllMessages(){
+		return messages;
 	}
 
 	/**
