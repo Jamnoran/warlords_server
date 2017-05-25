@@ -15,8 +15,7 @@ public class Message {
 		this.recipient = recipient;
 	}
 	
-	
-	
+
 	public Integer getRecipient() {
 		return recipient;
 	}

@@ -72,6 +72,7 @@ public class GameServer {
 		Log.i(TAG, "Hero joined with this user id: " + hero.getUser_id() + " characters in game: " + heroes.size());
 		sendGameStatus();
 		sendAbilities("" + hero.getUser_id());
+		sendTalents(hero.getUser_id());
 
 		if (!gameStarted) {
 			gameStarted = true;
@@ -254,6 +255,16 @@ public class GameServer {
 		getHeroByUserId(userId).setAbilities(heroAbilities);
 		String jsonInString = gson.toJson(new AbilitiesResponse(heroAbilities));
 		server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), jsonInString));
+	}
+
+	private void sendTalents(Integer userId) {
+		Gson gson = new Gson();
+		ArrayList<Talent> talents = DatabaseUtil.getHeroTalents(getHeroByUserId("" + userId).getId());
+		Hero hero = getHeroByUserId("" + userId);
+		hero.setTalents(talents);
+		int totalPoints = hero.getLevel();
+		String jsonInString = gson.toJson(new TalentResponse(talents, totalPoints));
+		server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId("" + userId).getId()), jsonInString));
 	}
 
 

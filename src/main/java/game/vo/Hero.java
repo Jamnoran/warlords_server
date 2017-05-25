@@ -26,7 +26,6 @@ public class Hero {
 	private float desiredPositionZ = 0.0f;
 	private float desiredPositionY = 0.0f;
 	private String class_type = "WARRIOR";
-	private transient ArrayList<Ability> abilities;
 
 
 	// Hero stats
@@ -52,6 +51,9 @@ public class Hero {
 	private transient float baseAttackSpeed = 1.0f;
 	private transient int baseXpForLevel = 1000;
 	private transient float xpScale = 0.1f;
+
+	private transient ArrayList<Ability> abilities;
+	private transient ArrayList<Talent> talents;
 
 	public Hero() {
 	}
@@ -440,5 +442,13 @@ public class Hero {
 				}
 			}
 		}
+	}
+
+	public void setTalents(ArrayList<Talent> talents) {
+		this.talents = talents;
+	}
+
+	public ArrayList<Talent> getTalents() {
+		return talents;
 	}
 }
