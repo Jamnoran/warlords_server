@@ -264,13 +264,11 @@ public class DatabaseUtil {
 			try {
 
 				Statement stmt;
+				AbilityPosition abilityPosition = new AbilityPosition(heroId, abilityId, position);
+				stmt = connection.createStatement();
 				if (update) {
-					stmt = connection.createStatement();
-					AbilityPosition abilityPosition = new AbilityPosition(heroId, abilityId, position);
 					stmt.executeUpdate(abilityPosition.getSqlUpdateQuery());
 				} else {
-					stmt = connection.createStatement();
-					AbilityPosition abilityPosition = new AbilityPosition(heroId, abilityId, position);
 					stmt.executeUpdate(abilityPosition.getSqlInsertQuery());
 				}
 				stmt.close();
