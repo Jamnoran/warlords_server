@@ -10,9 +10,10 @@ public class Talent {
 	private int spellId;
 	private int talentId;
 	private String description;
-	private float base;
+	private float baseValue;
 	private float scaling;
 	private int pointAdded;
+	private int position;
 
 	public Talent() {
 	}
@@ -63,12 +64,12 @@ public class Talent {
 		this.description = description;
 	}
 
-	public float getBase() {
-		return base;
+	public float getBaseValue() {
+		return baseValue;
 	}
 
-	public void setBase(float base) {
-		this.base = base;
+	public void setBaseValue(float baseValue) {
+		this.baseValue = baseValue;
 	}
 
 	public float getScaling() {
@@ -87,6 +88,14 @@ public class Talent {
 		this.pointAdded = pointAdded;
 	}
 
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
 	@Override
 	public String toString() {
 		return "Talent{" +
@@ -95,7 +104,7 @@ public class Talent {
 				", spellId=" + spellId +
 				", talentId=" + talentId +
 				", description='" + description + '\'' +
-				", base=" + base +
+				", baseValue=" + baseValue +
 				", scaling=" + scaling +
 				", pointAdded=" + pointAdded +
 				'}';

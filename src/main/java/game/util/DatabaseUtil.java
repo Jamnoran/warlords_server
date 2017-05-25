@@ -13,6 +13,10 @@ import java.util.ArrayList;
  */
 public class DatabaseUtil {
 	private static final String TAG = DatabaseUtil.class.getSimpleName();
+	private static String ip = "192.168.0.191";
+	private static String user = "ErCa";
+	private static String password = "test";
+
 
 	public static User createUser(User user) {
 		Connection connection = getConnection();
@@ -311,9 +315,10 @@ public class DatabaseUtil {
 					//Retrieve by column name
 					talent.setTalentId(rs.getInt("id"));
 					talent.setDescription(rs.getString("description"));
-					talent.setBase(rs.getFloat("base"));
+					talent.setBaseValue(rs.getFloat("base"));
 					talent.setScaling(rs.getFloat("scaling"));
 					talent.setSpellId(rs.getInt("spell_id"));
+					talent.setPosition(rs.getInt("position"));
 
 					//Display values
 					talents.add(talent);
@@ -337,22 +342,18 @@ public class DatabaseUtil {
 		if (connection != null) {
 			try {
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT warlords.talents.id, user_talents.id, description, points, base, talent_id, scaling, hero_id, spell_id FROM warlords.talents, warlords.user_talents where hero_id = " + heroId + " and talent_id = warlords.talents.id");
+				ResultSet rs = stmt.executeQuery("SELECT id, points, talent_id, hero_id FROM warlords.user_talents where hero_id = " + heroId);
 				while (rs.next()) {
 					for(Talent talent : talents){
 						if (talent.getTalentId() == rs.getInt("talent_id")) {
 							//Retrieve by column name
 							if (rs.getInt("hero_id") > 0) {
-								talent.setId(rs.getInt("user_talents.id"));
+								talent.setId(rs.getInt("id"));
 								talent.setHeroId(rs.getInt("hero_id"));
 								talent.setPointAdded(rs.getInt("points"));
 							}
-							talent.setDescription(rs.getString("description"));
-							talent.setBase(rs.getFloat("base"));
-							talent.setScaling(rs.getFloat("scaling"));
-							talent.setSpellId(rs.getInt("spell_id"));
-							talent.setTalentId(rs.getInt("talent_id"));
 						}
+						talent.setHeroId(heroId);
 					}
 				}
 				rs.close();
@@ -418,10 +419,7 @@ public class DatabaseUtil {
 			return null;
 		}
 		try {
-			String ip = "192.168.0.215";
-			String user = "ErCa";
-			String password = "test";
-			return DriverManager.getConnection("jdbc:mysql://" + ip + ":8889/warlords", user, password);
+			return DriverManager.getConnection("jdbc:mysql://" + ip + ":9996/warlords", user, password);
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();
