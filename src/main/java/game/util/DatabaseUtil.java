@@ -416,10 +416,10 @@ public class DatabaseUtil {
 			return null;
 		}
 		try {
-			String ip = "192.168.0.215";
+			String ip = "192.168.0.191";
 			String user = "ErCa";
 			String password = "test";
-			return DriverManager.getConnection("jdbc:mysql://" + ip + ":8889/warlords", user, password);
+			return DriverManager.getConnection("jdbc:mysql://" + ip + ":9996/warlords", user, password);
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();
