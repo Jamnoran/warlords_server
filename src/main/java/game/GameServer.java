@@ -213,20 +213,6 @@ public class GameServer {
 		for (Hero heroLoop : heroes) {
 			sendWorldOperation(heroLoop.getId());
 		}
-//		 Send teleport operation to all heroes
-//		int i = 0;
-//		for (Hero teleportHero : getHeroes()) {
-//			Vector3 spawnPoint = world.getSpawnPoints().get(i).getLocation();
-//			teleportHero.setDesiredPositionX(spawnPoint.getX());
-//			teleportHero.setDesiredPositionZ(spawnPoint.getZ());
-//			teleportHero.setDesiredPositionY(spawnPoint.getY());
-//			teleportHero.setPositionX(spawnPoint.getX());
-//			teleportHero.setPositionZ(spawnPoint.getZ());
-//			teleportHero.setPositionY(spawnPoint.getY());
-//			Log.i(TAG, "Sending player : " + teleportHero.getId() + " to position : " + spawnPoint.toString());
-//			i++;
-//		}
-//		sendTeleportPlayers();
 	}
 
 	private void sendTeleportPlayers() {
@@ -315,6 +301,12 @@ public class GameServer {
 		String jsonInString = new Gson().toJson(new GameStatusResponse(minions, heroes, animations));
 		server.dispatchMessage(new Message(jsonInString));
 		clearSentAnimations();
+	}
+
+
+	public void sendCastBarInformation(Ability ability) {
+		String jsonInString = new Gson().toJson(new AbilityStatusResponse(ability));
+		server.dispatchMessage(new Message(jsonInString));
 	}
 
 	/**
@@ -691,7 +683,7 @@ public class GameServer {
 		PriestSmite spell = new PriestSmite(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
-			sendGameStatus();
+//			sendGameStatus();
 		} else {
 			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}

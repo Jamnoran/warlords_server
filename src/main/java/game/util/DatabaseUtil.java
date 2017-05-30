@@ -190,6 +190,7 @@ public class DatabaseUtil {
 					ability.setCrittable(rs.getInt("crittable"));
 					ability.setLevelReq(rs.getInt("level_req"));
 					ability.setTargetType(rs.getString("target_type"));
+					ability.setCastTime(rs.getLong("cast_time"));
 					ability.setImage(rs.getString("image"));
 					ability.setDescription(rs.getString("description"));
 					ability.setDamageType(rs.getString("damage_type"));

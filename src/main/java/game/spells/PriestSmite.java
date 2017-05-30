@@ -24,23 +24,48 @@ public class PriestSmite extends Spell {
 
 
 	public void execute() {
-		if (getTargetEnemyList() != null && getTargetEnemyList().size() >= 1) {
+		if (getTargetEnemyList() != null && getTargetEnemyList().size() >= 1 && !getAbility().isCasting()) {
+			getAbility().setCasting(true);
 			Log.i(TAG, "Target minion to damage : " + getTargetEnemyList().get(0).getId());
+
+			// Calculate castTime with CDR and talents etc
+			getAbility().setCalculatedCastTime(getAbility().getCastTime());
+
 			// Get damage amount
 			Priest priest = (Priest) getHero();
 			float damageAmount = priest.getSpellDamage(getAbility());
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
 
-			// Damage target
-			damageMinion(getTargetEnemyList().get(0), damageAmount);
+			Thread castTime = new Thread(() -> {
+				try {
+					Thread.sleep(getAbility().getCastTime());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				castTimeCompleted(damageAmount);
+			});
+			castTime.start();
 
-			// Set the cooldown for this ability
-			getAbility().setMillisLastUse(getTime());
-			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
+			// Send castbar information
+			getGameServer().sendCastBarInformation(getAbility());
 
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("SMITE", 0, getHero().getId(), null));
 		}
 	}
 
+
+	public void castTimeCompleted(float amount){
+		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
+		if (getAbility().isCasting()) {
+			// Damage target
+			damageMinion(getTargetEnemyList().get(0), amount);
+
+			// Set the cooldown for this ability
+			getAbility().setMillisLastUse(getTime());
+			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
+			getGameServer().sendGameStatus();
+			getAbility().setCasting(false);
+		}
+	}
 }
