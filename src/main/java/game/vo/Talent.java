@@ -111,11 +111,11 @@ public class Talent {
 	}
 
 	public String getSqlUpdateQuery() {
-		return "UPDATE `user_talents` SET `points`= points + 1 WHERE id = " + getId();
+		return "UPDATE `user_talents` SET `points`= " + getPointAdded() + " WHERE id = " + getId();
 	}
 
 	public String getSqlInsertQuery() {
-		return "INSERT into user_talents SET points = 1 , hero_id = " + getHeroId()+ ", talent_id = " + getTalentId();
+		return "INSERT into user_talents SET points = " + getPointAdded() + " , hero_id = " + getHeroId()+ ", talent_id = " + getTalentId();
 	}
 
 

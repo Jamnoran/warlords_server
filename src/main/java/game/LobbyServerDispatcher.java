@@ -112,6 +112,7 @@ public class LobbyServerDispatcher extends Thread {
 
 				ServerDispatcher serverDispatcher = createServer(gameSlotRequest.getGameType());
 				dispatchMessage(new Message(clientInfo.getId(), new Gson().toJson(new GameSlotResponse(true, serverDispatcher.getServerId()))));
+
 				Log.i(TAG, "Sending back we got room! (" + servers.size() + "/100)");
 			}
 		}

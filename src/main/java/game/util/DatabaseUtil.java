@@ -377,7 +377,7 @@ public class DatabaseUtil {
 		if (connection != null) {
 			try {
 				Statement stmt = connection.createStatement();
-				if(talent.getPointAdded() == 0){
+				if(talent.getId() == 0){
 					stmt.executeUpdate(talent.getSqlInsertQuery());
 					int autoIncKeyFromApi = -1;
 					ResultSet rs = stmt.getGeneratedKeys();

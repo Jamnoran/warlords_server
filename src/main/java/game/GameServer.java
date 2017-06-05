@@ -312,8 +312,7 @@ public class GameServer {
 	 * Sends the Game status down to the clients (this needs to improve that only new information is being sent, now everything is being sent)
 	 */
 	public void sendGameStatus() {
-		String jsonInString = new Gson().toJson(new GameStatusResponse(minions, heroes, animations));
-		server.dispatchMessage(new Message(jsonInString));
+		server.dispatchMessage(new Message(new Gson().toJson(new GameStatusResponse(minions, heroes, animations))));
 		clearSentAnimations();
 	}
 

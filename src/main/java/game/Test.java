@@ -20,6 +20,7 @@ public class Test {
 
 		//DatabaseUtil.updateAbilityPosition(13, 8,2);
 		Log.i(TAG, "Database : " + DatabaseUtil.getTalents().toString());
+
 //		ArrayList<Talent> talents = DatabaseUtil.getHeroTalents(12);
 //		for(Talent talent : talents){
 //			Log.i(TAG, "Talent : " + talent.toString());
