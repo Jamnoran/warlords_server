@@ -13,8 +13,9 @@ import java.net.Socket;
 public class Server {
 	private static final String TAG = Server.class.getSimpleName();
 	// Configuration;
-	static int portNumber = 2060;
+	static int portNumber = 2080;
 	private static LobbyServerDispatcher lobbyServerDispatcher;
+
 
 
 	/**

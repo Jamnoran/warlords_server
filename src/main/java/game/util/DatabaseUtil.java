@@ -190,6 +190,7 @@ public class DatabaseUtil {
 					ability.setCrittable(rs.getInt("crittable"));
 					ability.setLevelReq(rs.getInt("level_req"));
 					ability.setTargetType(rs.getString("target_type"));
+					ability.setCastTime(rs.getLong("cast_time"));
 					ability.setImage(rs.getString("image"));
 					ability.setDescription(rs.getString("description"));
 					ability.setDamageType(rs.getString("damage_type"));
@@ -417,6 +418,9 @@ public class DatabaseUtil {
 			return null;
 		}
 		try {
+			String ip = "192.168.0.191";
+			String user = "ErCa";
+			String password = "test";
 			return DriverManager.getConnection("jdbc:mysql://" + ip + ":9996/warlords", user, password);
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");

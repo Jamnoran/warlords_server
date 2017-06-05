@@ -18,11 +18,14 @@ public class Ability {
 	private int topDamage;
 	private int value;
 	private int crittable;
+	private long castTime;
+	private long calculatedCastTime;
 	private String targetType;
 	private String timeWhenOffCooldown;
 	private int baseCD;
 	private int position = 0;
 	private transient long millisLastUse = -1000000;
+	private boolean isCasting = false;
 
 	public int getId() {
 		return id;
@@ -152,12 +155,35 @@ public class Ability {
 		this.position = position;
 	}
 
+	public boolean isCasting() {
+		return isCasting;
+	}
+
+	public long getCastTime() {
+		return castTime;
+	}
+
+	public void setCastTime(long castTime) {
+		this.castTime = castTime;
+	}
+
+	public void setCasting(boolean casting) {
+		isCasting = casting;
+	}
+
+	public long getCalculatedCastTime() {
+		return calculatedCastTime;
+	}
+
+	public void setCalculatedCastTime(long calculatedCastTime) {
+		this.calculatedCastTime = calculatedCastTime;
+	}
+
 	public boolean isAbilityOffCD(long time) {
 		Log.i(TAG, "Time until next time we can use ability: " + (time - (getMillisLastUse() + getBaseCD())));
 		Log.i(TAG, "Can use ability : " + (getMillisLastUse() + getBaseCD() <= time) + " negative number is its not yet off cd");
 		return (getMillisLastUse() + getBaseCD() <= time);
 	}
-
 
 	@Override
 	public String toString() {
@@ -173,11 +199,13 @@ public class Ability {
 				", topDamage=" + topDamage +
 				", value=" + value +
 				", crittable=" + crittable +
+				", castTime=" + castTime +
 				", targetType='" + targetType + '\'' +
 				", timeWhenOffCooldown='" + timeWhenOffCooldown + '\'' +
 				", baseCD=" + baseCD +
 				", position=" + position +
 				", millisLastUse=" + millisLastUse +
+				", isCasting=" + isCasting +
 				'}';
 	}
 }
