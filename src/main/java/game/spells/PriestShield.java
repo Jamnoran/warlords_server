@@ -32,7 +32,7 @@ public class PriestShield extends Spell {
 			Log.i(TAG, "Shield for this amount : " + shieldAmount);
 
 			// Heal target (don't overheal)
-			getGameServer().sendHeroBuff(hero.getId(), null, Buff.SHIELD, getAbility().getValue(), 3000);
+			getGameServer().sendHeroBuff(new Buff(hero.getId(), null, Buff.SHIELD, getAbility().getValue(), 3000));
 
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("SHIELD", hero.getId(), getHero().getId(), null));
