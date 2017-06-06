@@ -5,10 +5,13 @@ import game.util.CalculationUtil;
 import game.util.DatabaseUtil;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Hero {
 	public static final String WARRIOR = "WARRIOR";
 	public static final String PRIEST = "PRIEST";
+	public static final String WARLOCK = "WARLOCK";
+	public static final String ROGUE = "ROGUE";
 	private static final String TAG = Hero.class.getSimpleName();
 
 	// General stats
@@ -54,6 +57,7 @@ public class Hero {
 
 	private transient ArrayList<Ability> abilities;
 	private transient ArrayList<Talent> talents;
+	private transient ArrayList<Buff> buffs;
 
 	public Hero() {
 	}
@@ -282,6 +286,13 @@ public class Hero {
 
 	}
 
+	public ArrayList<Buff> getBuffs(){
+		return buffs;
+	}
+
+	public void setBuffs(ArrayList<Buff> buffs){
+		this.buffs = buffs;
+	}
 
 	public void heal(float healAmount) {
 		hp = hp + Math.round(healAmount);
@@ -296,7 +307,26 @@ public class Hero {
 	}
 
 	public boolean takeDamage(float damage) {
-		hp = hp - Math.round(damage);
+		float damageLeft = damage;
+		// First we need to check if we have a shield on this hero
+		if(getBuffs() != null && getBuffs().size() > 0){
+			Iterator<Buff> buffIterator = buffs.iterator();
+			while (buffIterator.hasNext()) {
+				Buff buff = buffIterator.next();
+				if(buff.type == Buff.SHIELD){
+					float temporaryBuffValue = Math.round(buff.value - damageLeft);
+					if(temporaryBuffValue < 0){
+						damageLeft = Math.round(damageLeft - buff.value);
+						buffIterator.remove();
+					}else{
+						buff.value = Math.round(temporaryBuffValue);
+						damageLeft = 0;
+					}
+				}
+			}
+		}
+
+		hp = hp - Math.round(damageLeft);
 		if(hp <= 0){
 			return true;
 		}

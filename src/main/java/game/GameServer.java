@@ -351,6 +351,10 @@ public class GameServer {
 				Log.i(TAG, "Priest used Smite!");
 				priestSmite((Priest) hero, parsedRequest);
 				break;
+			case 6:
+				Log.i(TAG, "Priest used Shield!");
+				priestShield((Priest) hero, parsedRequest);
+				break;
 			default:
 				Log.i(TAG, "Did not find spell with id: " + parsedRequest.getSpell_id());
 				break;
@@ -507,8 +511,8 @@ public class GameServer {
 		animations.add(new GameAnimation("HERO_IDLE", null, usersHero.getId(), null));
 	}
 
-	public void sendHeroBuff(Integer heroId, Integer minionId, Integer type, float value, long durationMillis) {
-		String jsonInString = new Gson().toJson(new HeroBuffResponse(heroId, minionId, type, value, durationMillis));
+	public void sendHeroBuff(Buff buff) {
+		String jsonInString = new Gson().toJson(new HeroBuffResponse(buff.heroId, buff.target, buff.type, buff.value, buff.duration));
 		server.dispatchMessage(new Message(jsonInString));
 	}
 
@@ -688,19 +692,25 @@ public class GameServer {
 		}
 	}
 
-	private void priesShield() {
+	private void priestShield(Priest hero, SpellRequest parsedRequest) {
+		PriestShield spell = new PriestShield(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		if(spell.init()){
+			spell.execute();
+			sendGameStatus();
+		}else{
+			Log.i(TAG, "Could not send spell, probably because of mana or cd");
+		}
+	}
+
+	private void priesHealOverTime(Priest hero, SpellRequest parsedRequest) {
 
 	}
 
-	private void priesHealOverTime() {
+	private void priesAOEHeal(Priest hero, SpellRequest parsedRequest) {
 
 	}
 
-	private void priesAOEHeal() {
-
-	}
-
-	private void priesBuff() {
+	private void priesBuff(Priest hero, SpellRequest parsedRequest) {
 
 	}
 
@@ -736,16 +746,19 @@ public class GameServer {
 		}
 	}
 
-	private void warriorSlam() {
+	private void warriorSlam(Warrior hero, SpellRequest parsedRequest) {
 
 	}
 
-	private void warriorBarricade() {
+	private void warriorBarricade(Warrior hero, SpellRequest parsedRequest) {
 
 	}
 
-	private void warriorBuff() {
+	private void warriorBuff(Warrior hero, SpellRequest parsedRequest) {
 
 	}
 
+	public void addBuff(Buff buff) {
+		getHeroById(buff.target).getBuffs().add(buff);
+	}
 }
