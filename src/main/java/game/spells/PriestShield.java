@@ -31,8 +31,21 @@ public class PriestShield extends Spell {
 			float shieldAmount = priest.getSpellDamage(getAbility());
 			Log.i(TAG, "Shield for this amount : " + shieldAmount);
 
-			// Heal target (don't overheal)
-			getGameServer().sendHeroBuff(new Buff(hero.getId(), null, Buff.SHIELD, getAbility().getValue(), 3000));
+			int duration = 3000;
+			Buff buff = new Buff(hero.getId(), null, Buff.SHIELD, getAbility().getValue(), duration);
+			Thread buffDurationThread = new Thread(() -> {
+				try {
+					Thread.sleep(duration);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				hero.removeBuff(buff);
+			});
+			buffDurationThread.start();
+
+			hero.getBuffs().add(buff);
+
+			//getGameServer().sendHeroBuff(new Buff(hero.getId(), null, Buff.SHIELD, getAbility().getValue(), 3000));
 
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("SHIELD", hero.getId(), getHero().getId(), null));

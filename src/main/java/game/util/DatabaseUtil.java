@@ -418,7 +418,7 @@ public class DatabaseUtil {
 			return null;
 		}
 		try {
-			String ip = "192.168.0.191";
+			String ip = "warlord.ga";
 			String user = "ErCa";
 			String password = "test";
 			return DriverManager.getConnection("jdbc:mysql://" + ip + ":9996/warlords", user, password);

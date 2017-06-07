@@ -57,7 +57,7 @@ public class Hero {
 
 	private transient ArrayList<Ability> abilities;
 	private transient ArrayList<Talent> talents;
-	private transient ArrayList<Buff> buffs;
+	private ArrayList<Buff> buffs = new ArrayList<>();
 
 	public Hero() {
 	}
@@ -480,5 +480,15 @@ public class Hero {
 
 	public ArrayList<Talent> getTalents() {
 		return talents;
+	}
+
+	public void removeBuff(Buff removingBuff) {
+		Iterator<Buff> buffIterator = buffs.iterator();
+		while (buffIterator.hasNext()) {
+			Buff buff = buffIterator.next();
+			if(buff.type == removingBuff.type){
+				buffIterator.remove();
+			}
+		}
 	}
 }

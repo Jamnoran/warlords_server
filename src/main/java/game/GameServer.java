@@ -511,11 +511,6 @@ public class GameServer {
 		animations.add(new GameAnimation("HERO_IDLE", null, usersHero.getId(), null));
 	}
 
-	public void sendHeroBuff(Buff buff) {
-		String jsonInString = new Gson().toJson(new HeroBuffResponse(buff.heroId, buff.target, buff.type, buff.value, buff.duration));
-		server.dispatchMessage(new Message(jsonInString));
-	}
-
 
 	// Utility methods
 
@@ -686,7 +681,7 @@ public class GameServer {
 		PriestSmite spell = new PriestSmite(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
-//			sendGameStatus();
+			sendGameStatus();
 		} else {
 			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}
@@ -758,7 +753,4 @@ public class GameServer {
 
 	}
 
-	public void addBuff(Buff buff) {
-		getHeroById(buff.target).getBuffs().add(buff);
-	}
 }

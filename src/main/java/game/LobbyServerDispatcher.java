@@ -127,6 +127,11 @@ public class LobbyServerDispatcher extends Thread {
 		// Get a server that the client can join.
 		ServerDispatcher server = getServer(serverId);
 
+		if(server == null){
+			// This means we will create a local game (its debug mode)
+			server = createServer("CUSTOM");
+		}
+
 		// TODO: Check if its time to start game
 		if (server.getGameServer() == null) {
 			server.setGameServer(new GameServer(server));
