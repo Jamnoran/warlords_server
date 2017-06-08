@@ -23,18 +23,22 @@ public class PriestHeal extends Spell {
 
 	public void execute() {
 		if(getTargetFriendlyList() != null && getTargetFriendlyList().size() > 0) {
-			for (Hero hero : getTargetFriendlyList()) {
-				Log.i(TAG, "Target Hero to heal : " + hero.getId());
-				// Get heal amount
-				Priest priest = (Priest) getHero();
-				float healAmount = priest.getSpellDamage(getAbility());
-				Log.i(TAG, "Healing for this amount : " + healAmount);
+			try {
+				for (Hero hero : getTargetFriendlyList()) {
+					Log.i(TAG, "Target Hero to heal : " + hero.getId());
+					// Get heal amount
+					Priest priest = (Priest) getHero();
+					float healAmount = priest.getSpellDamage(getAbility());
+					Log.i(TAG, "Healing for this amount : " + healAmount);
 
-				// Heal target (don't overheal)
-				hero.heal(healAmount);
+					// Heal target (don't overheal)
+					hero.heal(healAmount);
 
-				// Add animation to list
-				getGameServer().getAnimations().add(new GameAnimation("HEAL", hero.getId(), getHero().getId(), null));
+					// Add animation to list
+					getGameServer().getAnimations().add(new GameAnimation("HEAL", hero.getId(), getHero().getId(), null));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 
 			// Set the cooldown for this ability

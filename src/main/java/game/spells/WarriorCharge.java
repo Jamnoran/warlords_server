@@ -1,6 +1,7 @@
 package game.spells;
 
 import game.GameServer;
+import game.logging.Log;
 import game.vo.Buff;
 import game.vo.*;
 
@@ -20,8 +21,23 @@ public class WarriorCharge extends Spell {
 	public void execute() {
 
 		// Send charge ability (set that this hero target is the minion, set movement speed for a period of time)
-		Buff buff = new Buff(getHero().getId(), null, Buff.SPEED, getAbility().getValue(), 250);
+
+		int duration = 250;
+		Buff buff = new Buff(getHero().getId(), null, Buff.SPEED, getAbility().getValue(), duration);
+		Thread buffDurationThread = new Thread(() -> {
+			try {
+				Thread.sleep(duration);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			getHero().removeBuff(buff);
+			getGameServer().sendGameStatus();
+			Log.i(TAG, "Removed buff, now have these many buffs left : " + getHero().getBuffs().size());
+		});
+		buffDurationThread.start();
+
 		getHero().getBuffs().add(buff);
+
 
 		// Set the cooldown for this ability
 		getAbility().setMillisLastUse(getTime());

@@ -136,6 +136,7 @@ public class ServerDispatcher extends Thread {
 				Log.i(TAG, "User wanted to hurt himself, deal 5 damage to him!.");
 				for (Hero hero : gameServer.getHeroes()) {
 					hero.takeDamage(5.0f);
+					gameServer.sendGameStatus();
 				}
 			}
 			notify();

@@ -309,15 +309,21 @@ public class Hero {
 	public boolean takeDamage(float damage) {
 		float damageLeft = damage;
 		// First we need to check if we have a shield on this hero
+
 		if(getBuffs() != null && getBuffs().size() > 0){
+			Log.i(TAG, "Got buff : " + getBuffs().size());
 			Iterator<Buff> buffIterator = buffs.iterator();
 			while (buffIterator.hasNext()) {
 				Buff buff = buffIterator.next();
+
+				Log.i(TAG, "Buff type : " + buff.type);
 				if(buff.type == Buff.SHIELD){
 					float temporaryBuffValue = Math.round(buff.value - damageLeft);
-					if(temporaryBuffValue < 0){
+					Log.i(TAG, "Buff amount left after damage: " + temporaryBuffValue);
+					if(temporaryBuffValue <= 0){
 						damageLeft = Math.round(damageLeft - buff.value);
 						buffIterator.remove();
+						Log.i(TAG, "Removing buff");
 					}else{
 						buff.value = Math.round(temporaryBuffValue);
 						damageLeft = 0;

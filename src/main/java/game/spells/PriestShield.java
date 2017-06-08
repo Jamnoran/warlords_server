@@ -23,7 +23,7 @@ public class PriestShield extends Spell {
 
 
 	public void execute() {
-		if(getTargetFriendly().get(0) != null){
+		if(getTargetFriendlyList().get(0) != null){
 			Hero hero = getTargetFriendlyList().get(0);
 			Log.i(TAG, "Target Hero to shield: " + hero.getId());
 			// Get shield amount
@@ -32,7 +32,7 @@ public class PriestShield extends Spell {
 			Log.i(TAG, "Shield for this amount : " + shieldAmount);
 
 			int duration = 3000;
-			Buff buff = new Buff(hero.getId(), null, Buff.SHIELD, getAbility().getValue(), duration);
+			Buff buff = new Buff(hero.getId(), null, Buff.SHIELD, Math.round(shieldAmount), duration);
 			Thread buffDurationThread = new Thread(() -> {
 				try {
 					Thread.sleep(duration);

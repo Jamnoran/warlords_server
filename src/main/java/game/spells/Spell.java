@@ -47,8 +47,8 @@ public class Spell {
 
 			getGameServer().sendCooldownInformation(ability, hero.getId());
 
-			return true;
 			// Add threat to all targets close by (of target location or healer location?)
+			return true;
 		}else if (targetFriendlyList != null && !hero.hasResourceForSpellHeal()){
 			Log.i(TAG, "Hero does not have enough mana for use of ability");
 			return false;
