@@ -318,6 +318,7 @@ public class DatabaseUtil {
 					talent.setScaling(rs.getFloat("scaling"));
 					talent.setSpellId(rs.getInt("spell_id"));
 					talent.setPosition(rs.getInt("position"));
+					talent.setMaxPoints(rs.getInt("max_points"));
 
 					//Display values
 					talents.add(talent);
@@ -369,7 +370,9 @@ public class DatabaseUtil {
 
 	public static void addTalentPoints(ArrayList<Talent> talents){
 		for (Talent talent : talents){
-			addTalentPoint(talent);
+			if (talent.getPointAdded() > 0) {
+				addTalentPoint(talent);
+			}
 		}
 	}
 
@@ -391,7 +394,7 @@ public class DatabaseUtil {
 					}
 				}else{
 					stmt.executeUpdate(talent.getSqlUpdateQuery());
-					Log.i(TAG, "Update talent_id : " + talent.getId());
+					//Log.i(TAG, "Update talent_id : " + talent.getId());
 					stmt.close();
 				}
 				connection.close();

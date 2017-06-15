@@ -97,6 +97,7 @@ public class GameServer {
 
 	public void addSpawnPoints(ArrayList<Point> points) {
 		boolean pointAdded = false;
+		Log.i(TAG, "Got this many spawnpoints : " + points.size());
 		for (Point point : points) {
 			if (world.getSpawnPoint(point.getLocation()) == null) {
 				Log.i(TAG, "Adding point of type : " + point.getPointType() + " position: " + point.getLocation().toString());

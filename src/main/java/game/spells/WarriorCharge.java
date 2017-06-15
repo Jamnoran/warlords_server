@@ -22,29 +22,33 @@ public class WarriorCharge extends Spell {
 
 		// Send charge ability (set that this hero target is the minion, set movement speed for a period of time)
 
-		int duration = 250;
-		Buff buff = new Buff(getHero().getId(), null, Buff.SPEED, getAbility().getValue(), duration);
-		Thread buffDurationThread = new Thread(() -> {
-			try {
-				Thread.sleep(duration);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			getHero().removeBuff(buff);
-			getGameServer().sendGameStatus();
-			Log.i(TAG, "Removed buff, now have these many buffs left : " + getHero().getBuffs().size());
-		});
-		buffDurationThread.start();
+		if (getTargetEnemyList() != null && getTargetEnemyList().size() > 0) {
+			int duration = 250;
+			Buff buff = new Buff(getHero().getId(), null, Buff.SPEED, getAbility().getValue(), duration);
+			Thread buffDurationThread = new Thread(() -> {
+				try {
+					Thread.sleep(duration);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				getHero().removeBuff(buff);
+				getGameServer().sendGameStatus();
+				Log.i(TAG, "Removed buff, now have these many buffs left : " + getHero().getBuffs().size());
+			});
+			buffDurationThread.start();
 
-		getHero().getBuffs().add(buff);
+			getHero().getBuffs().add(buff);
 
 
-		// Set the cooldown for this ability
-		getAbility().setMillisLastUse(getTime());
-		getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
+			// Set the cooldown for this ability
+			getAbility().setMillisLastUse(getTime());
+			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
 
-		// Add animation to list
-		getGameServer().getAnimations().add(new GameAnimation("CHARGE", 0, getHero().getId(), null));
+			// Add animation to list
+			getGameServer().getAnimations().add(new GameAnimation("CHARGE", 0, getHero().getId(), null));
+		}else{
+			Log.i(TAG, "Hero had no target, canceling ability");
+		}
 	}
 
 }

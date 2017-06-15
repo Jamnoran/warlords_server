@@ -14,6 +14,7 @@ public class Talent {
 	private float scaling;
 	private int pointAdded;
 	private int position;
+	private int maxPoints;
 
 	public Talent() {
 	}
@@ -96,6 +97,14 @@ public class Talent {
 		this.position = position;
 	}
 
+	public int getMaxPoints() {
+		return maxPoints;
+	}
+
+	public void setMaxPoints(int maxPoints) {
+		this.maxPoints = maxPoints;
+	}
+
 	@Override
 	public String toString() {
 		return "Talent{" +
@@ -107,6 +116,7 @@ public class Talent {
 				", baseValue=" + baseValue +
 				", scaling=" + scaling +
 				", pointAdded=" + pointAdded +
+				", maxPoints=" + maxPoints +
 				'}';
 	}
 
