@@ -19,7 +19,11 @@ public class Test {
 		//Log.i(TAG, "Data : " + data.toString());
 
 		//DatabaseUtil.updateAbilityPosition(13, 8,2);
-		Log.i(TAG, "Database : " + DatabaseUtil.getTalents().toString());
+		//Log.i(TAG, "Database : " + DatabaseUtil.getTalents().toString());
+
+		Log.i(TAG, "Logging logging");
+		Log.i("DatabaseHandler", "Testing");
+		Log.i("GameLogic", "Testing");
 
 //		ArrayList<Talent> talents = DatabaseUtil.getHeroTalents(12);
 //		for(Talent talent : talents){
