@@ -21,7 +21,7 @@ public class WebserviceCommunication {
 	private static final String TAG = Test.class.getSimpleName();
 	private static String  registerServer = "http://www.warlord.ga/warlords_webservice/register_server.php";
 	private static final String USER_AGENT = "Mozilla/5.0";
-	private static String ip = "62.20.223.241";
+	private static String ip = "2.248.122.35";
 //	private static String ip = "192.168.0.207";
 	private static String version = "1";
 
