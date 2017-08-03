@@ -106,7 +106,11 @@ public class GameServer {
 					world.addSpawPoint(point);
 				} else if (point.getPointType() == Point.ENEMY_POINT) {
 					world.addSpawPoint(point);
-					spawnMinion(point.getPosX(), point.getPosZ(), point.getPosY());
+					Minion minion = spawnMinion(point.getPosX(), point.getPosZ(), point.getPosY());
+					if(world.getWorldType() == 2){
+						minion.setDesiredPositionX(0);
+						minion.setDesiredPositionZ(0);
+					}
 				}
 			}
 		}
@@ -171,7 +175,7 @@ public class GameServer {
 	 * @param posX
 	 * @param posZ
 	 */
-	public void spawnMinion(float posX, float posZ, float posY) {
+	public Minion spawnMinion(float posX, float posZ, float posY) {
 		minionCount++;
 		Minion minion = new Minion(this);
 		minion.setId(minionCount);
@@ -180,6 +184,7 @@ public class GameServer {
 		minions.add(minion);
 		Log.i(TAG, "Minions spawned : " + minion.toString());
 		sendGameStatus();
+		return minion;
 	}
 
 	/**
