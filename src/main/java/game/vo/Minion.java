@@ -103,8 +103,6 @@ public class Minion {
 
 			float newX = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
 			float newZ = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
-//			float newX = CalculationUtil.getRandomFloat(-2.0f, 1.0f);
-//			float newZ = CalculationUtil.getRandomFloat(-2.0f, 1.0f);
 
 			double distance = Math.hypot(getDesiredPositionX()-newX, getDesiredPositionZ()-newZ);
 

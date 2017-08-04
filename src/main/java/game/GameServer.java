@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import game.logging.Log;
 import game.spells.*;
 import game.io.*;
+import game.util.CalculationUtil;
 import game.util.DatabaseUtil;
 import game.vo.*;
 import game.vo.classes.Priest;
@@ -12,17 +13,23 @@ import game.io.MessageResponse;
 
 import java.util.*;
 
+import static java.lang.Thread.sleep;
+
 
 /**
  * Created by Jamnoran on 27-Jun-16.
  */
 public class GameServer {
 	private static final String TAG = GameServer.class.getSimpleName();
+
+	private int HORDE_MINIONS = 10;
+
 	private boolean gameRunning = true;
 	private boolean gameStarted = false;
 	private ServerDispatcher server;
 
 	private int minionCount = 0;
+	private int hordeMinionsLeft = 0;
 	private ArrayList<Minion> minions = new ArrayList<>();
 	private ArrayList<Hero> heroes = new ArrayList<>();
 	private ArrayList<GameAnimation> animations = new ArrayList<>();
@@ -45,6 +52,7 @@ public class GameServer {
 	private void createWorld() {
 		// Call World.generate()
 		world = new World().generate(this, 100, 100, gameLevel);
+		hordeMinionsLeft = HORDE_MINIONS;
 		Log.i(TAG, "World generated : " + world.toString());
 	}
 
@@ -106,13 +114,15 @@ public class GameServer {
 					world.addSpawPoint(point);
 				} else if (point.getPointType() == Point.ENEMY_POINT) {
 					world.addSpawPoint(point);
-					Minion minion = spawnMinion(point.getPosX(), point.getPosZ(), point.getPosY());
-					if(world.getWorldType() == 2){
-						minion.setDesiredPositionX(0);
-						minion.setDesiredPositionZ(0);
+					if(world.getWorldType() != World.HORDE){
+						spawnMinion(point.getPosX(), point.getPosZ(), point.getPosY());
 					}
 				}
 			}
+		}
+
+		if(world.getWorldType() == World.HORDE){
+			startHordeMinionSpawner();
 		}
 
 		if (pointAdded) {
@@ -131,6 +141,40 @@ public class GameServer {
 			}
 			sendTeleportPlayers();
 		}
+	}
+
+	private void startHordeMinionSpawner() {
+		Thread thread = new Thread(() -> {
+			while (hordeMinionsLeft > 0){
+				Point point = getRandomEnemySpawnPoint();
+				if(point != null){
+					Minion minion = spawnMinion(point.getPosX(), point.getPosZ(), point.getPosY());
+					minion.setDesiredPositionX(0);
+					minion.setDesiredPositionZ(0);
+				}else{
+					Log.i(TAG, "We did not get a spawn point, something is wrong");
+				}
+				hordeMinionsLeft--;
+				try {
+					sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		thread.start();
+	}
+
+	private Point getRandomEnemySpawnPoint() {
+		Point point = null;
+		while(point == null){
+			Log.i(TAG, "Trying to find a random spawn point");
+			point = world.getSpawnPoints().get(CalculationUtil.getRandomInt(0, (world.getSpawnPoints().size()-1)));
+			if(point.getPointType() == Point.SPAWN_POINT){
+				point = null;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -269,7 +313,6 @@ public class GameServer {
 	 */
 	private void clearWorld() {
 		minions.clear();
-		world.getObstacles().clear();
 		world.setSpawnPoints(null);
 		world = null;
 
