@@ -13,17 +13,15 @@ import java.util.Random;
  */
 public class World {
 	private static final String TAG = World.class.getSimpleName();
+	public static final int CRAWLER = 1;
+	public static final int HORDE = 2;
+	public static final int GAUNTLET = 3;
 	private transient GameServer server;
 	private int worldLevel = 1;
 	private int worldType = 1; // 1 = normal, 2 = horde, 3 = gauntlet, 4 = tanky? 5 = boss
 	private ArrayList<Point> spawnPoints = new ArrayList<>();
 	private int seed = 0;
 
-
-	private transient ArrayList<Obstacle> obstacles = new ArrayList<>();
-	private transient ArrayList<Obstacle> openDoors = new ArrayList<>();
-	private transient int roomSizeX = 10;
-	private transient int roomSizeZ = 10;
 
 	public World generate(GameServer gameServer, int x, int z, int lvl) {
 		server = gameServer;
@@ -75,14 +73,6 @@ public class World {
 		this.worldType = worldType;
 	}
 
-	public ArrayList<Obstacle> getObstacles() {
-		return obstacles;
-	}
-
-	public void setObstacles(ArrayList<Obstacle> obstacles) {
-		this.obstacles = obstacles;
-	}
-
 	public int getWorldLevel() {
 		return worldLevel;
 	}
@@ -107,12 +97,7 @@ public class World {
 //				", sizeZ=" + sizeZ +
 				", worldType=" + worldType +
 				", spawnPoints=" + spawnPoints +
-				", obstacles=" + obstacles +
 				'}';
-	}
-
-	public ArrayList<Obstacle> getOpenDoors() {
-		return openDoors;
 	}
 
 }
