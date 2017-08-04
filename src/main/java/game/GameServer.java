@@ -168,13 +168,14 @@ public class GameServer {
 	private Point getRandomEnemySpawnPoint() {
 		Point point = null;
 		while(point == null){
-			Log.i(TAG, "Trying to find a random spawn point");
-			point = world.getSpawnPoints().get(CalculationUtil.getRandomInt(0, (world.getSpawnPoints().size()-1)));
+			int randomPos = CalculationUtil.getRandomInt(0, (world.getSpawnPoints().size()-1));
+			point = world.getSpawnPoints().get(randomPos);
+			Log.i(TAG, "Trying to find a random spawn point at pos:  " + randomPos + " its of type : " + point.getPointType());
 			if(point.getPointType() == Point.SPAWN_POINT){
 				point = null;
 			}
 		}
-		return null;
+		return point;
 	}
 
 	/**
