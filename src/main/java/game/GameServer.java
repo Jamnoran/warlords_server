@@ -693,6 +693,8 @@ public class GameServer {
 						minion.takeAction();
 					}
 
+					// Send request to a random client to update server with actual position of minions
+
 					// Hp and Resource regeneration (This needs to keep track on how often startAI is run)
 					for (Hero hero : heroes) {
 						hero.regenTick();

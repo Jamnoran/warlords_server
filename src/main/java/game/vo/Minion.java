@@ -72,7 +72,7 @@ public class Minion {
 	public void takeAction() {
 		if (hp > 0) {
 			if (!attackIfHasEnemy()) {
-				//findNewLocationToWalkTo();
+				findNewLocationToWalkTo();
 			}
 		}
 	}
@@ -104,10 +104,10 @@ public class Minion {
 			float newX = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
 			float newZ = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
 
-			double distance = Math.hypot(getDesiredPositionX()-newX, getDesiredPositionZ()-newZ);
+			double distance = Math.hypot(getPositionX()-newX, getPositionZ()-newZ);
 
-			setDesiredPositionX(getDesiredPositionX() + newX);
-			setDesiredPositionZ(getDesiredPositionZ() + newZ);
+			setDesiredPositionX(getPositionX() + newX);
+			setDesiredPositionZ(getPositionZ() + newZ);
 
 			if (distance >= 32.0f) {
 				//Log.i(TAG, "Sending run animation for minion distance" + distance);
