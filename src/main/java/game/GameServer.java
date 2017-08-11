@@ -348,7 +348,11 @@ public class GameServer {
 	 * Sends the Game status down to the clients (this needs to improve that only new information is being sent, now everything is being sent)
 	 */
 	public void sendGameStatus() {
-		server.dispatchMessage(new Message(new Gson().toJson(new GameStatusResponse(minions, heroes, animations))));
+		GameStatusResponse response = new GameStatusResponse(minions, heroes, animations);
+		if(world.isWorldType(World.HORDE)){
+			response.setTotalMinionsLeft(hordeMinionsLeft);
+		}
+		server.dispatchMessage(new Message(new Gson().toJson(response)));
 		clearSentAnimations();
 	}
 
@@ -693,8 +697,6 @@ public class GameServer {
 						minion.takeAction();
 					}
 
-					// Send request to a random client to update server with actual position of minions
-
 					// Hp and Resource regeneration (This needs to keep track on how often startAI is run)
 					for (Hero hero : heroes) {
 						hero.regenTick();
@@ -706,10 +708,21 @@ public class GameServer {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+
+					// Send request to a random client to update server with actual position of minions
+					sendRequestMinionPosition();
 				}
 			}
 		};
 		thread.start();
+	}
+
+	private void sendRequestMinionPosition() {
+		if(server.getClientCount() > 0){
+			int positionOfRandomClient = CalculationUtil.getRandomInt(0, (server.getClientCount() - 1));
+			ClientInfo clientInfo = (ClientInfo) server.getClients().get(positionOfRandomClient);
+			server.dispatchMessage(new Message(clientInfo.getId(), new Gson().toJson(new JsonResponse("UPDATE_MINION_POSITION", 200))));
+		}
 	}
 
 
@@ -805,4 +818,17 @@ public class GameServer {
 
 	}
 
+	public void updateMinionPositions(ArrayList<Minion> updatedMinions) {
+		// TODO: Do this more efficiant
+		for (Minion minion : updatedMinions){
+			for(Minion gameMinion : minions){
+				if(minion.getId() == gameMinion.getId()){
+					gameMinion.setPositionX(minion.getPositionX());
+					gameMinion.setPositionY(minion.getPositionY());
+					gameMinion.setPositionZ(minion.getPositionZ());
+				}
+			}
+
+		}
+	}
 }

@@ -99,10 +99,13 @@ public class Minion {
 	}
 
 	private void findNewLocationToWalkTo() {
-		if (!GameUtil.isWorldType(GameUtil.GAUNTLET, game.getWorldLevel())) {
+		if (GameUtil.isWorldType(GameUtil.DUNGEON_CRAWLER, game.getWorldLevel())) {
 
-			float newX = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
-			float newZ = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
+			//float newX = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
+			//float newZ = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
+
+			float newX = CalculationUtil.getRandomFloat(-4.0f, 3.0f);
+			float newZ = CalculationUtil.getRandomFloat(-4.0f, 3.0f);
 
 			double distance = Math.hypot(getPositionX()-newX, getPositionZ()-newZ);
 
