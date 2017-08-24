@@ -35,7 +35,7 @@ public class GameServer {
 	private ArrayList<GameAnimation> animations = new ArrayList<>();
 	private ArrayList<Message> messages = new ArrayList<>();
 	private World world;
-	private int gameLevel = 2;
+	private int gameLevel = 1;
 
 
 	public GameServer(ServerDispatcher server) {
@@ -439,17 +439,19 @@ public class GameServer {
 						e.printStackTrace();
 					}
 
-					hero.takeDamage(fDamage);
-					if (hero.getHp() <= 0) {
-						Log.i(TAG, "Hero died, send death animation to client");
-						int numbersAlive = 0;
-						for (Hero listHero : heroes) {
-							if (listHero.getHp() > 0) {
-								numbersAlive++;
+					if (getMinionById(minionId) != null && getMinionById(minionId).getHp() > 0) {
+						hero.takeDamage(fDamage);
+						if (hero.getHp() <= 0) {
+							Log.i(TAG, "Hero died, send death animation to client");
+							int numbersAlive = 0;
+							for (Hero listHero : heroes) {
+								if (listHero.getHp() > 0) {
+									numbersAlive++;
+								}
 							}
-						}
-						if (numbersAlive == 0) {
-							Log.i(TAG, "Nobody is alive, send endgame screen");
+							if (numbersAlive == 0) {
+								Log.i(TAG, "Nobody is alive, send endgame screen");
+							}
 						}
 					}
 					sendGameStatus();
@@ -479,14 +481,12 @@ public class GameServer {
 		if (hero != null && hero.readyForAutoAttack(timeForAttackRequest)) {
 			Minion minion = getMinionById(minionId);
 			if (minion != null) {
-
 				animations.add(new GameAnimation("ATTACK", minionId, hero.id, null));
 				sendGameStatus();
 
-				//final float fDamage = hero.calculateDamageReceived(damage);
 				Thread thread = new Thread() {
 					public void run() {
-						int timeAfterAnimationHasStartedToDamageIsDealt = 600;
+						int timeAfterAnimationHasStartedToDamageIsDealt = 500;
 						try {
 							sleep(timeAfterAnimationHasStartedToDamageIsDealt);
 						} catch (InterruptedException e) {

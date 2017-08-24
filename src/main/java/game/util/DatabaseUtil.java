@@ -413,6 +413,7 @@ public class DatabaseUtil {
 
 
 	public static Connection getConnection() {
+		int tries = 3;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
@@ -420,13 +421,19 @@ public class DatabaseUtil {
 			e.printStackTrace();
 			return null;
 		}
-		try {
-			return DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "/warlords", user, password);
-		} catch (SQLException e) {
-			System.out.println("Connection Failed! Check output console");
-			e.printStackTrace();
-			return null;
+		Connection connection = null;
+		for(int i = 0 ; i < tries ; i++){
+			if(connection == null){
+				try {
+					connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "/warlords", user, password);
+				} catch (SQLException e) {
+					Log.i(TAG, "Connection Failed! Check output console");
+					e.printStackTrace();
+					return null;
+				}
+			}
 		}
+		return connection;
 	}
 
 }

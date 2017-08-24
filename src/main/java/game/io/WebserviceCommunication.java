@@ -2,6 +2,7 @@ package game.io;
 
 import com.google.gson.Gson;
 import game.Test;
+import game.logging.Log;
 import game.vo.Server;
 import game.vo.ServerList;
 
@@ -32,7 +33,14 @@ public class WebserviceCommunication {
 		}else{
 			params = "port=" + portNumber + "&version=" + version;
 		}
-		return (RegisterGameServerResponse) sendRequest(params, registerServer, new RegisterGameServerResponse());
+		try {
+
+			return (RegisterGameServerResponse) sendRequest(params, registerServer, new RegisterGameServerResponse());
+		} catch (Exception e) {
+			Log.i(TAG, "Could not access webservice, check network status");
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 
