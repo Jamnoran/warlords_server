@@ -498,7 +498,7 @@ public class GameServer {
 						if (minion.takeDamage(totalDamage)) {
 							Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
 							minionDied(hero.getId(), minion.getId());
-							removeMinion(minion.getId());
+							//removeMinion(minion.getId());
 							// Send stop movement to all attacking this minion
 							stopHero(hero.id);
 						} else {
@@ -546,14 +546,14 @@ public class GameServer {
 	}
 
 	public void heroMove(MoveRequest parsedRequest) {
-		Log.i(TAG, "User wants to move : " + parsedRequest.getHeroId());
+		//Log.i(TAG, "User wants to move : " + parsedRequest.getHeroId());
 		Hero usersHero = getHeroById(parsedRequest.getHeroId());
 		if (usersHero != null) {
 			usersHero.setPositionX(parsedRequest.getPositionX());
 			usersHero.setPositionZ(parsedRequest.getPositionZ());
 			usersHero.setDesiredPositionX(parsedRequest.getDesiredPositionX());
 			usersHero.setDesiredPositionZ(parsedRequest.getDesiredPositionZ());
-			Log.i(TAG, "Hero : " + usersHero.toString());
+			//Log.i(TAG, "Hero : " + usersHero.toString());
 
 			animations.add(new GameAnimation("HERO_RUN", null, usersHero.getId(), null));
 		}
@@ -694,7 +694,9 @@ public class GameServer {
 					//Log.i(TAG, "Ai running Minions["+minions.size()+"] Heroes["+heroes.size()+"]");
 					// Minion logic
 					for (Minion minion : minions) {
-						minion.takeAction();
+						if (minion.isAlive()) {
+							minion.takeAction();
+						}
 					}
 
 					// Hp and Resource regeneration (This needs to keep track on how often startAI is run)
