@@ -34,7 +34,7 @@ public class WarriorTaunt extends Spell {
 		getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
 
 		// Add animation to list
-		getGameServer().getAnimations().add(new GameAnimation("TAUNT", 0, getHero().getId(), null));
+		getGameServer().getAnimations().add(new GameAnimation("TAUNT", 0, getHero().getId(), null, 2));
 	}
 
 }

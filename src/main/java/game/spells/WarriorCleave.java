@@ -37,7 +37,7 @@ public class WarriorCleave extends Spell {
 			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
 
 			// Add animation to list
-			getGameServer().getAnimations().add(new GameAnimation("CLEAVE", 0, getHero().getId(), null));
+			getGameServer().getAnimations().add(new GameAnimation("CLEAVE", 0, getHero().getId(), null, 1));
 		}
 	}
 

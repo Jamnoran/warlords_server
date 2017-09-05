@@ -48,7 +48,7 @@ public class PriestShield extends Spell {
 			//getGameServer().sendHeroBuff(new Buff(hero.getId(), null, Buff.SHIELD, getAbility().getValue(), 3000));
 
 			// Add animation to list
-			getGameServer().getAnimations().add(new GameAnimation("SHIELD", hero.getId(), getHero().getId(), null));
+			getGameServer().getAnimations().add(new GameAnimation("SHIELD", hero.getId(), getHero().getId(), null, 1));
 		}
 
 		// Set the cooldown for this ability

@@ -35,7 +35,7 @@ public class PriestHeal extends Spell {
 					hero.heal(healAmount);
 
 					// Add animation to list
-					getGameServer().getAnimations().add(new GameAnimation("HEAL", hero.getId(), getHero().getId(), null));
+					getGameServer().getAnimations().add(new GameAnimation("HEAL", hero.getId(), getHero().getId(), null, 2));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

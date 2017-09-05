@@ -45,7 +45,7 @@ public class WarriorCharge extends Spell {
 			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
 
 			// Add animation to list
-			getGameServer().getAnimations().add(new GameAnimation("CHARGE", 0, getHero().getId(), null));
+			getGameServer().getAnimations().add(new GameAnimation("CHARGE", 0, getHero().getId(), null, 1));
 		}else{
 			Log.i(TAG, "Hero had no target, canceling ability");
 		}

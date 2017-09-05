@@ -437,7 +437,7 @@ public class GameServer {
 		Log.i(TAG, "Minion : " + minionId + " attacked hero: " + heroId);
 		Hero hero = getHeroById(heroId);
 		if (hero != null) {
-			animations.add(new GameAnimation("MINION_ATTACK", heroId, minionId, null));
+			animations.add(new GameAnimation("MINION_ATTACK", heroId, minionId, null, 0));
 			sendGameStatus();
 
 			final float fDamage = hero.calculateDamageReceived(damage);
@@ -474,7 +474,7 @@ public class GameServer {
 	}
 
 	public void sendMinionMoveAnimation(Integer minionId) {
-		animations.add(new GameAnimation("MINION_RUN", null, minionId, null));
+		animations.add(new GameAnimation("MINION_RUN", null, minionId, null, 0));
 	}
 
 
@@ -492,7 +492,7 @@ public class GameServer {
 		if (hero != null && hero.readyForAutoAttack(timeForAttackRequest)) {
 			Minion minion = getMinionById(minionId);
 			if (minion != null) {
-				animations.add(new GameAnimation("ATTACK", minionId, hero.id, null));
+				animations.add(new GameAnimation("ATTACK", minionId, hero.id, null, 0));
 				sendGameStatus();
 
 				Thread thread = new Thread() {
@@ -552,7 +552,7 @@ public class GameServer {
 		String jsonInString = new Gson().toJson(new StopHeroResponse(heroId));
 		server.dispatchMessage(new Message(jsonInString));
 
-		animations.add(new GameAnimation("HERO_IDLE", null, heroId, null));
+		animations.add(new GameAnimation("HERO_IDLE", null, heroId, null, 0));
 		sendGameStatus();
 	}
 
@@ -566,14 +566,14 @@ public class GameServer {
 			usersHero.setDesiredPositionZ(parsedRequest.getDesiredPositionZ());
 			//Log.i(TAG, "Hero : " + usersHero.toString());
 
-			animations.add(new GameAnimation("HERO_RUN", null, usersHero.getId(), null));
+			animations.add(new GameAnimation("HERO_RUN", null, usersHero.getId(), null, 0));
 		}
 		sendGameStatus();
 	}
 
 	public void heroIdle(MoveRequest parsedRequest) {
 		Hero usersHero = getHeroByUserId(parsedRequest.getUser_id());
-		animations.add(new GameAnimation("HERO_IDLE", null, usersHero.getId(), null));
+		animations.add(new GameAnimation("HERO_IDLE", null, usersHero.getId(), null, 0));
 	}
 
 
@@ -623,7 +623,7 @@ public class GameServer {
 	}
 
 	public void minionDied(int heroId, Integer minionId) {
-		animations.add(new GameAnimation("MINION_DIED", minionId, heroId, null));
+		animations.add(new GameAnimation("MINION_DIED", minionId, heroId, null, 0));
 	}
 
 	public ArrayList<GameAnimation> getAnimations() {
