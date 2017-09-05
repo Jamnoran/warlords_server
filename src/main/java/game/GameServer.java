@@ -8,6 +8,7 @@ import game.util.CalculationUtil;
 import game.util.DatabaseUtil;
 import game.vo.*;
 import game.vo.classes.Priest;
+import game.vo.classes.Warlock;
 import game.vo.classes.Warrior;
 import game.io.MessageResponse;
 
@@ -76,6 +77,12 @@ public class GameServer {
 			priest.generateHeroInformation();
 			//priest.setStartPosition(getFreeStartPosition());
 			heroes.add(priest);
+		} else if (hero.isClass(Hero.WARLOCK)) {
+			Log.i(TAG, "Added a warlock");
+			Warlock warlock = (Warlock) hero;
+			warlock.generateHeroInformation();
+			//priest.setStartPosition(getFreeStartPosition());
+			heroes.add(warlock);
 		}
 		Log.i(TAG, "Hero joined with this user id: " + hero.getUser_id() + " characters in game: " + heroes.size());
 		sendGameStatus();
@@ -279,19 +286,23 @@ public class GameServer {
 	public void sendAbilities(String userId) {
 		Gson gson = new Gson();
 		Hero hero = getHeroByUserId(userId);
-		ArrayList<Ability> heroAbilities = DatabaseUtil.getAllAbilities(hero.getClass_type());
-		ArrayList<AbilityPosition> abilityPositions = DatabaseUtil.getHeroAbilityPositions(hero.getId());
-		for (AbilityPosition abilityPosition : abilityPositions) {
-			for (Ability ability : heroAbilities) {
-				if (abilityPosition.getAbilityId() == ability.getId()) {
-					ability.setPosition(abilityPosition.getPosition());
+		if(hero != null){
+			ArrayList<Ability> heroAbilities = DatabaseUtil.getAllAbilities(hero.getClass_type());
+			ArrayList<AbilityPosition> abilityPositions = DatabaseUtil.getHeroAbilityPositions(hero.getId());
+			for (AbilityPosition abilityPosition : abilityPositions) {
+				for (Ability ability : heroAbilities) {
+					if (abilityPosition.getAbilityId() == ability.getId()) {
+						ability.setPosition(abilityPosition.getPosition());
+					}
 				}
 			}
-		}
 
-		getHeroByUserId(userId).setAbilities(heroAbilities);
-		String jsonInString = gson.toJson(new AbilitiesResponse(heroAbilities));
-		server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), jsonInString));
+			getHeroByUserId(userId).setAbilities(heroAbilities);
+			String jsonInString = gson.toJson(new AbilitiesResponse(heroAbilities));
+			server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), jsonInString));
+		}else{
+			Log.i(TAG, "Did not find hero with user id : " + userId);
+		}
 	}
 
 	private void sendTalents(Integer userId) {
