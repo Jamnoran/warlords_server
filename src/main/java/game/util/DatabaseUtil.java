@@ -3,6 +3,7 @@ package game.util;
 import game.logging.Log;
 import game.vo.*;
 import game.vo.classes.Priest;
+import game.vo.classes.Warlock;
 import game.vo.classes.Warrior;
 
 import java.sql.*;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
  */
 public class DatabaseUtil {
 	private static final String TAG = DatabaseUtil.class.getSimpleName();
+	private static boolean local = false;
 	private static String ip = "warlord.ga";
 	private static String port = "8889";
 	private static String user = "warlord_clients";
@@ -35,6 +37,9 @@ public class DatabaseUtil {
 					}else if(rs.getString("class_type").equals(Hero.PRIEST)){
 						Log.i(TAG, "Create priest instead");
 						hero = new Priest();
+					}else if(rs.getString("class_type").equals(Hero.WARLOCK)){
+						Log.i(TAG, "Create warlock instead");
+						hero = new Warlock();
 					}else{
 						Log.i(TAG, "Cant find class: [" + rs.getString("class_type") + "]");
 					}
@@ -322,7 +327,11 @@ public class DatabaseUtil {
 		for(int i = 0 ; i < tries ; i++){
 			if(connection == null){
 				try {
-					connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "/warlords", user, password);
+					if (!local) {
+						connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "/warlords", user, password);
+					}else{
+						connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:" + port + "/warlords", user, password);
+					}
 				} catch (SQLException e) {
 					Log.i(TAG, "Connection Failed! Check output console try number : " + i);
 					//e.printStackTrace();
