@@ -33,7 +33,7 @@ public class Spell {
 
 	public boolean init(){
 		// Check if has a friendly target
-		if(targetFriendly != null){
+		if(targetFriendly != null && targetFriendly.size() > 0){
 			targetFriendlyList = new ArrayList<>();
 			targetFriendlyList.add(gameServer.getHeroById(targetFriendly.get(0)));
 		}else{

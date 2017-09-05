@@ -2,6 +2,7 @@ package game.io;
 
 import com.google.gson.Gson;
 import game.Test;
+import game.logging.Log;
 import game.vo.Server;
 import game.vo.ServerList;
 
@@ -18,7 +19,7 @@ import java.util.ArrayList;
  * Created by Eric on 2017-03-05.
  */
 public class WebserviceCommunication {
-	private static final String TAG = Test.class.getSimpleName();
+	private static final String TAG = WebserviceCommunication.class.getSimpleName();
 	private static String  registerServer = "http://www.warlord.ga/warlords_webservice/register_server.php";
 	private static final String USER_AGENT = "Mozilla/5.0";
 	private static String ip = "2.248.122.35";
@@ -55,9 +56,9 @@ public class WebserviceCommunication {
 			wr.close();
 
 			int responseCode = con.getResponseCode();
-			System.out.println("\nSending 'POST' request to URL : " + url);
-			System.out.println("Post parameters : " + params);
-			System.out.println("Response Code : " + responseCode);
+			Log.i(TAG, "Sending 'POST' request to URL : " + url);
+			Log.i(TAG, "Post parameters : " + params);
+			Log.i(TAG, "Response Code : " + responseCode);
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
