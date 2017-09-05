@@ -51,7 +51,7 @@ public class Hero {
 	private transient float criticalChance = 0.25f;
 	private transient boolean stairsPressed = false;
 	private transient long timeLastAuto = 0;
-	private transient float baseAttackSpeed = 1.0f;
+	private transient float baseAttackSpeed = 2.0f;
 	private transient int baseXpForLevel = 1000;
 	private transient float xpScale = 0.1f;
 

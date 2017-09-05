@@ -8,6 +8,7 @@ import game.util.DatabaseUtil;
 import game.vo.Hero;
 import game.vo.Message;
 import game.io.SendMessageRequest;
+import io.UpdateMinionPositionRequest;
 
 import java.util.Vector;
 
@@ -55,6 +56,7 @@ public class ServerDispatcher extends Thread {
 			Log.i(TAG, "No players left in game, lets end it.");
 			getGameServer().endGame();
 			LobbyServerDispatcher.deleteServer(this);
+			Log.i(TAG, "Database used this many request now: " + DatabaseUtil.getCounter());
 		}
 	}
 
@@ -73,7 +75,9 @@ public class ServerDispatcher extends Thread {
 		Gson gson = new GsonBuilder().create();
 		JsonRequest request = JsonRequest.parse(aMessage);
 		if (request != null) {
-			Log.i(TAG, "JsonRequest: " + request.toString());
+			if (!request.isType("UPDATE_MINION_POSITION") && !request.isType("MOVE")) {
+				Log.i(TAG, "JsonRequest: " + request.toString());
+			}
 			if (request.isType("GET_STATUS")) {
 				JoinServerRequest parsedRequest = gson.fromJson(aMessage.getMessage(), JoinServerRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
@@ -88,7 +92,7 @@ public class ServerDispatcher extends Thread {
 				gameServer.attack(parsedRequest.getHeroId(), parsedRequest.getMinion_id(), parsedRequest.getTime());
 			} else if (request.isType("MOVE")) {
 				MoveRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MoveRequest.class);
-				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				//Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				gameServer.heroMove(parsedRequest);
 			} else if (request.isType("SPELL")) {
 				SpellRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SpellRequest.class);
@@ -125,6 +129,10 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("RESTART_LEVEL")) {
 				Log.i(TAG, "parsedRequest : " + request.toString());
 				gameServer.restartLevel();
+			} else if (request.isType("UPDATE_MINION_POSITION")) {
+				//Log.i(TAG, "parsedRequest : " + request.toString());
+				UpdateMinionPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateMinionPositionRequest.class);
+				gameServer.updateMinionPositions(parsedRequest.getMinions());
 			} else if (request.isType("SEND_MESSAGE")) {
 				SendMessageRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SendMessageRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());

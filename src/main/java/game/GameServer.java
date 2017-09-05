@@ -8,6 +8,7 @@ import game.util.CalculationUtil;
 import game.util.DatabaseUtil;
 import game.vo.*;
 import game.vo.classes.Priest;
+import game.vo.classes.Warlock;
 import game.vo.classes.Warrior;
 import game.io.MessageResponse;
 
@@ -76,6 +77,12 @@ public class GameServer {
 			priest.generateHeroInformation();
 			//priest.setStartPosition(getFreeStartPosition());
 			heroes.add(priest);
+		} else if (hero.isClass(Hero.WARLOCK)) {
+			Log.i(TAG, "Added a warlock");
+			Warlock warlock = (Warlock) hero;
+			warlock.generateHeroInformation();
+			//priest.setStartPosition(getFreeStartPosition());
+			heroes.add(warlock);
 		}
 		Log.i(TAG, "Hero joined with this user id: " + hero.getUser_id() + " characters in game: " + heroes.size());
 		sendGameStatus();
@@ -279,19 +286,23 @@ public class GameServer {
 	public void sendAbilities(String userId) {
 		Gson gson = new Gson();
 		Hero hero = getHeroByUserId(userId);
-		ArrayList<Ability> heroAbilities = DatabaseUtil.getAllAbilities(hero.getClass_type());
-		ArrayList<AbilityPosition> abilityPositions = DatabaseUtil.getHeroAbilityPositions(hero.getId());
-		for (AbilityPosition abilityPosition : abilityPositions) {
-			for (Ability ability : heroAbilities) {
-				if (abilityPosition.getAbilityId() == ability.getId()) {
-					ability.setPosition(abilityPosition.getPosition());
+		if(hero != null){
+			ArrayList<Ability> heroAbilities = DatabaseUtil.getAllAbilities(hero.getClass_type());
+			ArrayList<AbilityPosition> abilityPositions = DatabaseUtil.getHeroAbilityPositions(hero.getId());
+			for (AbilityPosition abilityPosition : abilityPositions) {
+				for (Ability ability : heroAbilities) {
+					if (abilityPosition.getAbilityId() == ability.getId()) {
+						ability.setPosition(abilityPosition.getPosition());
+					}
 				}
 			}
-		}
 
-		getHeroByUserId(userId).setAbilities(heroAbilities);
-		String jsonInString = gson.toJson(new AbilitiesResponse(heroAbilities));
-		server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), jsonInString));
+			getHeroByUserId(userId).setAbilities(heroAbilities);
+			String jsonInString = gson.toJson(new AbilitiesResponse(heroAbilities));
+			server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), jsonInString));
+		}else{
+			Log.i(TAG, "Did not find hero with user id : " + userId);
+		}
 	}
 
 	private void sendTalents(Integer userId) {
@@ -348,7 +359,11 @@ public class GameServer {
 	 * Sends the Game status down to the clients (this needs to improve that only new information is being sent, now everything is being sent)
 	 */
 	public void sendGameStatus() {
-		server.dispatchMessage(new Message(new Gson().toJson(new GameStatusResponse(minions, heroes, animations))));
+		GameStatusResponse response = new GameStatusResponse(minions, heroes, animations);
+		if(world.isWorldType(World.HORDE)){
+			response.setTotalMinionsLeft(hordeMinionsLeft);
+		}
+		server.dispatchMessage(new Message(new Gson().toJson(response)));
 		clearSentAnimations();
 	}
 
@@ -435,17 +450,19 @@ public class GameServer {
 						e.printStackTrace();
 					}
 
-					hero.takeDamage(fDamage);
-					if (hero.getHp() <= 0) {
-						Log.i(TAG, "Hero died, send death animation to client");
-						int numbersAlive = 0;
-						for (Hero listHero : heroes) {
-							if (listHero.getHp() > 0) {
-								numbersAlive++;
+					if (getMinionById(minionId) != null && getMinionById(minionId).getHp() > 0) {
+						hero.takeDamage(fDamage);
+						if (hero.getHp() <= 0) {
+							Log.i(TAG, "Hero died, send death animation to client");
+							int numbersAlive = 0;
+							for (Hero listHero : heroes) {
+								if (listHero.getHp() > 0) {
+									numbersAlive++;
+								}
 							}
-						}
-						if (numbersAlive == 0) {
-							Log.i(TAG, "Nobody is alive, send endgame screen");
+							if (numbersAlive == 0) {
+								Log.i(TAG, "Nobody is alive, send endgame screen");
+							}
 						}
 					}
 					sendGameStatus();
@@ -475,14 +492,12 @@ public class GameServer {
 		if (hero != null && hero.readyForAutoAttack(timeForAttackRequest)) {
 			Minion minion = getMinionById(minionId);
 			if (minion != null) {
-
 				animations.add(new GameAnimation("ATTACK", minionId, hero.id, null));
 				sendGameStatus();
 
-				//final float fDamage = hero.calculateDamageReceived(damage);
 				Thread thread = new Thread() {
 					public void run() {
-						int timeAfterAnimationHasStartedToDamageIsDealt = 600;
+						int timeAfterAnimationHasStartedToDamageIsDealt = 500;
 						try {
 							sleep(timeAfterAnimationHasStartedToDamageIsDealt);
 						} catch (InterruptedException e) {
@@ -494,7 +509,7 @@ public class GameServer {
 						if (minion.takeDamage(totalDamage)) {
 							Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
 							minionDied(hero.getId(), minion.getId());
-							removeMinion(minion.getId());
+							//removeMinion(minion.getId());
 							// Send stop movement to all attacking this minion
 							stopHero(hero.id);
 						} else {
@@ -542,14 +557,14 @@ public class GameServer {
 	}
 
 	public void heroMove(MoveRequest parsedRequest) {
-		Log.i(TAG, "User wants to move : " + parsedRequest.getHeroId());
+		//Log.i(TAG, "User wants to move : " + parsedRequest.getHeroId());
 		Hero usersHero = getHeroById(parsedRequest.getHeroId());
 		if (usersHero != null) {
 			usersHero.setPositionX(parsedRequest.getPositionX());
 			usersHero.setPositionZ(parsedRequest.getPositionZ());
 			usersHero.setDesiredPositionX(parsedRequest.getDesiredPositionX());
 			usersHero.setDesiredPositionZ(parsedRequest.getDesiredPositionZ());
-			Log.i(TAG, "Hero : " + usersHero.toString());
+			//Log.i(TAG, "Hero : " + usersHero.toString());
 
 			animations.add(new GameAnimation("HERO_RUN", null, usersHero.getId(), null));
 		}
@@ -690,7 +705,9 @@ public class GameServer {
 					//Log.i(TAG, "Ai running Minions["+minions.size()+"] Heroes["+heroes.size()+"]");
 					// Minion logic
 					for (Minion minion : minions) {
-						minion.takeAction();
+						if (minion.isAlive()) {
+							minion.takeAction();
+						}
 					}
 
 					// Hp and Resource regeneration (This needs to keep track on how often startAI is run)
@@ -704,10 +721,21 @@ public class GameServer {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+
+					// Send request to a random client to update server with actual position of minions
+					sendRequestMinionPosition();
 				}
 			}
 		};
 		thread.start();
+	}
+
+	private void sendRequestMinionPosition() {
+		if(server.getClientCount() > 0){
+			int positionOfRandomClient = CalculationUtil.getRandomInt(0, (server.getClientCount() - 1));
+			ClientInfo clientInfo = (ClientInfo) server.getClients().get(positionOfRandomClient);
+			server.dispatchMessage(new Message(clientInfo.getId(), new Gson().toJson(new JsonResponse("UPDATE_MINION_POSITION", 200))));
+		}
 	}
 
 
@@ -803,4 +831,17 @@ public class GameServer {
 
 	}
 
+	public void updateMinionPositions(ArrayList<Minion> updatedMinions) {
+		// TODO: Do this more efficiant
+		for (Minion minion : updatedMinions){
+			for(Minion gameMinion : minions){
+				if(minion.getId() == gameMinion.getId()){
+					gameMinion.setPositionX(minion.getPositionX());
+					gameMinion.setPositionY(minion.getPositionY());
+					gameMinion.setPositionZ(minion.getPositionZ());
+				}
+			}
+
+		}
+	}
 }

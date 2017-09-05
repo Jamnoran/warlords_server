@@ -27,6 +27,7 @@ public class World {
 		server = gameServer;
 		worldLevel = lvl;
 		worldType = worldLevel;
+		//worldType = worldLevel % 5;
 
 		Random rand = new Random(System.currentTimeMillis());
 		seed = rand.nextInt();
@@ -79,6 +80,13 @@ public class World {
 
 	public void setWorldLevel(int worldLevel) {
 		this.worldLevel = worldLevel;
+	}
+
+	public boolean isWorldType(int type){
+		if(type == worldType){
+			return true;
+		}
+		return false;
 	}
 
 	public ArrayList<Point> getSpawnPoints() {

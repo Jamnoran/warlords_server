@@ -14,6 +14,7 @@ public class GameStatusResponse {
 	private ArrayList<Minion> minions = new ArrayList<>();
 	private ArrayList<Hero> heroes = new ArrayList<>();
 	private ArrayList<GameAnimation> gameAnimations = new ArrayList<>();
+	private int totalMinionsLeft = 0;
 
 	public GameStatusResponse(ArrayList<Minion> minions, ArrayList<Hero> heroes, ArrayList<GameAnimation> gameAnimations) {
 		this.minions = minions;
@@ -52,6 +53,14 @@ public class GameStatusResponse {
 
 	public void setGameAnimations(ArrayList<GameAnimation> gameAnimations) {
 		this.gameAnimations = gameAnimations;
+	}
+
+	public int getTotalMinionsLeft() {
+		return totalMinionsLeft;
+	}
+
+	public void setTotalMinionsLeft(int totalMinionsLeft) {
+		this.totalMinionsLeft = totalMinionsLeft;
 	}
 
 	@Override

@@ -72,7 +72,7 @@ public class Minion {
 	public void takeAction() {
 		if (hp > 0) {
 			if (!attackIfHasEnemy()) {
-				//findNewLocationToWalkTo();
+				findNewLocationToWalkTo();
 			}
 		}
 	}
@@ -99,15 +99,18 @@ public class Minion {
 	}
 
 	private void findNewLocationToWalkTo() {
-		if (!GameUtil.isWorldType(GameUtil.GAUNTLET, game.getWorldLevel())) {
+		if (GameUtil.isWorldType(GameUtil.DUNGEON_CRAWLER, game.getWorldLevel())) {
 
-			float newX = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
-			float newZ = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
+			//float newX = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
+			//float newZ = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
 
-			double distance = Math.hypot(getDesiredPositionX()-newX, getDesiredPositionZ()-newZ);
+			float newX = CalculationUtil.getRandomFloat(-4.0f, 3.0f);
+			float newZ = CalculationUtil.getRandomFloat(-4.0f, 3.0f);
 
-			setDesiredPositionX(getDesiredPositionX() + newX);
-			setDesiredPositionZ(getDesiredPositionZ() + newZ);
+			double distance = Math.hypot(getPositionX()-newX, getPositionZ()-newZ);
+
+			setDesiredPositionX(getPositionX() + newX);
+			setDesiredPositionZ(getPositionZ() + newZ);
 
 			if (distance >= 32.0f) {
 				//Log.i(TAG, "Sending run animation for minion distance" + distance);
@@ -261,5 +264,12 @@ public class Minion {
 				", maxHp=" + maxHp +
 				", hpPerLevel=" + hpPerLevel +
 				'}';
+	}
+
+	public boolean isAlive() {
+		if(hp > 0){
+			return true;
+		}
+		return false;
 	}
 }
