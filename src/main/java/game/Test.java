@@ -1,6 +1,7 @@
 package game;
 
 import game.logging.Log;
+import game.util.GameUtil;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -18,7 +19,20 @@ public class Test {
 		//Log.i(TAG, "Database : " + DatabaseUtil.getTalents().toString());
 
 
-		Log.i(TAG, getLobbys());
+		//Log.i(TAG, getLobbys());
+
+		int i = 1;
+		Log.i(TAG, "Level type ["+i+"]: " + GameUtil.getWorldTypeFromLevel(i));
+		i++;
+		Log.i(TAG, "Level type ["+i+"]: " + GameUtil.getWorldTypeFromLevel(i));
+		i++;
+		Log.i(TAG, "Level type ["+i+"]: " + GameUtil.getWorldTypeFromLevel(i));
+		i++;
+		Log.i(TAG, "Level type ["+i+"]: " + GameUtil.getWorldTypeFromLevel(i));
+		i++;
+		Log.i(TAG, "Level type ["+i+"]: " + GameUtil.getWorldTypeFromLevel(i));
+		i++;
+		Log.i(TAG, "Level type ["+i+"]: " + GameUtil.getWorldTypeFromLevel(i));
 
 		//Log.i(TAG, "Logging logging");
 		//Log.i("DatabaseHandler", "Testing");

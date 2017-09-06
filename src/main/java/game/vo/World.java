@@ -27,7 +27,7 @@ public class World {
 		server = gameServer;
 		worldLevel = lvl;
 		worldType = worldLevel;
-		//worldType = worldLevel % 5;
+		worldType = GameUtil.getWorldTypeFromLevel(worldLevel);
 
 		Random rand = new Random(System.currentTimeMillis());
 		seed = rand.nextInt();
