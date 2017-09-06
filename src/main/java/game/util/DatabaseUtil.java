@@ -19,119 +19,7 @@ public class DatabaseUtil {
 	private static String port = "8889";
 	private static String user = "warlord_clients";
 	private static String password = "bosse45&";
-
-	public static User createUser(User user) {
-		Connection connection = getConnection();
-		if (connection != null) {
-			try {
-				Statement stmt = connection.createStatement();
-				stmt.executeUpdate(user.getSqlInsertQuery());
-				int autoIncKeyFromApi = -1;
-				ResultSet rs = stmt.getGeneratedKeys();
-				if (rs.next()) {
-					autoIncKeyFromApi = rs.getInt(1);
-				} else {
-					// throw an exception from here
-					Log.i(TAG, "Could not get user_id");
-				}
-				Log.i(TAG, "Got user_id : " + autoIncKeyFromApi);
-				user.setId(autoIncKeyFromApi);
-				stmt.close();
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} else {
-			Log.i(TAG, "Failed to make connection!");
-		}
-		return user;
-	}
-
-	public static User getUser(Integer id) {
-		User user = null;
-		Connection connection = getConnection();
-		if (connection != null) {
-			try {
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT id, username, email, password FROM users where id = " + id);
-				while (rs.next()) {
-					user = new User();
-					//Retrieve by column name
-					user.setId(rs.getInt("id"));
-					user.setUsername(rs.getString("username"));
-					user.setEmail(rs.getString("email"));
-					user.setPassword(rs.getString("password"));
-					//Display values
-				}
-				rs.close();
-				stmt.close();
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} else {
-			Log.i(TAG, "Failed to make connection!");
-		}
-		return user;
-	}
-
-	public static User getUser(String email, String password) {
-		User user = null;
-		Connection connection = getConnection();
-		if (connection != null) {
-			try {
-				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT id, username, email, password FROM users where email = \"" + email + "\" and password = \"" + password + "\"");
-				while (rs.next()) {
-					user = new User();
-					//Retrieve by column name
-					user.setId(rs.getInt("id"));
-					user.setUsername(rs.getString("username"));
-					user.setEmail(rs.getString("email"));
-					user.setPassword(rs.getString("password"));
-					//Display values
-				}
-				rs.close();
-				stmt.close();
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} else {
-			Log.i(TAG, "Failed to make connection!");
-		}
-		return user;
-	}
-
-
-	public static Hero createHero(Integer userId, String classType) {
-		Connection connection = getConnection();
-		Hero hero = new Hero(userId);
-		hero.setClass_type(classType.trim());
-		if (connection != null) {
-			try {
-				Statement stmt = connection.createStatement();
-				stmt.executeUpdate(hero.getSqlInsertQuery());
-				int autoIncKeyFromApi = -1;
-				ResultSet rs = stmt.getGeneratedKeys();
-				if (rs.next()) {
-					autoIncKeyFromApi = rs.getInt(1);
-				} else {
-					// throw an exception from here
-					Log.i(TAG, "Could not get user_id");
-				}
-				Log.i(TAG, "Got hero_id : " + autoIncKeyFromApi);
-				hero.setId(autoIncKeyFromApi);
-				stmt.close();
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		} else {
-			Log.i(TAG, "Failed to make connection!");
-		}
-		return hero;
-	}
+	private static Integer countOfRequest = 0;
 
 	public static Hero getHero(Integer id) {
 		Hero hero = null;
@@ -140,6 +28,7 @@ public class DatabaseUtil {
 			try {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery("SELECT * FROM heroes where id = " + id);
+				countOfRequest++;
 				while (rs.next()) {
 					Log.i(TAG, "Class : " + rs.getString("class_type"));
 					if(rs.getString("class_type").equals(Hero.WARRIOR)){
@@ -183,6 +72,7 @@ public class DatabaseUtil {
 			try {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery("SELECT * FROM abilities where class_type LIKE \'" + classType + "\'");
+				countOfRequest++;
 				while (rs.next()) {
 					Ability ability = new Ability();
 					//Retrieve by column name
@@ -230,6 +120,7 @@ public class DatabaseUtil {
 			try {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery("SELECT * FROM hero_ability where hero_id = " + heroId);
+				countOfRequest++;
 				while (rs.next()) {
 					AbilityPosition ability = new AbilityPosition();
 					//Retrieve by column name
@@ -277,6 +168,7 @@ public class DatabaseUtil {
 				} else {
 					stmt.executeUpdate(abilityPosition.getSqlInsertQuery());
 				}
+				countOfRequest++;
 				stmt.close();
 				connection.close();
 			} catch (SQLException e) {
@@ -293,6 +185,7 @@ public class DatabaseUtil {
 			try {
 				Statement stmt = connection.createStatement();
 				stmt.executeUpdate(hero.getSqlUpdateQuery());
+				countOfRequest++;
 				Log.i(TAG, "Update hero_id : " + hero.getId());
 				stmt.close();
 				connection.close();
@@ -314,6 +207,7 @@ public class DatabaseUtil {
 			try {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery("SELECT * from talents");
+				countOfRequest++;
 				while (rs.next()) {
 					Talent talent = new Talent();
 					//Retrieve by column name
@@ -348,6 +242,7 @@ public class DatabaseUtil {
 			try {
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery("SELECT id, points, talent_id, hero_id FROM warlords.user_talents where hero_id = " + heroId);
+				countOfRequest++;
 				while (rs.next()) {
 					for(Talent talent : talents){
 						if (talent.getTalentId() == rs.getInt("talent_id")) {
@@ -388,6 +283,7 @@ public class DatabaseUtil {
 				Statement stmt = connection.createStatement();
 				if(talent.getId() == 0){
 					stmt.executeUpdate(talent.getSqlInsertQuery());
+					countOfRequest++;
 					int autoIncKeyFromApi = -1;
 					ResultSet rs = stmt.getGeneratedKeys();
 					if (rs.next()) {
@@ -399,6 +295,7 @@ public class DatabaseUtil {
 					}
 				}else{
 					stmt.executeUpdate(talent.getSqlUpdateQuery());
+					countOfRequest++;
 					//Log.i(TAG, "Update talent_id : " + talent.getId());
 					stmt.close();
 				}
@@ -436,8 +333,8 @@ public class DatabaseUtil {
 						connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:" + port + "/warlords", user, password);
 					}
 				} catch (SQLException e) {
-					Log.i(TAG, "Connection Failed! Check output console");
-					e.printStackTrace();
+					Log.i(TAG, "Connection Failed! Check output console try number : " + i);
+					//e.printStackTrace();
 					return null;
 				}
 			}
@@ -445,4 +342,7 @@ public class DatabaseUtil {
 		return connection;
 	}
 
+	public static Integer getCounter(){
+		return countOfRequest;
+	}
 }

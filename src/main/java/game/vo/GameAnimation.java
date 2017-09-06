@@ -10,11 +10,12 @@ public class GameAnimation {
 	private float position_x = 0.0f;
 	private float position_y = 0.0f;
 	private float position_z = 0.0f;
+	private int spellAnimationId = 0;
 
 	public GameAnimation() {
 	}
 
-	public GameAnimation(String animation_type, Integer target_id, Integer source_id, Vector3 position) {
+	public GameAnimation(String animation_type, Integer target_id, Integer source_id, Vector3 position, Integer sAnimationId) {
 		this.animation_type = animation_type;
 		this.target_id = target_id;
 		this.source_id = source_id;
@@ -23,6 +24,7 @@ public class GameAnimation {
 			this.position_y = position.getY();
 			this.position_z = position.getZ();
 		}
+		this.spellAnimationId = sAnimationId;
 	}
 
 	public String getAnimation_type() {
@@ -71,6 +73,14 @@ public class GameAnimation {
 
 	public void setPosition_z(float position_z) {
 		this.position_z = position_z;
+	}
+
+	public int getSpellAnimationId() {
+		return spellAnimationId;
+	}
+
+	public void setSpellAnimationId(int spellAnimationId) {
+		this.spellAnimationId = spellAnimationId;
 	}
 
 	@Override

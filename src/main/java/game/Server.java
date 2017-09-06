@@ -25,7 +25,11 @@ public class Server {
 		Log.i(TAG, "Server is up and running!");
 
 		// Register to webservice that we are a game server
-		WebserviceCommunication.sendGameServerOnline(portNumber);
+		try {
+			WebserviceCommunication.sendGameServerOnline(portNumber);
+		} catch (Exception e) {
+			Log.i(TAG, "Could not register this server as online");
+		}
 
 		// Open up connections for players to connect
 		lobbyServerDispatcher = new LobbyServerDispatcher();

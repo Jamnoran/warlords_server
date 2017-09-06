@@ -22,7 +22,7 @@ public class WarriorCharge extends Spell {
 
 		// Send charge ability (set that this hero target is the minion, set movement speed for a period of time)
 
-		if (getTargetEnemyList() != null && getTargetEnemyList().size() > 0) {
+		if (getTargetEnemy() != null && getTargetEnemy().size() > 0) {
 			int duration = 250;
 			Buff buff = new Buff(getHero().getId(), null, Buff.SPEED, getAbility().getValue(), duration);
 			Thread buffDurationThread = new Thread(() -> {
@@ -45,7 +45,7 @@ public class WarriorCharge extends Spell {
 			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
 
 			// Add animation to list
-			getGameServer().getAnimations().add(new GameAnimation("CHARGE", 0, getHero().getId(), null));
+			getGameServer().getAnimations().add(new GameAnimation("CHARGE", 0, getHero().getId(), null, 1));
 		}else{
 			Log.i(TAG, "Hero had no target, canceling ability");
 		}

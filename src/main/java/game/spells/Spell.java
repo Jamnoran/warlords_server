@@ -33,11 +33,11 @@ public class Spell {
 
 	public boolean init(){
 		// Check if has a friendly target
-		if(targetFriendly != null){
+		if(targetFriendly != null && targetFriendly.size() > 0){
 			targetFriendlyList = new ArrayList<>();
 			targetFriendlyList.add(gameServer.getHeroById(targetFriendly.get(0)));
 		}else{
-			// If not then heal lowest % hp ally
+			// Auto set the lowest hp friendly target otherwise
 			targetFriendlyList = new ArrayList<>();
 			targetFriendlyList.add(gameServer.getHeroWithLowestHp());
 		}
@@ -72,6 +72,12 @@ public class Spell {
 		}else {
 			minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamage, 0.0f));
 		}
+	}
+
+
+	public void healHero(Integer heroId, float amount) {
+		float totalAmount = Math.round(amount);
+		gameServer.getHeroById(heroId).heal(totalAmount);
 	}
 
 	public Ability getAbility() {

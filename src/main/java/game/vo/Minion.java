@@ -265,4 +265,11 @@ public class Minion {
 				", hpPerLevel=" + hpPerLevel +
 				'}';
 	}
+
+	public boolean isAlive() {
+		if(hp > 0){
+			return true;
+		}
+		return false;
+	}
 }
