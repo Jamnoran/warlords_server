@@ -33,7 +33,7 @@ public class Spell {
 
 	public boolean init(){
 		// Check if has a friendly target
-		if(targetFriendly != null && targetFriendly.size() > 0){
+		if(targetFriendly != null && targetFriendly.size() > 0 && targetFriendly.get(0) > 0){
 			targetFriendlyList = new ArrayList<>();
 			targetFriendlyList.add(gameServer.getHeroById(targetFriendly.get(0)));
 		}else{
@@ -41,13 +41,22 @@ public class Spell {
 			targetFriendlyList = new ArrayList<>();
 			targetFriendlyList.add(gameServer.getHeroWithLowestHp());
 		}
+		// Fix from signle target to the list of targets
+		if(targetEnemy != null && targetEnemy.size() > 0){
+			targetEnemyList = new ArrayList<>();
+			for(Integer minionId : targetEnemy){
+				Minion min = gameServer.getMinionById(minionId);
+				if (min != null) {
+					targetEnemyList.add(min);
+				}else{
+					Log.i(TAG, "Could not get minion by this id : " + minionId);
+				}
+			}
+		}
 
 		// Remove mana return false if cant use spell (should be handled on client side as well)
-		if (targetFriendlyList != null && hero.hasResourceForSpellHeal() && ability.isAbilityOffCD(time)) {
-
+		if (hero.hasResourceForSpellHeal() && ability.isAbilityOffCD(time)) {
 			getGameServer().sendCooldownInformation(ability, hero.getId());
-
-			// Add threat to all targets close by (of target location or healer location?)
 			return true;
 		}else if (targetFriendlyList != null && !hero.hasResourceForSpellHeal()){
 			Log.i(TAG, "Hero does not have enough mana for use of ability");

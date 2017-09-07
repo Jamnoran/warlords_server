@@ -598,7 +598,7 @@ public class GameServer {
 		return null;
 	}
 
-	private Minion getMinionById(Integer minionId) {
+	public Minion getMinionById(Integer minionId) {
 		for (Minion minion : minions) {
 			if (minion.getId() == minionId) {
 				return minion;
@@ -641,14 +641,12 @@ public class GameServer {
 	 */
 	public Hero getHeroWithLowestHp() {
 		Hero targetHero = null;
-		for (Hero lowestHHpHero : heroes) {
-			if (lowestHHpHero.getHp() < lowestHHpHero.getMaxHp()) {
-				if (targetHero == null) {
-					targetHero = lowestHHpHero;
-				} else if (lowestHHpHero.getHp() < targetHero.getHp()) {
-					targetHero = lowestHHpHero;
-					Log.i(TAG, "Found a target with lower hp : " + lowestHHpHero.getId());
-				}
+		for (Hero lowestHpHero : heroes) {
+			if (targetHero == null) {
+				targetHero = lowestHpHero;
+			} else if (lowestHpHero.getHp() < targetHero.getHp()) {
+				targetHero = lowestHpHero;
+				Log.i(TAG, "Found a target with lower hp : " + lowestHpHero.getId());
 			}
 		}
 		return targetHero;

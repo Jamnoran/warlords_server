@@ -25,7 +25,9 @@ public class PriestHeal extends Spell {
 		if(getTargetFriendlyList() != null && getTargetFriendlyList().size() > 0) {
 			try {
 				for (Hero hero : getTargetFriendlyList()) {
+
 					Log.i(TAG, "Target Hero to heal : " + hero.getId());
+
 					// Get heal amount
 					Priest priest = (Priest) getHero();
 					float healAmount = priest.getSpellDamage(getAbility());

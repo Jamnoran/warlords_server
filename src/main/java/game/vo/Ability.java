@@ -26,6 +26,7 @@ public class Ability {
 	private int position = 0;
 	private transient long millisLastUse = -1000000;
 	private boolean isCasting = false;
+	private int resourceCost = 0;
 
 	public int getId() {
 		return id;
@@ -179,6 +180,14 @@ public class Ability {
 		this.calculatedCastTime = calculatedCastTime;
 	}
 
+	public int getResourceCost() {
+		return resourceCost;
+	}
+
+	public void setResourceCost(int resourceCost) {
+		this.resourceCost = resourceCost;
+	}
+
 	public boolean isAbilityOffCD(long time) {
 		Log.i(TAG, "Time until next time we can use ability: " + (time - (getMillisLastUse() + getBaseCD())));
 		Log.i(TAG, "Can use ability : " + (getMillisLastUse() + getBaseCD() <= time) + " negative number is its not yet off cd");
@@ -200,12 +209,14 @@ public class Ability {
 				", value=" + value +
 				", crittable=" + crittable +
 				", castTime=" + castTime +
+				", calculatedCastTime=" + calculatedCastTime +
 				", targetType='" + targetType + '\'' +
 				", timeWhenOffCooldown='" + timeWhenOffCooldown + '\'' +
 				", baseCD=" + baseCD +
 				", position=" + position +
 				", millisLastUse=" + millisLastUse +
 				", isCasting=" + isCasting +
+				", resourceCost=" + resourceCost +
 				'}';
 	}
 }

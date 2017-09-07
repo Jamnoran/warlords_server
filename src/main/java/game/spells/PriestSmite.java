@@ -50,7 +50,9 @@ public class PriestSmite extends Spell {
 			getGameServer().sendCastBarInformation(getAbility());
 
 			// Add animation to list
-			getGameServer().getAnimations().add(new GameAnimation("SMITE", 0, getHero().getId(), null, 3));
+			getGameServer().getAnimations().add(new GameAnimation("SMITE", 0, getHero().getId(), null, 2));
+		}else{
+			Log.i(TAG, "Did not have a target...");
 		}
 	}
 

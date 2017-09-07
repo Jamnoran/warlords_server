@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * Created by Jamnoran on 27-Jun-16.
  */
 public class AbilityStatusResponse {
-	private String response_type = "GAME_STATUS";
+	private String response_type = "ABILITY_STATUS";
 	private Ability ability = new Ability();
 
 	public AbilityStatusResponse(Ability abi) {
