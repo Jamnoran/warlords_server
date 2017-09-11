@@ -14,8 +14,8 @@ import java.util.ArrayList;
  */
 public class DatabaseUtil {
 	private static final String TAG = DatabaseUtil.class.getSimpleName();
-	private static boolean local = false;
-	private static String ip = "warlord.ga";
+//	private static String ip = "warlord.ga";
+	private static String ip = "192.168.0.215";
 	private static String port = "8889";
 	private static String user = "warlord_clients";
 	private static String password = "bosse45&";
@@ -328,11 +328,11 @@ public class DatabaseUtil {
 		for(int i = 0 ; i < tries ; i++){
 			if(connection == null){
 				try {
-					if (!local) {
+//					if (!) {
 						connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "/warlords", user, password);
-					}else{
-						connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:" + port + "/warlords", user, password);
-					}
+//					}else{
+//						connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:" + port + "/warlords", user, password);
+//					}
 				} catch (SQLException e) {
 					Log.i(TAG, "Connection Failed! Check output console try number : " + i);
 					//e.printStackTrace();

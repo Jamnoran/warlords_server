@@ -14,6 +14,7 @@ public class Server {
 	private static final String TAG = Server.class.getSimpleName();
 	// Configuration;
 	static int portNumber = 2055;
+	public static boolean local = true;
 	private static LobbyServerDispatcher lobbyServerDispatcher;
 
 
@@ -25,10 +26,12 @@ public class Server {
 		Log.i(TAG, "Server is up and running!");
 
 		// Register to webservice that we are a game server
-		try {
-			WebserviceCommunication.sendGameServerOnline(portNumber);
-		} catch (Exception e) {
-			Log.i(TAG, "Could not register this server as online");
+		if (!local) {
+			try {
+				WebserviceCommunication.sendGameServerOnline(portNumber);
+			} catch (Exception e) {
+				Log.i(TAG, "Could not register this server as online");
+			}
 		}
 
 		// Open up connections for players to connect

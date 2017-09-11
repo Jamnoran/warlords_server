@@ -420,6 +420,11 @@ public class GameServer {
 				Log.i(TAG, "Priest used Shield!");
 				priestShield((Priest) hero, parsedRequest);
 				break;
+
+			case 26:
+				Log.i(TAG, "Warlock used drain life!");
+				warlockDrain((Warlock) hero, parsedRequest);
+				break;
 			default:
 				Log.i(TAG, "Did not find spell with id: " + parsedRequest.getSpell_id());
 				break;
@@ -828,6 +833,26 @@ public class GameServer {
 	private void warriorBuff(Warrior hero, SpellRequest parsedRequest) {
 
 	}
+
+	// 		Warlock
+
+	private void warlockDrain(Warlock hero, SpellRequest parsedRequest) {
+		WarlockDrainLife spell = new WarlockDrainLife(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		if (spell.init()) {
+			spell.execute();
+			sendGameStatus();
+		} else {
+			Log.i(TAG, "Could not send spell, probably because of mana or cd");
+		}
+	}
+
+
+
+
+
+
+
+
 
 	public void updateMinionPositions(ArrayList<Minion> updatedMinions) {
 		// TODO: Do this more efficiant

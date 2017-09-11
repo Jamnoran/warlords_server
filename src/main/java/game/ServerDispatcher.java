@@ -140,12 +140,6 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("END_GAME")) {
 				Log.i(TAG, "Got request to end game, this needs to be changed later so that last on leaving game will end the game as well.");
 				endGame();
-			} else if (request.isType("SELF_DAMAGE")) {
-				Log.i(TAG, "User wanted to hurt himself, deal 5 damage to him!.");
-				for (Hero hero : gameServer.getHeroes()) {
-					hero.takeDamage(5.0f);
-					gameServer.sendGameStatus();
-				}
 			}
 			notify();
 		}
