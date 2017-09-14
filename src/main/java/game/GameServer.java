@@ -135,7 +135,7 @@ public class GameServer {
 		if (pointAdded) {
 			Log.i(TAG, "Sending new spawn location for heroes");
 			for (Hero hero : heroes) {
-				if (hero.getPositionX() == 0.0f && hero.getPositionZ() == 0.0f) {
+				//if (hero.getPositionX() == 0.0f && hero.getPositionZ() == 0.0f) {
 					Vector3 location = getFreeStartPosition();
 					hero.setPositionX(location.getX());
 					hero.setPositionZ(location.getZ());
@@ -144,7 +144,7 @@ public class GameServer {
 					hero.setDesiredPositionX(location.getX());
 					hero.setDesiredPositionZ(location.getZ());
 					Log.i(TAG, "Setting new location for hero " + hero.getId() + " " + hero.getPositionX() + "x" + hero.getPositionZ() + "y" + hero.getPositionY());
-				}
+				//}
 			}
 			sendTeleportPlayers();
 		}
