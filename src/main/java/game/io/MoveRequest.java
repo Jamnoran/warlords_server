@@ -11,12 +11,24 @@ public class MoveRequest extends JsonRequest{
 	private Integer heroId;
 	@SerializedName("position_x")
 	private float positionX = 6.0f;
+	@SerializedName("position_y")
+	private float positionY = 6.0f;
 	@SerializedName("position_z")
 	private float positionZ = 5.0f;
 	@SerializedName("desired_position_x")
 	private float desiredPositionX = 6.0f;
+	@SerializedName("desired_position_y")
+	private float desiredPositionY = 6.0f;
 	@SerializedName("desired_position_z")
 	private float desiredPositionZ = 5.0f;
+
+	public Integer getHeroId() {
+		return heroId;
+	}
+
+	public void setHeroId(Integer heroId) {
+		this.heroId = heroId;
+	}
 
 	public float getPositionX() {
 		return positionX;
@@ -24,6 +36,14 @@ public class MoveRequest extends JsonRequest{
 
 	public void setPositionX(float positionX) {
 		this.positionX = positionX;
+	}
+
+	public float getPositionY() {
+		return positionY;
+	}
+
+	public void setPositionY(float positionY) {
+		this.positionY = positionY;
 	}
 
 	public float getPositionZ() {
@@ -42,6 +62,14 @@ public class MoveRequest extends JsonRequest{
 		this.desiredPositionX = desiredPositionX;
 	}
 
+	public float getDesiredPositionY() {
+		return desiredPositionY;
+	}
+
+	public void setDesiredPositionY(float desiredPositionY) {
+		this.desiredPositionY = desiredPositionY;
+	}
+
 	public float getDesiredPositionZ() {
 		return desiredPositionZ;
 	}
@@ -50,21 +78,15 @@ public class MoveRequest extends JsonRequest{
 		this.desiredPositionZ = desiredPositionZ;
 	}
 
-	public Integer getHeroId() {
-		return heroId;
-	}
-
-	public void setHeroId(Integer heroId) {
-		this.heroId = heroId;
-	}
-
 	@Override
 	public String toString() {
 		return "MoveRequest{" +
 				"heroId=" + heroId +
 				", positionX=" + positionX +
+				", positionY=" + positionY +
 				", positionZ=" + positionZ +
 				", desiredPositionX=" + desiredPositionX +
+				", desiredPositionY=" + desiredPositionY +
 				", desiredPositionZ=" + desiredPositionZ +
 				'}';
 	}
