@@ -566,12 +566,12 @@ public class GameServer {
 		Hero usersHero = getHeroById(parsedRequest.getHeroId());
 		if (usersHero != null) {
 			usersHero.setPositionX(parsedRequest.getPositionX());
-			usersHero.setPositionY(parsedRequest.getPositionX());
+			usersHero.setPositionY(parsedRequest.getPositionY());
 			usersHero.setPositionZ(parsedRequest.getPositionZ());
 			usersHero.setDesiredPositionX(parsedRequest.getDesiredPositionX());
 			usersHero.setDesiredPositionY(parsedRequest.getDesiredPositionY());
 			usersHero.setDesiredPositionZ(parsedRequest.getDesiredPositionZ());
-			//Log.i(TAG, "Hero : " + usersHero.toString());
+			Log.i(TAG, "Hero : " + usersHero.toString());
 
 			animations.add(new GameAnimation("HERO_RUN", null, usersHero.getId(), null, 0));
 		}

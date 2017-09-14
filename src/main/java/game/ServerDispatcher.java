@@ -92,7 +92,7 @@ public class ServerDispatcher extends Thread {
 				gameServer.attack(parsedRequest.getHeroId(), parsedRequest.getMinion_id(), parsedRequest.getTime());
 			} else if (request.isType("MOVE")) {
 				MoveRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MoveRequest.class);
-				//Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				gameServer.heroMove(parsedRequest);
 			} else if (request.isType("SPELL")) {
 				SpellRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SpellRequest.class);
