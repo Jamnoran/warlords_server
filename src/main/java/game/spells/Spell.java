@@ -89,6 +89,17 @@ public class Spell {
 		gameServer.getHeroById(heroId).heal(totalAmount);
 	}
 
+	public void damageHero(Integer heroId, float amount){
+		float totalAmount = Math.round(amount);
+		gameServer.getHeroById(heroId).takeDamage(totalAmount);
+	}
+
+
+	public void restoreResources(Integer heroId, float amount) {
+		float totalAmount = Math.round(amount);
+		gameServer.getHeroById(heroId).restoreResource(totalAmount);
+	}
+
 	public Ability getAbility() {
 		return ability;
 	}

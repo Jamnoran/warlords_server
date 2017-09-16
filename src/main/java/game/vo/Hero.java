@@ -58,6 +58,7 @@ public class Hero {
 	private transient ArrayList<Ability> abilities;
 	private transient ArrayList<Talent> talents;
 	private ArrayList<Buff> buffs = new ArrayList<>();
+	private ArrayList<Buff> deBuffs = new ArrayList<>();
 
 	public Hero() {
 	}
@@ -294,6 +295,14 @@ public class Hero {
 		this.buffs = buffs;
 	}
 
+	public ArrayList<Buff> getDeBuffs() {
+		return deBuffs;
+	}
+
+	public void setDeBuffs(ArrayList<Buff> deBuffs) {
+		this.deBuffs = deBuffs;
+	}
+
 	public void heal(float healAmount) {
 		hp = hp + Math.round(healAmount);
 		if(hp > maxHp){
@@ -494,6 +503,15 @@ public class Hero {
 			Buff buff = buffIterator.next();
 			if(buff.type == removingBuff.type){
 				buffIterator.remove();
+			}
+		}
+	}
+
+	public void restoreResource(float totalAmount) {
+		if(resource >= 1 && resource < maxResource){
+			resource = resource + Math.round(totalAmount);
+			if(resource > maxResource){
+				resource = maxResource;
 			}
 		}
 	}

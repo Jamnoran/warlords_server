@@ -27,6 +27,7 @@ public class Ability {
 	private transient long millisLastUse = -1000000;
 	private boolean isCasting = false;
 	private int resourceCost = 0;
+	private transient int defaultTickMillis = 1000;
 
 	public int getId() {
 		return id;
@@ -186,6 +187,14 @@ public class Ability {
 
 	public void setResourceCost(int resourceCost) {
 		this.resourceCost = resourceCost;
+	}
+
+	public int getDefaultTickMillis() {
+		return defaultTickMillis;
+	}
+
+	public void setDefaultTickMillis(int defaultTickMillis) {
+		this.defaultTickMillis = defaultTickMillis;
 	}
 
 	public boolean isAbilityOffCD(long time) {

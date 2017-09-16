@@ -43,7 +43,7 @@ public class GameServer {
 		Log.i(TAG, "Game server is initilized, creating world");
 		this.server = server;
 		createWorld();
-		startAI();
+		startGameTicks();
 	}
 
 
@@ -420,10 +420,17 @@ public class GameServer {
 				Log.i(TAG, "Priest used Shield!");
 				priestShield((Priest) hero, parsedRequest);
 				break;
-
 			case 26:
 				Log.i(TAG, "Warlock used drain life!");
 				warlockDrain((Warlock) hero, parsedRequest);
+				break;
+			case 27:
+				Log.i(TAG, "Warlock used haemorrhage!");
+				warlockHaemorrhage((Warlock) hero, parsedRequest);
+				break;
+			case 28:
+				Log.i(TAG, "Warlock used restore!");
+				warlockRestore((Warlock) hero, parsedRequest);
 				break;
 			default:
 				Log.i(TAG, "Did not find spell with id: " + parsedRequest.getSpell_id());
@@ -511,15 +518,7 @@ public class GameServer {
 
 						Log.i(TAG, "Found hero that's attacking : " + hero.getClass_type() + " hp of minion is : " + minion.getHp());
 						float totalDamage = Math.round(minion.calculateDamageReceived(hero.getAttackDamage()));
-						if (minion.takeDamage(totalDamage)) {
-							Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
-							minionDied(hero.getId(), minion.getId());
-							//removeMinion(minion.getId());
-							// Send stop movement to all attacking this minion
-							stopHero(hero.id);
-						} else {
-							minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamage, 0.0f));
-						}
+						dealDamageToMinion(hero, minion, totalDamage);
 						sendCooldownInformation(hero.getAbility(0), hero.getId());
 						Log.i(TAG, "Minion size now: " + minions.size());
 						// Send updated status a while after animation is sent for mapping to animation hitting minion.
@@ -532,6 +531,17 @@ public class GameServer {
 			}
 		} else {
 			Log.i(TAG, "Hero is not ready for auto attack");
+		}
+	}
+
+	public void dealDamageToMinion(Hero hero, Minion minion, float damage){
+		if (minion.takeDamage(damage)) {
+			Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
+			minionDied(hero.getId(), minion.getId());
+			// Send stop movement to all attacking this minion
+			stopHero(hero.id);
+		} else {
+			minion.addThreat(new Threat(hero.getId(), 0.0f, damage, 0.0f));
 		}
 	}
 
@@ -583,6 +593,24 @@ public class GameServer {
 		animations.add(new GameAnimation("HERO_IDLE", null, usersHero.getId(), null, 0));
 	}
 
+
+	public void updateMinionPositions(ArrayList<Minion> updatedMinions) {
+		// TODO: Do this more efficiant
+		for (Minion minion : updatedMinions){
+			for(Minion gameMinion : minions){
+				if(minion.getId() == gameMinion.getId()){
+					gameMinion.setPositionX(minion.getPositionX());
+					gameMinion.setPositionY(minion.getPositionY());
+					gameMinion.setPositionZ(minion.getPositionZ());
+				}
+			}
+
+		}
+	}
+
+	public void addTick(Tick tick) {
+		ticks.add(tick);
+	}
 
 	// Utility methods
 
@@ -703,36 +731,122 @@ public class GameServer {
 
 	// Living game world
 
-	public void startAI() {
-		Thread thread = new Thread() {
-			public void run() {
-				while (gameRunning) {
-					//Log.i(TAG, "Ai running Minions["+minions.size()+"] Heroes["+heroes.size()+"]");
-					// Minion logic
+	private Thread tickThread;
+	private int threadTick = 100;
+	private int gameStatusTickTime = 1000;
+	private int minionActionTickTime = 500;
+	private int heroRegenTickTime = 2000;
+	private int requestMinionPositionTickTime = 1000;
+
+	public ArrayList<Tick> ticks = new ArrayList<>();
+	private void startGameTicks() {
+		ticks.add(new Tick((System.currentTimeMillis() + gameStatusTickTime), Tick.GAME_STATUS));
+		ticks.add(new Tick((System.currentTimeMillis() + minionActionTickTime), Tick.MINION_ACTION));
+		ticks.add(new Tick((System.currentTimeMillis() + heroRegenTickTime), Tick.HERO_REGEN));
+		ticks.add(new Tick((System.currentTimeMillis() + requestMinionPositionTickTime), Tick.REQUEST_MINION_POSITION));
+		Log.i(TAG, "Starting new thread");
+		tickThread = new Thread(() -> {
+			while (gameRunning ) {
+				Collections.sort(ticks);
+
+				boolean addNewGameStatus = false;
+				boolean addMinionAction = false;
+				boolean addHeroRegen = false;
+				boolean addRequestMinionPosition = false;
+
+				boolean minionDebuffAction = false;
+
+
+				// Check ticks if they should be actioned
+				Iterator<Tick> iterator = ticks.iterator();
+				while (iterator.hasNext()) {
+					Tick tick = iterator.next();
+					if(System.currentTimeMillis() >= tick.timeToActivate){
+						if (tick.typeOfTick != Tick.GAME_STATUS && tick.typeOfTick != Tick.REQUEST_MINION_POSITION && tick.typeOfTick != Tick.HERO_REGEN && tick.typeOfTick != Tick.MINION_ACTION) {
+							Log.i(TAG, "Activated this tick : " + tick.timeToActivate + " of type " + tick.typeOfTick);
+						}
+						if(tick.typeOfTick == Tick.GAME_STATUS) {
+							addNewGameStatus = true;
+						}
+						if(tick.typeOfTick == Tick.MINION_ACTION) {
+							addMinionAction = true;
+						}
+						if(tick.typeOfTick == Tick.HERO_REGEN) {
+							addHeroRegen = true;
+						}
+						if(tick.typeOfTick == Tick.REQUEST_MINION_POSITION) {
+							addRequestMinionPosition = true;
+						}
+						if(tick.typeOfTick == Tick.MINION_DEBUFF){
+							minionDebuffAction = true;
+						}
+						iterator.remove();
+					}
+				}
+
+				try {
+					sleep(threadTick);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				if (addNewGameStatus) {
+					sendGameStatus();
+					ticks.add(new Tick((System.currentTimeMillis() + gameStatusTickTime), Tick.GAME_STATUS));
+				}
+				if (addMinionAction) {
 					for (Minion minion : minions) {
 						if (minion.isAlive()) {
 							minion.takeAction();
 						}
 					}
+					ticks.add(new Tick((System.currentTimeMillis() + minionActionTickTime), Tick.MINION_ACTION));
+				}
 
-					// Hp and Resource regeneration (This needs to keep track on how often startAI is run)
+				if(minionDebuffAction){
+					minionDebuffs();
+				}
+
+				if (addHeroRegen) {
 					for (Hero hero : heroes) {
 						hero.regenTick();
 					}
+					ticks.add(new Tick((System.currentTimeMillis() + heroRegenTickTime), Tick.HERO_REGEN));
+				}
 
-					sendGameStatus();
-					try {
-						sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
+				if (addRequestMinionPosition) {
 					// Send request to a random client to update server with actual position of minions
 					sendRequestMinionPosition();
+					ticks.add(new Tick((System.currentTimeMillis() + requestMinionPositionTickTime), Tick.HERO_REGEN));
 				}
 			}
-		};
-		thread.start();
+
+		});
+		tickThread.start();
+	}
+
+	private void minionDebuffs() {
+		for (Minion minion : minions) {
+			if (minion.isAlive()) {
+				// Take action for debuffs
+				if(minion.getDeBuffs().size() > 0){
+					Iterator<Buff> iterator = minion.getDeBuffs().iterator();
+					while (iterator.hasNext()) {
+						Buff debuff = iterator.next();
+						if(debuff.tickTime > 0 && (System.currentTimeMillis() >= debuff.tickTime)){
+							debuff.tickTime = System.currentTimeMillis() + debuff.duration;
+							if(debuff.type == Buff.DOT){
+								dealDamageToMinion(getHeroById(debuff.heroId), minion, debuff.value);
+								debuff.ticks--;
+								if(debuff.ticks == 0){
+									iterator.remove();
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private void sendRequestMinionPosition() {
@@ -848,25 +962,26 @@ public class GameServer {
 		}
 	}
 
-
-
-
-
-
-
-
-
-	public void updateMinionPositions(ArrayList<Minion> updatedMinions) {
-		// TODO: Do this more efficiant
-		for (Minion minion : updatedMinions){
-			for(Minion gameMinion : minions){
-				if(minion.getId() == gameMinion.getId()){
-					gameMinion.setPositionX(minion.getPositionX());
-					gameMinion.setPositionY(minion.getPositionY());
-					gameMinion.setPositionZ(minion.getPositionZ());
-				}
-			}
-
+	private void warlockHaemorrhage(Warlock hero, SpellRequest parsedRequest) {
+		WarlockHaemorrhage spell = new WarlockHaemorrhage(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		if (spell.init()) {
+			spell.execute();
+			sendGameStatus();
+		} else {
+			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}
 	}
+
+	private void warlockRestore(Warlock hero, SpellRequest parsedRequest) {
+		WarlockRestore spell = new WarlockRestore(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		if (spell.init()) {
+			spell.execute();
+			sendGameStatus();
+		} else {
+			Log.i(TAG, "Could not send spell, probably because of mana or cd");
+		}
+	}
+
+
+
 }

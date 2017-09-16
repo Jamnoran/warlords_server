@@ -4,7 +4,7 @@ package game.io;
 /**
  * Created by Jamnoran on 30-Jun-16.
  */
-public class HeroBuffResponse extends JsonRequest{
+public class HeroBuffResponse extends JsonRequest {
 
 	public String response_type = "HERO_BUFF";
 	public Integer heroId;

@@ -32,6 +32,8 @@ public class Minion {
 	private transient Long timeLastAttack = null;
 	private transient ArrayList<Threat> threats = new ArrayList<Threat>();
 	private transient int baseXp = 100;
+	private ArrayList<Buff> buffs = new ArrayList<>();
+	private ArrayList<Buff> deBuffs = new ArrayList<>();
 
 	public Minion(GameServer game) {
 		this.game = game;
@@ -51,7 +53,6 @@ public class Minion {
 		setPositionY(posY);
 		setDesiredPositionY(posY);
 	}
-
 
 //	public void startAI(){
 //		Thread thread = new Thread(){
@@ -234,10 +235,27 @@ public class Minion {
 		this.id = id;
 	}
 
+	public ArrayList<Buff> getBuffs() {
+		return buffs;
+	}
+
+	public void setBuffs(ArrayList<Buff> buffs) {
+		this.buffs = buffs;
+	}
+
+	public ArrayList<Buff> getDeBuffs() {
+		return deBuffs;
+	}
+
+	public void setDeBuffs(ArrayList<Buff> deBuffs) {
+		this.deBuffs = deBuffs;
+	}
+
 	public float calculateDamageReceived(float damage) {
 		// Calculate if minion has armor or dodge chance
 		return damage;
 	}
+
 	public boolean takeDamage(float damageAfterMinionCalculation) {
 		hp = hp - Math.round(damageAfterMinionCalculation);
 		if(hp <= 0){
@@ -271,5 +289,9 @@ public class Minion {
 			return true;
 		}
 		return false;
+	}
+
+	public void addDebuff(Buff debuff) {
+		deBuffs.add(debuff);
 	}
 }
