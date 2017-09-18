@@ -33,6 +33,9 @@ public class WarriorTaunt extends Spell {
 		getAbility().setMillisLastUse(getTime());
 		getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
 
+		// Send castbar information
+		getGameServer().sendCastBarInformation(getAbility());
+
 		// Add animation to list
 		getGameServer().getAnimations().add(new GameAnimation("TAUNT", 0, getHero().getId(), null, 2));
 	}

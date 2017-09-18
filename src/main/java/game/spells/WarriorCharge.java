@@ -42,6 +42,10 @@ public class WarriorCharge extends Spell {
 			getAbility().setMillisLastUse(getTime());
 			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
 
+
+			// Send castbar information
+			getGameServer().sendCastBarInformation(getAbility());
+
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("CHARGE", 0, getHero().getId(), null, 1));
 		}else{
