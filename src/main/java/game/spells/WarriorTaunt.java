@@ -38,6 +38,10 @@ public class WarriorTaunt extends Spell {
 
 		// Add animation to list
 		getGameServer().getAnimations().add(new GameAnimation("TAUNT", 0, getHero().getId(), null, 2));
+
+		setSpellCooldown(false);
+
+		super.execute();
 	}
 
 }

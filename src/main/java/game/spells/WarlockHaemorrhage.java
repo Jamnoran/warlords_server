@@ -55,6 +55,7 @@ public class WarlockHaemorrhage extends Spell {
 		}else{
 			Log.i(TAG, "Cant use spell cos we dont have target or we are casting already " + getAbility().isCasting());
 		}
+		super.execute();
 	}
 
 
@@ -76,11 +77,7 @@ public class WarlockHaemorrhage extends Spell {
 				getGameServer().addTick(new Tick(firstTick + (i * getAbility().getDefaultTickMillis()), Tick.MINION_DEBUFF));
 			}
 
-			// Set the cooldown for this ability
-			getAbility().setMillisLastUse(getTime());
-			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
-			//getGameServer().sendGameStatus();
-			getAbility().setCasting(false);
+			setSpellCooldown(true);
 		}else{
 			Log.i(TAG, "Not doing ability since value is : " + getAbility().getValue());
 		}

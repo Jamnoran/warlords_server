@@ -5,7 +5,6 @@ import game.logging.Log;
 import game.vo.Ability;
 import game.vo.GameAnimation;
 import game.vo.Hero;
-import game.vo.classes.Priest;
 import game.vo.classes.Warlock;
 
 import java.util.ArrayList;
@@ -51,6 +50,8 @@ public class WarlockDrainLife extends Spell {
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("DRAIN", 0, getHero().getId(), null, 1));
 		}
+
+		super.execute();
 	}
 
 
@@ -62,11 +63,7 @@ public class WarlockDrainLife extends Spell {
 
 			healHero(getHero().id, amount);
 
-			// Set the cooldown for this ability
-			getAbility().setMillisLastUse(getTime());
-			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
-			getGameServer().sendGameStatus();
-			getAbility().setCasting(false);
+			setSpellCooldown(true);
 		}
 	}
 }

@@ -41,7 +41,7 @@ public class Spell {
 			targetFriendlyList = new ArrayList<>();
 			targetFriendlyList.add(gameServer.getHeroWithLowestHp());
 		}
-		// Fix from signle target to the list of targets
+		// Fix from single target to the list of targets
 		if(targetEnemy != null && targetEnemy.size() > 0){
 			targetEnemyList = new ArrayList<>();
 			for(Integer minionId : targetEnemy){
@@ -54,22 +54,68 @@ public class Spell {
 			}
 		}
 
-		// Remove mana return false if cant use spell (should be handled on client side as well)
-		if (hero.hasResourceForSpellHeal() && ability.isAbilityOffCD(time)) {
-			getGameServer().sendCooldownInformation(ability, hero.getId());
-			return true;
-		}else if (targetFriendlyList != null && !hero.hasResourceForSpellHeal()){
-			Log.i(TAG, "Hero does not have enough mana for use of ability");
+		// Return false if not has resources
+		if(!checkForResourses(hero, getAbility())){
+			Log.i(TAG, "Has enough resources");
 			return false;
-		}else if (targetFriendlyList != null && !ability.isAbilityOffCD(getTime())){
+		}
+
+		// Return false if not off cd
+		if(!ability.isAbilityOffCD(time)){
 			Log.i(TAG, "Ability not of cooldown");
 			return false;
+		}
+
+		// Return false if no target (Check ability target type)
+
+		getGameServer().sendCooldownInformation(ability, hero.getId());
+		Log.i(TAG, "Spell is ok to cast");
+		return true;
+	}
+
+	private boolean checkForResourses(Hero hero, Ability ability) {
+		if(hero.getClass_type().equals("WARLOCK")){
+			float abilityCost = hero.getMaxHp() * (ability.getResourceCost() / 100);
+			if(hero.getHp() > Math.round(abilityCost)){
+				Log.i(TAG, "Has hp enough for spell");
+				return true;
+			}
+		}else{
+			int resourceCostCost = ability.getResourceCost();
+			if(hero.getResource() > resourceCostCost){
+				Log.i(TAG, "Has resourses");
+				return true;
+			}
 		}
 		return false;
 	}
 
 	public void execute() {
+		Log.i(TAG, "Execute done on spell ");
+		if(hero.getClass_type().equals("WARLOCK")){
+			float abilityCost = hero.getMaxHp() * (((float)ability.getResourceCost())/ 100);
+			if(hero.getHp() > Math.round(abilityCost)){
+				Log.i(TAG, "Has hp enough for spell hp cost:  "  + abilityCost);
+				hero.takeDamage(Math.round(abilityCost));
+			}
+		}else{
+			int resourceCostCost = ability.getResourceCost();
+			Log.i(TAG, "Has resourses");
+			hero.setResource(hero.getResource() - resourceCostCost);
+			if(hero.getResource() < 0){
+				hero.setResource(0);
+			}
+		}
+	}
 
+	public void setSpellCooldown(boolean clearSetCasting){
+		// Set the cooldown for this ability
+		getAbility().setMillisLastUse(getTime());
+		getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
+		getGameServer().sendGameStatus();
+		if (clearSetCasting) {
+			getAbility().setCasting(false);
+		}
 	}
 
 	public void damageMinion(Minion minion, float damageAmount) {

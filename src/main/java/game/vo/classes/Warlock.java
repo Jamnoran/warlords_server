@@ -26,9 +26,6 @@ public class Warlock extends Hero {
 	public void generateHeroInformation() {
 		setHp(hpPerLevel * getLevel());
 		setMaxHp(getHp());
-		setResource(resourcePerLevel * getLevel());
-		setMaxResource(getResource());
-		Log.i(TAG, "Warlock is initialized with stats");
 		setStrength(strPerLevel * getLevel());
 		setStamina(staPerLevel * getLevel());
 		setDexterity(dexPerLevel * getLevel());

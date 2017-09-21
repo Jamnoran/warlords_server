@@ -48,9 +48,12 @@ public class WarriorCharge extends Spell {
 
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("CHARGE", 0, getHero().getId(), null, 1));
+
+			setSpellCooldown(false);
 		}else{
 			Log.i(TAG, "Hero had no target, canceling ability");
 		}
+		super.execute();
 	}
 
 }

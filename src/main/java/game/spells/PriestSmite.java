@@ -5,9 +5,7 @@ import game.logging.Log;
 import game.vo.Ability;
 import game.vo.GameAnimation;
 import game.vo.Hero;
-import game.vo.Minion;
 import game.vo.classes.Priest;
-import game.vo.classes.Warrior;
 
 import java.util.ArrayList;
 
@@ -54,6 +52,7 @@ public class PriestSmite extends Spell {
 		}else{
 			Log.i(TAG, "Did not have a target...");
 		}
+		super.execute();
 	}
 
 
@@ -63,11 +62,7 @@ public class PriestSmite extends Spell {
 			// Damage target
 			damageMinion(getTargetEnemyList().get(0), amount);
 
-			// Set the cooldown for this ability
-			getAbility().setMillisLastUse(getTime());
-			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
-			getGameServer().sendGameStatus();
-			getAbility().setCasting(false);
+			setSpellCooldown(true);
 		}
 	}
 }

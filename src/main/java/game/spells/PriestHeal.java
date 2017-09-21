@@ -43,11 +43,10 @@ public class PriestHeal extends Spell {
 				e.printStackTrace();
 			}
 
-			// Set the cooldown for this ability
-			getAbility().setMillisLastUse(getTime());
-			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
+			setSpellCooldown(true);
 		}else{
 			Log.i(TAG, "No target to heal");
 		}
+		super.execute();
 	}
 }

@@ -207,7 +207,9 @@ public class GameServer {
 	 */
 	private void sendWorld(Integer heroId) {
 		String jsonInString = new Gson().toJson(new WorldResponse(world));
-		server.dispatchMessage(new Message(getClientIdByHeroId(heroId), jsonInString));
+		if (server != null) {
+			server.dispatchMessage(new Message(getClientIdByHeroId(heroId), jsonInString));
+		}
 	}
 
 	/**
@@ -218,7 +220,9 @@ public class GameServer {
 	 */
 	public void sendCooldownInformation(Ability abi, Integer heroId) {
 		String jsonInString = new Gson().toJson(new CooldownResponse(abi));
-		server.dispatchMessage(new Message(getClientIdByHeroId(heroId), jsonInString));
+		if (server != null) {
+			server.dispatchMessage(new Message(getClientIdByHeroId(heroId), jsonInString));
+		}
 	}
 
 	/**
@@ -237,6 +241,13 @@ public class GameServer {
 		Log.i(TAG, "Minions spawned : " + minion.toString());
 		sendGameStatus();
 		return minion;
+	}
+
+	public void addMinion(Minion minion) {
+		if(minions == null){
+			minions = new ArrayList<>();
+		}
+		minions.add(minion);
 	}
 
 	/**
@@ -299,7 +310,9 @@ public class GameServer {
 
 			getHeroByUserId(userId).setAbilities(heroAbilities);
 			String jsonInString = gson.toJson(new AbilitiesResponse(heroAbilities));
-			server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), jsonInString));
+			if (server != null) {
+				server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), jsonInString));
+			}
 		}else{
 			Log.i(TAG, "Did not find hero with user id : " + userId);
 		}
@@ -312,7 +325,9 @@ public class GameServer {
 		hero.setTalents(talents);
 		int totalPoints = hero.getLevel();
 		String jsonInString = gson.toJson(new TalentResponse(talents, totalPoints));
-		server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId("" + userId).getId()), jsonInString));
+		if (server != null) {
+			server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId("" + userId).getId()), jsonInString));
+		}
 	}
 
 
@@ -363,14 +378,18 @@ public class GameServer {
 		if(world.isWorldType(World.HORDE)){
 			response.setTotalMinionsLeft(hordeMinionsLeft);
 		}
-		server.dispatchMessage(new Message(new Gson().toJson(response)));
+		if (server != null) {
+			server.dispatchMessage(new Message(new Gson().toJson(response)));
+		}
 		clearSentAnimations();
 	}
 
 
 	public void sendCastBarInformation(Ability ability) {
 		String jsonInString = new Gson().toJson(new AbilityStatusResponse(ability));
-		server.dispatchMessage(new Message(jsonInString));
+		if (server != null) {
+			server.dispatchMessage(new Message(jsonInString));
+		}
 	}
 
 	/**
@@ -616,7 +635,7 @@ public class GameServer {
 
 	private Hero getHeroByUserId(String user_id) {
 		for (Hero hero : heroes) {
-			if (hero.getUser_id() == Integer.parseInt(user_id)) {
+			if (hero.getUser_id() != null && hero.getUser_id() == Integer.parseInt(user_id)) {
 				return hero;
 			}
 		}
@@ -694,10 +713,12 @@ public class GameServer {
 	 * @return
 	 */
 	private Integer getClientIdByHeroId(Integer heroId) {
-		for (int i = 0; i < server.getClients().size(); i++) {
-			ClientInfo clientInfo = (ClientInfo) server.getClients().get(i);
-			if (clientInfo.getHeroId() == heroId) {
-				return clientInfo.getId();
+		if (server != null && server.getClients() != null) {
+			for (int i = 0; i < server.getClients().size(); i++) {
+				ClientInfo clientInfo = (ClientInfo) server.getClients().get(i);
+				if (clientInfo.getHeroId() == heroId) {
+					return clientInfo.getId();
+				}
 			}
 		}
 		return null;
@@ -850,7 +871,7 @@ public class GameServer {
 	}
 
 	private void sendRequestMinionPosition() {
-		if(server.getClientCount() > 0){
+		if(server != null && server.getClientCount() > 0){
 			int positionOfRandomClient = CalculationUtil.getRandomInt(0, (server.getClientCount() - 1));
 			ClientInfo clientInfo = (ClientInfo) server.getClients().get(positionOfRandomClient);
 			server.dispatchMessage(new Message(clientInfo.getId(), new Gson().toJson(new JsonResponse("UPDATE_MINION_POSITION", 200))));
@@ -981,7 +1002,5 @@ public class GameServer {
 			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}
 	}
-
-
 
 }

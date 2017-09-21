@@ -51,6 +51,7 @@ public class WarlockRestore extends Spell {
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("RESTORE", 0, getHero().getId(), null, 1));
 		}
+		super.execute();
 	}
 
 
@@ -62,11 +63,7 @@ public class WarlockRestore extends Spell {
 
 			restoreResources(getTargetFriendly().get(0), amount);
 
-			// Set the cooldown for this ability
-			getAbility().setMillisLastUse(getTime());
-			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
-			getGameServer().sendGameStatus();
-			getAbility().setCasting(false);
+			setSpellCooldown(true);
 		}
 	}
 

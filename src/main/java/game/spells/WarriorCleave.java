@@ -41,7 +41,10 @@ public class WarriorCleave extends Spell {
 
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("CLEAVE", 0, getHero().getId(), null, 1));
+
+			setSpellCooldown(false);
 		}
+		super.execute();
 	}
 
 }

@@ -1,10 +1,12 @@
 package game;
 
+import game.io.SpellRequest;
 import game.logging.Log;
 import game.util.GameUtil;
 import game.vo.Hero;
 import game.vo.Minion;
 import game.vo.Tick;
+import game.vo.classes.Warlock;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -16,61 +18,47 @@ import static java.lang.Thread.sleep;
 public class Test {
 
 	private static final String TAG = Test.class.getSimpleName();
+	private static Hero hero;
+	private static GameServer server;
+	private static Minion minion;
+
 
 	public static void main(String[] args) {
 
 		Sender sender = new Sender();
 		sender.setDaemon(true);
 		sender.start();
-		startGameTicks();
+
+		startTestGame();
 
 	}
 
+	private static void startTestGame() {
+		GameServer server = new GameServer(null);
+		hero = new Warlock();
+		hero.setUser_id(6);
+		hero.setClass_type("WARLOCK");
+		hero.setId(18);
+		hero.setLevel(3);
+		hero.generateHeroInformation();
+		minion = new Minion(server);
+		server.addHero(hero);
 
-	private static boolean gameRunning = true;
-	private static Thread tickThread;
-	private static int threadTick = 100;
-	private static int gameStatusTickTime = 1000;
-	public static ArrayList<Tick> ticks = new ArrayList<>();
-	private static void startGameTicks() {
-		ticks.add(new Tick((System.currentTimeMillis() + gameStatusTickTime), Tick.GAME_STATUS));
-		Log.i(TAG, "Starting new thread");
-		tickThread = new Thread(() -> {
-			while (gameRunning ) {
-				Collections.sort(ticks);
+		minion.setLevel(1);
+		minion.setId(4);
+		minion.generateMinionInformation(5, 1, 5);
+		server.addMinion(minion);
 
-				boolean addNewGameStatus = false;
-				// Check ticks if they should be actioned
-				Iterator<Tick> iterator = ticks.iterator();
-				while (iterator.hasNext()) {
-					Tick tick = iterator.next();
-					if(System.currentTimeMillis() >= tick.timeToActivate){
-						Log.i(TAG, "Activated this tick : " + tick.timeToActivate + " of type " + tick.typeOfTick);
+		SpellRequest req = new SpellRequest();
+		req.setHeroId(hero.getId());
+		req.setSpell_id(26);
+		ArrayList<Integer> target = new ArrayList<>();
+		target.add(minion.getId());
+		req.setTarget_enemy(target);
+		server.spell(req);
 
-						if(tick.typeOfTick == Tick.GAME_STATUS) {
-							addNewGameStatus = true;
-						}
-						iterator.remove();
-					}
-				}
-
-				try {
-					sleep(threadTick);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				if (addNewGameStatus) {
-					ticks.add(new Tick((System.currentTimeMillis() + gameStatusTickTime), Tick.GAME_STATUS));
-				}
-
-			}
-
-		});
-		tickThread.start();
+		Log.i(TAG, "hero hp left now: " + hero.getHp() + "/" + hero.getMaxHp());
 	}
-
-
 
 
 	static class Sender extends Thread {
@@ -88,12 +76,8 @@ public class Test {
 				while (!isInterrupted()) {
 					String message = in.readLine();
 					if(message.equals("1")){
-						ticks.add(new Tick((System.currentTimeMillis() + 200), Tick.BUFF));
 
-						ticks.add(new Tick((System.currentTimeMillis() + 400), Tick.BUFF));
-						ticks.add(new Tick((System.currentTimeMillis() + 600), Tick.BUFF));
 					}else if (message.equals("2")){
-						gameRunning = false;
 					}
 				}
 			} catch (IOException ioe) {

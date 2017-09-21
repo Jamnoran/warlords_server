@@ -49,10 +49,11 @@ public class PriestShield extends Spell {
 
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("SHIELD", hero.getId(), getHero().getId(), null, 1));
+
+			setSpellCooldown(true);
 		}
 
-		// Set the cooldown for this ability
-		getAbility().setMillisLastUse(getTime());
-		getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
+
+		super.execute();
 	}
 }
