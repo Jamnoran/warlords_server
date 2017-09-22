@@ -56,7 +56,7 @@ public class Spell {
 
 		// Return false if not has resources
 		if(!checkForResourses(hero, getAbility())){
-			Log.i(TAG, "Has enough resources");
+			Log.i(TAG, "Has not enough resources");
 			return false;
 		}
 
@@ -68,7 +68,7 @@ public class Spell {
 
 		// Return false if no target (Check ability target type)
 
-		getGameServer().sendCooldownInformation(ability, hero.getId());
+		//getGameServer().sendCooldownInformation(ability, hero.getId());
 		Log.i(TAG, "Spell is ok to cast");
 		return true;
 	}
@@ -82,10 +82,13 @@ public class Spell {
 			}
 		}else{
 			int resourceCostCost = ability.getResourceCost();
-			if(hero.getResource() > resourceCostCost){
+			if(hero.getResource() >= resourceCostCost){
 				Log.i(TAG, "Has resourses");
 				return true;
+			}else{
+				Log.i(TAG, "Mana cost : " + resourceCostCost + " Mana left : " + hero.getResource());
 			}
+
 		}
 		return false;
 	}
@@ -106,16 +109,17 @@ public class Spell {
 				hero.setResource(0);
 			}
 		}
+
+		setSpellCooldown();
+		// Send castbar information
+		getGameServer().sendCastBarInformation(getAbility());
 	}
 
-	public void setSpellCooldown(boolean clearSetCasting){
+	public void setSpellCooldown(){
 		// Set the cooldown for this ability
 		getAbility().setMillisLastUse(getTime());
 		getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
 		getGameServer().sendGameStatus();
-		if (clearSetCasting) {
-			getAbility().setCasting(false);
-		}
 	}
 
 	public void damageMinion(Minion minion, float damageAmount) {

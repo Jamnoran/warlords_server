@@ -61,8 +61,7 @@ public class PriestSmite extends Spell {
 		if (getAbility().isCasting()) {
 			// Damage target
 			damageMinion(getTargetEnemyList().get(0), amount);
-
-			setSpellCooldown(true);
 		}
+		getAbility().setCasting(false);
 	}
 }

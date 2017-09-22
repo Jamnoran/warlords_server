@@ -64,7 +64,7 @@ public class WarlockHaemorrhage extends Spell {
 		if (getAbility().isCasting()) {
 			damageMinion(getTargetEnemyList().get(0), amount);
 
-			long firstTick = System.currentTimeMillis();
+			String firstTick = "" + System.currentTimeMillis();
 
 			try {
 				getGameServer().getMinionById(getTargetEnemy().get(0)).addDebuff(new Buff(getHero().id, getTargetEnemy().get(0), Buff.DOT, Math.round(amount), getAbility().getDefaultTickMillis(), firstTick, getAbility().getValue()));
@@ -74,12 +74,10 @@ public class WarlockHaemorrhage extends Spell {
 			}
 
 			for (int i = 0 ; i < getAbility().getValue() ; i++) {
-				getGameServer().addTick(new Tick(firstTick + (i * getAbility().getDefaultTickMillis()), Tick.MINION_DEBUFF));
+				long conv = Long.parseLong(firstTick);
+				getGameServer().addTick(new Tick(conv + (i * getAbility().getDefaultTickMillis()), Tick.MINION_DEBUFF));
 			}
-
-			setSpellCooldown(true);
-		}else{
-			Log.i(TAG, "Not doing ability since value is : " + getAbility().getValue());
+			getAbility().setCasting(false);
 		}
 	}
 }

@@ -18,7 +18,7 @@ public class Warrior extends Hero {
 	private transient Integer dexPerLevel = 1;
 	private transient Integer staPerLevel = 2;
 	private transient Integer hpRegen = 1;
-	private transient Integer resourceRegen = 2;
+	private transient Integer resourceRegen = 1;
 	private transient float attackRange = 2.0f;
 
 	public Warrior() {

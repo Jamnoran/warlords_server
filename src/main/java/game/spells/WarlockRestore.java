@@ -22,9 +22,9 @@ public class WarlockRestore extends Spell {
 
 
 	public void execute() {
-		if (getTargetEnemyList() != null && getTargetEnemyList().size() >= 1 && !getAbility().isCasting()) {
+		if (getTargetEnemyList() != null && getTargetFriendlyList().size() >= 1 && !getAbility().isCasting()) {
 			getAbility().setCasting(true);
-			Log.i(TAG, "Target minion to damage : " + getTargetEnemyList().get(0).getId());
+			Log.i(TAG, "Target hero to restore: " + getTargetFriendlyList().get(0).getId());
 
 			// Calculate castTime with CDR and talents etc
 			getAbility().setCalculatedCastTime(getAbility().getCastTime());
@@ -62,8 +62,7 @@ public class WarlockRestore extends Spell {
 			damageHero(getHero().id, hpCost);
 
 			restoreResources(getTargetFriendly().get(0), amount);
-
-			setSpellCooldown(true);
+			getAbility().setCasting(false);
 		}
 	}
 

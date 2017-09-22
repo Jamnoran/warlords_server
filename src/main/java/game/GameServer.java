@@ -121,14 +121,14 @@ public class GameServer {
 					world.addSpawPoint(point);
 				} else if (point.getPointType() == Point.ENEMY_POINT) {
 					world.addSpawPoint(point);
-					if(world.getWorldType() != World.HORDE){
+					if (world.getWorldType() != World.HORDE) {
 						spawnMinion(point.getPosX(), point.getPosZ(), point.getPosY());
 					}
 				}
 			}
 		}
 
-		if(world.getWorldType() == World.HORDE){
+		if (world.getWorldType() == World.HORDE) {
 			startHordeMinionSpawner();
 		}
 
@@ -136,14 +136,14 @@ public class GameServer {
 			Log.i(TAG, "Sending new spawn location for heroes");
 			for (Hero hero : heroes) {
 				//if (hero.getPositionX() == 0.0f && hero.getPositionZ() == 0.0f) {
-					Vector3 location = getFreeStartPosition();
-					hero.setPositionX(location.getX());
-					hero.setPositionZ(location.getZ());
-					hero.setPositionY(location.getY());
-					hero.setDesiredPositionY(location.getY());
-					hero.setDesiredPositionX(location.getX());
-					hero.setDesiredPositionZ(location.getZ());
-					Log.i(TAG, "Setting new location for hero " + hero.getId() + " " + hero.getPositionX() + "x" + hero.getPositionZ() + "y" + hero.getPositionY());
+				Vector3 location = getFreeStartPosition();
+				hero.setPositionX(location.getX());
+				hero.setPositionZ(location.getZ());
+				hero.setPositionY(location.getY());
+				hero.setDesiredPositionY(location.getY());
+				hero.setDesiredPositionX(location.getX());
+				hero.setDesiredPositionZ(location.getZ());
+				Log.i(TAG, "Setting new location for hero " + hero.getId() + " " + hero.getPositionX() + "x" + hero.getPositionZ() + "y" + hero.getPositionY());
 				//}
 			}
 			sendTeleportPlayers();
@@ -152,13 +152,13 @@ public class GameServer {
 
 	private void startHordeMinionSpawner() {
 		Thread thread = new Thread(() -> {
-			while (hordeMinionsLeft > 0){
+			while (hordeMinionsLeft > 0) {
 				Point point = getRandomEnemySpawnPoint();
-				if(point != null){
+				if (point != null) {
 					Minion minion = spawnMinion(point.getPosX(), point.getPosZ(), point.getPosY());
 					minion.setDesiredPositionX(0);
 					minion.setDesiredPositionZ(0);
-				}else{
+				} else {
 					Log.i(TAG, "We did not get a spawn point, something is wrong");
 				}
 				hordeMinionsLeft--;
@@ -174,11 +174,11 @@ public class GameServer {
 
 	private Point getRandomEnemySpawnPoint() {
 		Point point = null;
-		while(point == null){
-			int randomPos = CalculationUtil.getRandomInt(0, (world.getSpawnPoints().size()-1));
+		while (point == null) {
+			int randomPos = CalculationUtil.getRandomInt(0, (world.getSpawnPoints().size() - 1));
 			point = world.getSpawnPoints().get(randomPos);
 			Log.i(TAG, "Trying to find a random spawn point at pos:  " + randomPos + " its of type : " + point.getPointType());
-			if(point.getPointType() == Point.SPAWN_POINT){
+			if (point.getPointType() == Point.SPAWN_POINT) {
 				point = null;
 			}
 		}
@@ -244,7 +244,7 @@ public class GameServer {
 	}
 
 	public void addMinion(Minion minion) {
-		if(minions == null){
+		if (minions == null) {
 			minions = new ArrayList<>();
 		}
 		minions.add(minion);
@@ -297,7 +297,7 @@ public class GameServer {
 	public void sendAbilities(String userId) {
 		Gson gson = new Gson();
 		Hero hero = getHeroByUserId(userId);
-		if(hero != null){
+		if (hero != null) {
 			ArrayList<Ability> heroAbilities = DatabaseUtil.getAllAbilities(hero.getClass_type());
 			ArrayList<AbilityPosition> abilityPositions = DatabaseUtil.getHeroAbilityPositions(hero.getId());
 			for (AbilityPosition abilityPosition : abilityPositions) {
@@ -308,12 +308,14 @@ public class GameServer {
 				}
 			}
 
+			Collections.sort(heroAbilities, new Ability());
+
 			getHeroByUserId(userId).setAbilities(heroAbilities);
 			String jsonInString = gson.toJson(new AbilitiesResponse(heroAbilities));
 			if (server != null) {
 				server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), jsonInString));
 			}
-		}else{
+		} else {
 			Log.i(TAG, "Did not find hero with user id : " + userId);
 		}
 	}
@@ -353,13 +355,13 @@ public class GameServer {
 		}
 	}
 
-	public void addMessage(Message message){
+	public void addMessage(Message message) {
 		messages.add(message);
 		String jsonInString = new Gson().toJson(new MessageResponse(message));
 		server.dispatchMessage(new Message(jsonInString));
 	}
 
-	public ArrayList<Message> getAllMessages(){
+	public ArrayList<Message> getAllMessages() {
 		return messages;
 	}
 
@@ -375,7 +377,7 @@ public class GameServer {
 	 */
 	public void sendGameStatus() {
 		GameStatusResponse response = new GameStatusResponse(minions, heroes, animations);
-		if(world.isWorldType(World.HORDE)){
+		if (world.isWorldType(World.HORDE)) {
 			response.setTotalMinionsLeft(hordeMinionsLeft);
 		}
 		if (server != null) {
@@ -538,10 +540,13 @@ public class GameServer {
 						Log.i(TAG, "Found hero that's attacking : " + hero.getClass_type() + " hp of minion is : " + minion.getHp());
 						float totalDamage = Math.round(minion.calculateDamageReceived(hero.getAttackDamage()));
 						dealDamageToMinion(hero, minion, totalDamage);
-						sendCooldownInformation(hero.getAbility(0), hero.getId());
+
+						//sendCooldownInformation(hero.getAbility(0), hero.getId());
+
 						Log.i(TAG, "Minion size now: " + minions.size());
 						// Send updated status a while after animation is sent for mapping to animation hitting minion.
 						sendGameStatus();
+						sendCastBarInformation(hero.getAbility(0));
 					}
 				};
 				thread.start();
@@ -553,7 +558,7 @@ public class GameServer {
 		}
 	}
 
-	public void dealDamageToMinion(Hero hero, Minion minion, float damage){
+	public void dealDamageToMinion(Hero hero, Minion minion, float damage) {
 		if (minion.takeDamage(damage)) {
 			Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
 			minionDied(hero.getId(), minion.getId());
@@ -615,9 +620,9 @@ public class GameServer {
 
 	public void updateMinionPositions(ArrayList<Minion> updatedMinions) {
 		// TODO: Do this more efficiant
-		for (Minion minion : updatedMinions){
-			for(Minion gameMinion : minions){
-				if(minion.getId() == gameMinion.getId()){
+		for (Minion minion : updatedMinions) {
+			for (Minion gameMinion : minions) {
+				if (minion.getId() == gameMinion.getId()) {
 					gameMinion.setPositionX(minion.getPositionX());
 					gameMinion.setPositionY(minion.getPositionY());
 					gameMinion.setPositionZ(minion.getPositionZ());
@@ -760,6 +765,7 @@ public class GameServer {
 	private int requestMinionPositionTickTime = 1000;
 
 	public ArrayList<Tick> ticks = new ArrayList<>();
+
 	private void startGameTicks() {
 		ticks.add(new Tick((System.currentTimeMillis() + gameStatusTickTime), Tick.GAME_STATUS));
 		ticks.add(new Tick((System.currentTimeMillis() + minionActionTickTime), Tick.MINION_ACTION));
@@ -767,7 +773,7 @@ public class GameServer {
 		ticks.add(new Tick((System.currentTimeMillis() + requestMinionPositionTickTime), Tick.REQUEST_MINION_POSITION));
 		Log.i(TAG, "Starting new thread");
 		tickThread = new Thread(() -> {
-			while (gameRunning ) {
+			while (gameRunning) {
 				Collections.sort(ticks);
 
 				boolean addNewGameStatus = false;
@@ -782,23 +788,23 @@ public class GameServer {
 				Iterator<Tick> iterator = ticks.iterator();
 				while (iterator.hasNext()) {
 					Tick tick = iterator.next();
-					if(System.currentTimeMillis() >= tick.timeToActivate){
+					if (System.currentTimeMillis() >= tick.timeToActivate) {
 						if (tick.typeOfTick != Tick.GAME_STATUS && tick.typeOfTick != Tick.REQUEST_MINION_POSITION && tick.typeOfTick != Tick.HERO_REGEN && tick.typeOfTick != Tick.MINION_ACTION) {
 							Log.i(TAG, "Activated this tick : " + tick.timeToActivate + " of type " + tick.typeOfTick);
 						}
-						if(tick.typeOfTick == Tick.GAME_STATUS) {
+						if (tick.typeOfTick == Tick.GAME_STATUS) {
 							addNewGameStatus = true;
 						}
-						if(tick.typeOfTick == Tick.MINION_ACTION) {
+						if (tick.typeOfTick == Tick.MINION_ACTION) {
 							addMinionAction = true;
 						}
-						if(tick.typeOfTick == Tick.HERO_REGEN) {
+						if (tick.typeOfTick == Tick.HERO_REGEN) {
 							addHeroRegen = true;
 						}
-						if(tick.typeOfTick == Tick.REQUEST_MINION_POSITION) {
+						if (tick.typeOfTick == Tick.REQUEST_MINION_POSITION) {
 							addRequestMinionPosition = true;
 						}
-						if(tick.typeOfTick == Tick.MINION_DEBUFF){
+						if (tick.typeOfTick == Tick.MINION_DEBUFF) {
 							minionDebuffAction = true;
 						}
 						iterator.remove();
@@ -824,7 +830,7 @@ public class GameServer {
 					ticks.add(new Tick((System.currentTimeMillis() + minionActionTickTime), Tick.MINION_ACTION));
 				}
 
-				if(minionDebuffAction){
+				if (minionDebuffAction) {
 					minionDebuffs();
 				}
 
@@ -850,16 +856,17 @@ public class GameServer {
 		for (Minion minion : minions) {
 			if (minion.isAlive()) {
 				// Take action for debuffs
-				if(minion.getDeBuffs().size() > 0){
+				if (minion.getDeBuffs().size() > 0) {
 					Iterator<Buff> iterator = minion.getDeBuffs().iterator();
 					while (iterator.hasNext()) {
 						Buff debuff = iterator.next();
-						if(debuff.tickTime > 0 && (System.currentTimeMillis() >= debuff.tickTime)){
-							debuff.tickTime = System.currentTimeMillis() + debuff.duration;
-							if(debuff.type == Buff.DOT){
+						long tickTimeConv = Long.parseLong(debuff.tickTime);
+						if (tickTimeConv > 0 && (System.currentTimeMillis() >= tickTimeConv)) {
+							debuff.tickTime = "" + System.currentTimeMillis() + debuff.duration;
+							if (debuff.type == Buff.DOT) {
 								dealDamageToMinion(getHeroById(debuff.heroId), minion, debuff.value);
 								debuff.ticks--;
-								if(debuff.ticks == 0){
+								if (debuff.ticks == 0) {
 									iterator.remove();
 								}
 							}
@@ -871,7 +878,7 @@ public class GameServer {
 	}
 
 	private void sendRequestMinionPosition() {
-		if(server != null && server.getClientCount() > 0){
+		if (server != null && server.getClientCount() > 0) {
 			int positionOfRandomClient = CalculationUtil.getRandomInt(0, (server.getClientCount() - 1));
 			ClientInfo clientInfo = (ClientInfo) server.getClients().get(positionOfRandomClient);
 			server.dispatchMessage(new Message(clientInfo.getId(), new Gson().toJson(new JsonResponse("UPDATE_MINION_POSITION", 200))));
@@ -907,10 +914,10 @@ public class GameServer {
 
 	private void priestShield(Priest hero, SpellRequest parsedRequest) {
 		PriestShield spell = new PriestShield(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
-		if(spell.init()){
+		if (spell.init()) {
 			spell.execute();
 			sendGameStatus();
-		}else{
+		} else {
 			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}
 	}

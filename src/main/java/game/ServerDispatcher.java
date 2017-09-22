@@ -8,7 +8,7 @@ import game.util.DatabaseUtil;
 import game.vo.Hero;
 import game.vo.Message;
 import game.io.SendMessageRequest;
-import io.UpdateMinionPositionRequest;
+import game.io.UpdateMinionPositionRequest;
 
 import java.util.Vector;
 

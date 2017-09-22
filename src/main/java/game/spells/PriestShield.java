@@ -32,7 +32,7 @@ public class PriestShield extends Spell {
 			Log.i(TAG, "Shield for this amount : " + shieldAmount);
 
 			int duration = 3000;
-			Buff buff = new Buff(hero.getId(), null, Buff.SHIELD, Math.round(shieldAmount), duration, 0, 0);
+			Buff buff = new Buff(hero.getId(), null, Buff.SHIELD, Math.round(shieldAmount), duration, "0", 0);
 			Thread buffDurationThread = new Thread(() -> {
 				try {
 					Thread.sleep(duration);
@@ -49,8 +49,6 @@ public class PriestShield extends Spell {
 
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("SHIELD", hero.getId(), getHero().getId(), null, 1));
-
-			setSpellCooldown(true);
 		}
 
 

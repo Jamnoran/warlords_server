@@ -17,6 +17,7 @@ public class Warlock extends Hero {
 	private transient Integer intPerLevel = 3;
 	private transient Integer dexPerLevel = 1;
 	private transient Integer staPerLevel = 2;
+	private transient Integer hpRegen = 1;
 	private transient float attackRange = 4.0f;
 
 	public Warlock() {
@@ -31,5 +32,6 @@ public class Warlock extends Hero {
 		setDexterity(dexPerLevel * getLevel());
 		setIntelligence(intPerLevel * getLevel());
 		setAttackRange(attackRange);
+		setHpRegen(hpRegen);
 	}
 }

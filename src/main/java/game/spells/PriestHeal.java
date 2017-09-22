@@ -42,8 +42,6 @@ public class PriestHeal extends Spell {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			setSpellCooldown(true);
 		}else{
 			Log.i(TAG, "No target to heal");
 		}

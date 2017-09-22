@@ -2,10 +2,12 @@ package game.vo;
 
 import game.logging.Log;
 
+import java.util.Comparator;
+
 /**
  * Created by Jamnoran on 10-Nov-16.
  */
-public class Ability {
+public class Ability implements Comparator<Ability> {
 	private static final String TAG = Ability.class.getSimpleName();
 	private int id;
 	private String classType;
@@ -201,6 +203,12 @@ public class Ability {
 		Log.i(TAG, "Time until next time we can use ability: " + (time - (getMillisLastUse() + getBaseCD())));
 		Log.i(TAG, "Can use ability : " + (getMillisLastUse() + getBaseCD() <= time) + " negative number is its not yet off cd");
 		return (getMillisLastUse() + getBaseCD() <= time);
+	}
+
+	@Override
+	public int compare(Ability o1, Ability o2) {
+		// write comparison logic here like below , it's just a sample
+		return Integer.compare(o1.getId(), o2.getId());
 	}
 
 	@Override

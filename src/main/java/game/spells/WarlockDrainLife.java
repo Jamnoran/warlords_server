@@ -36,16 +36,13 @@ public class WarlockDrainLife extends Spell {
 
 			Thread castTime = new Thread(() -> {
 				try {
-					Thread.sleep(getAbility().getCastTime());
+					Thread.sleep(getAbility().getCalculatedCastTime());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				castTimeCompleted(damageAmount);
 			});
 			castTime.start();
-
-			// Send castbar information
-			getGameServer().sendCastBarInformation(getAbility());
 
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("DRAIN", 0, getHero().getId(), null, 1));
@@ -62,8 +59,7 @@ public class WarlockDrainLife extends Spell {
 			damageMinion(getTargetEnemyList().get(0), amount);
 
 			healHero(getHero().id, amount);
-
-			setSpellCooldown(true);
+			getAbility().setCasting(false);
 		}
 	}
 }

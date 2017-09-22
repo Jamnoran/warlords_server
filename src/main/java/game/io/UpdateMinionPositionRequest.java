@@ -1,4 +1,4 @@
-package io;
+package game.io;
 
 import com.google.gson.annotations.SerializedName;
 import game.io.JsonRequest;

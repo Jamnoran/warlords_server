@@ -13,10 +13,10 @@ public class Buff {
 	public int type = 0;
 	public int value = 0;
 	public int duration = 0;
-	public long tickTime = 0;
+	public String tickTime = "0";
 	public int ticks = 0;
 
-	public Buff(Integer source, Integer target, Integer type, int value, int duration, long tickTime, int ticks) {
+	public Buff(Integer source, Integer target, Integer type, int value, int duration, String tickTime, int ticks) {
 		this.heroId = source;
 		this.target = target;
 		this.type = type;

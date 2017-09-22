@@ -439,6 +439,7 @@ public class Hero {
 			Log.i(TAG, "Ready for attack, seconds since last attack : " + ((time - timeWhenNextAttackIsReady) / 1000));
 			timeLastAuto = time;
 			getAbility(0).setTimeWhenOffCooldown("" + (time + attackCD));
+			Log.i(TAG, "Setting timeoffcd to : " + getAbility(0).getTimeWhenOffCooldown());
 			return true;
 		}else{
 			Log.i(TAG, "Time until next attack : " + timeWhenNextAttackIsReady);
