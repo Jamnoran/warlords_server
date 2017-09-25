@@ -18,6 +18,7 @@ public class Hero {
 	public Integer id = null;
 	private Integer user_id = null;
 	private Integer xp = 0;
+	private int xpForLevel = 1000;
 	private Integer topGameLvl = 0;
 	// Need xpToLevelUp as well
 	private Integer level = 1;
@@ -52,7 +53,6 @@ public class Hero {
 	private transient boolean stairsPressed = false;
 	private transient long timeLastAuto = 0;
 	private transient float baseAttackSpeed = 2.0f;
-	private transient int baseXpForLevel = 1000;
 	private transient float xpScale = 0.1f;
 
 	private transient ArrayList<Ability> abilities;
@@ -449,7 +449,7 @@ public class Hero {
 
 	public void addExp(int calculatedXP) {
 		xp = xp + calculatedXP;
-		float xpForLevel = (baseXpForLevel + (level * (baseXpForLevel * xpScale)));
+		float xpForLevel = (this.xpForLevel + (level * (this.xpForLevel * xpScale)));
 		if(xp >= xpForLevel){
 			Log.i(TAG, "Level up!");
 			level++;
