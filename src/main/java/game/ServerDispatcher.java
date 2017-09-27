@@ -121,7 +121,7 @@ public class ServerDispatcher extends Thread {
 				TalentRequest talentRequest = gson.fromJson(aMessage.getMessage(), TalentRequest.class);
 				Log.i(TAG, "parsedRequest : " + talentRequest.toString());
 //				gameServer.updateAbilityPosition(abilityPositionRequest);
-				DatabaseUtil.addTalentPoints(talentRequest.talents);
+				DatabaseUtil.addTalentPoints(talentRequest.getHero_id(), talentRequest.talents);
 			} else if (request.isType("STOP_HERO")) {
 				StopHeroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), StopHeroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());

@@ -269,8 +269,9 @@ public class DatabaseUtil {
 		return talents;
 	}
 
-	public static void addTalentPoints(ArrayList<Talent> talents){
+	public static void addTalentPoints(int heroId, ArrayList<Talent> talents){
 		for (Talent talent : talents){
+			talent.setHeroId(heroId);
 			if (talent.getPointAdded() > 0) {
 				addTalentPoint(talent);
 			}
