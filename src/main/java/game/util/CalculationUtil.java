@@ -22,4 +22,11 @@ public class CalculationUtil {
 		}
 		return false;
 	}
+
+	public static float calculateDamageAfterReduction(float resistance, float penetration, float damage) {
+		float armorAfterPenetration = resistance * (1 - (penetration / 100));
+		float damageMultiplier = damage / ( damage + armorAfterPenetration);
+		float totalDamage = damage * damageMultiplier;
+		return totalDamage;
+	}
 }

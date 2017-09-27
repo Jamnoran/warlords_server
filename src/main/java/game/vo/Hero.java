@@ -38,6 +38,8 @@ public class Hero {
 	private Integer resource;
 	private Integer maxResource;
 	private float attackRange = 3.0f;
+	private transient float armor = 0;
+	private transient float magicResistance = 0;
 	private transient Integer hpRegen = 0;
 	private transient Integer resourceRegen = 0;
 	private transient Integer strength;
@@ -54,6 +56,8 @@ public class Hero {
 	private transient long timeLastAuto = 0;
 	private transient float baseAttackSpeed = 2.0f;
 	private transient float xpScale = 0.1f;
+	private transient float armorPenetration = 0.0f;
+	private transient float magicPenetration = 0.0f;
 
 	private transient ArrayList<Ability> abilities;
 	private transient ArrayList<Talent> talents;
@@ -287,6 +291,54 @@ public class Hero {
 
 	}
 
+	public int getXpForLevel() {
+		return xpForLevel;
+	}
+
+	public void setXpForLevel(int xpForLevel) {
+		this.xpForLevel = xpForLevel;
+	}
+
+	public float getCriticalChance() {
+		return criticalChance;
+	}
+
+	public void setCriticalChance(float criticalChance) {
+		this.criticalChance = criticalChance;
+	}
+
+	public long getTimeLastAuto() {
+		return timeLastAuto;
+	}
+
+	public void setTimeLastAuto(long timeLastAuto) {
+		this.timeLastAuto = timeLastAuto;
+	}
+
+	public float getBaseAttackSpeed() {
+		return baseAttackSpeed;
+	}
+
+	public void setBaseAttackSpeed(float baseAttackSpeed) {
+		this.baseAttackSpeed = baseAttackSpeed;
+	}
+
+	public float getArmorPenetration() {
+		return armorPenetration;
+	}
+
+	public void setArmorPenetration(float armorPenetration) {
+		this.armorPenetration = armorPenetration;
+	}
+
+	public float getMagicPenetration() {
+		return magicPenetration;
+	}
+
+	public void setMagicPenetration(float magicPenetration) {
+		this.magicPenetration = magicPenetration;
+	}
+
 	public ArrayList<Buff> getBuffs(){
 		return buffs;
 	}
@@ -315,10 +367,9 @@ public class Hero {
 		return newDamage;
 	}
 
-	public boolean takeDamage(float damage) {
-		float damageLeft = damage;
+	public boolean takeDamage(float damage, float penetration, String damageType) {
+		float damageLeft = calculateDamageReceived(damage, penetration, damageType);
 		// First we need to check if we have a shield on this hero
-
 		if(getBuffs() != null && getBuffs().size() > 0){
 			Log.i(TAG, "Got buff : " + getBuffs().size());
 			Iterator<Buff> buffIterator = buffs.iterator();
@@ -346,6 +397,17 @@ public class Hero {
 			return true;
 		}
 		return false;
+	}
+
+	public float calculateDamageReceived(float damage, float penetration, String damageType) {
+		// Calculate if minion has armor or dodge chance
+		if(damageType.equals("PHYSICAL")){
+			return CalculationUtil.calculateDamageAfterReduction(getArmor(), penetration, damage);
+		}else if(damageType.equals("MAGIC")){
+			return CalculationUtil.calculateDamageAfterReduction(getMagicResistance(), penetration, damage);
+		}else{
+			return damage;
+		}
 	}
 
 	public float getSpellDamage(Ability ability) {
@@ -380,10 +442,6 @@ public class Hero {
 		return false;
 	}
 
-	public boolean hasResourceForSpellHeal() {
-		return true;
-	}
-
 	public boolean isClass(String classCheck){
 		if(getClass_type().equals(classCheck)){
 			return true;
@@ -392,6 +450,55 @@ public class Hero {
 		}
 	}
 
+	public float getArmor() {
+		this.armor = calculateArmor();
+		return armor;
+	}
+
+	private float calculateArmor() {
+		float armorCalculation = 0;
+		// Check base stats
+
+		// Check items equipped
+
+		// Check talents
+		for(Talent talent : getTalents()){
+			if(talent.getId() == 10){
+				armorCalculation = armorCalculation + talent.getBaseValue() + (talent.getScaling() * talent.getPointAdded());
+			}
+		}
+
+		return armorCalculation;
+	}
+
+	public void setArmor(float armor) {
+		this.armor = armor;
+	}
+
+	public float getMagicResistance() {
+		this.magicResistance = calculateMagicResist();
+		return magicResistance;
+	}
+
+	private float calculateMagicResist() {
+		float mrCalculation = 0;
+		// Check base stats
+
+		// Check items equipped
+
+		// Check talents
+		for(Talent talent : getTalents()){
+			if(talent.getId() == 12){
+				mrCalculation = mrCalculation + talent.getBaseValue() + (talent.getScaling() * talent.getPointAdded());
+			}
+		}
+
+		return mrCalculation;
+	}
+
+	public void setMagicResistance(float magicResistance) {
+		this.magicResistance = magicResistance;
+	}
 
 	@Override
 	public String toString() {
@@ -515,5 +622,14 @@ public class Hero {
 				resource = maxResource;
 			}
 		}
+	}
+
+	public float getPenetration(String damageType) {
+		if(damageType.equals("PHYSICAL")){
+			return armorPenetration;
+		}else if (damageType.equals("MAGIC")){
+			return magicPenetration;
+		}
+		return 0;
 	}
 }

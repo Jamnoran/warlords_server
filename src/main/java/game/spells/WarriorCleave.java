@@ -29,7 +29,7 @@ public class WarriorCleave extends Spell {
 				Log.i(TAG, "Damage for this amount : " + damageAmount);
 
 				// Damage target
-				damageMinion(minion, damageAmount);
+				damageMinion(minion, damageAmount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
 
 			}
 			// Set the cooldown for this ability
