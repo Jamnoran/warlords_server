@@ -67,7 +67,9 @@ public class WarlockHaemorrhage extends Spell {
 			String firstTick = "" + System.currentTimeMillis();
 
 			try {
-				getGameServer().getMinionById(getTargetEnemy().get(0)).addDebuff(new Buff(getHero().id, getTargetEnemy().get(0), Buff.DOT, Math.round(amount), getAbility().getDefaultTickMillis(), firstTick, getAbility().getValue()));
+				if(getGameServer().getMinionById(getTargetEnemy().get(0)) != null) {
+					getGameServer().getMinionById(getTargetEnemy().get(0)).addDebuff(new Buff(getHero().id, getTargetEnemy().get(0), Buff.DOT, Math.round(amount), getAbility().getDefaultTickMillis(), firstTick, getAbility().getValue()));
+				}
 			} catch (Exception e) {
 				Log.i(TAG, "What do we get nullpointer on here?");
 				e.printStackTrace();

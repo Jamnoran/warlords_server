@@ -847,7 +847,6 @@ public class GameServer {
 					ticks.add(new Tick((System.currentTimeMillis() + requestMinionPositionTickTime), Tick.HERO_REGEN));
 				}
 			}
-
 		});
 		tickThread.start();
 	}

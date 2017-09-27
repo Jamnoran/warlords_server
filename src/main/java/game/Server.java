@@ -14,7 +14,7 @@ public class Server {
 	private static final String TAG = Server.class.getSimpleName();
 	// Configuration;
 	static int portNumber = 2055;
-	public static boolean local = true;
+	public static boolean local = false;
 	private static LobbyServerDispatcher lobbyServerDispatcher;
 
 
