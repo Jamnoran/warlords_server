@@ -33,5 +33,7 @@ public class Warlock extends Hero {
 		setIntelligence(intPerLevel * getLevel());
 		setAttackRange(attackRange);
 		setHpRegen(hpRegen);
+		calculateArmor();
+		calculateMagicResist();
 	}
 }

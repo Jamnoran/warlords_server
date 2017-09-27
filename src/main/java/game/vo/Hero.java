@@ -455,7 +455,7 @@ public class Hero {
 		return armor;
 	}
 
-	private float calculateArmor() {
+	public float calculateArmor() {
 		float armorCalculation = 0;
 		// Check base stats
 
@@ -480,7 +480,7 @@ public class Hero {
 		return magicResistance;
 	}
 
-	private float calculateMagicResist() {
+	public float calculateMagicResist() {
 		float mrCalculation = 0;
 		// Check base stats
 

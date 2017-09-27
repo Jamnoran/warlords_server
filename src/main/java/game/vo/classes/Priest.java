@@ -38,5 +38,7 @@ public class Priest extends Hero {
 		setHpRegen(hpRegen);
 		setResourceRegen(resourceRegen);
 		setAttackRange(attackRange);
+		calculateArmor();
+		calculateMagicResist();
 	}
 }

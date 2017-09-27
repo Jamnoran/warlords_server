@@ -38,6 +38,8 @@ public class Warrior extends Hero {
 		setHpRegen(hpRegen);
 		setResourceRegen(resourceRegen);
 		setAttackRange(attackRange);
+		calculateArmor();
+		calculateMagicResist();
 	}
 
 }
