@@ -5,6 +5,7 @@ import game.logging.Log;
 import game.util.GameUtil;
 import game.vo.Hero;
 import game.vo.Minion;
+import game.vo.Threat;
 import game.vo.Tick;
 import game.vo.classes.Warlock;
 
@@ -35,16 +36,16 @@ public class Test {
 		//M = (100+P) / (100+A), where M is between 0.2 and 1.
 		//M = POWER( MAX(A*(1-P/100),0), 1/1.3 )
 
-		calculateDamageAfterReduction(0, 0, 100);
-		calculateDamageAfterReduction(200, 0, 100);
-		calculateDamageAfterReduction(200, 80, 100);
+		//calculateDamageAfterReduction(0, 0, 100);
+		//calculateDamageAfterReduction(200, 0, 100);
+		//calculateDamageAfterReduction(200, 80, 100);
 
 
-		//Sender sender = new Sender();
-		//sender.setDaemon(true);
-		//sender.start();
+		Sender sender = new Sender();
+		sender.setDaemon(true);
+		sender.start();
 
-		//startTestGame();
+		startTestGame();
 
 	}
 
@@ -60,7 +61,7 @@ public class Test {
 
 
 	private static void startTestGame() {
-		GameServer server = new GameServer(null);
+		server = new GameServer(null);
 		hero = new Warlock();
 		hero.setUser_id(6);
 		hero.setClass_type("WARLOCK");
@@ -81,7 +82,7 @@ public class Test {
 		ArrayList<Integer> target = new ArrayList<>();
 		target.add(minion.getId());
 		req.setTarget_enemy(target);
-		server.spell(req);
+		//server.spell(req);
 
 		Log.i(TAG, "hero hp left now: " + hero.getHp() + "/" + hero.getMaxHp());
 	}
@@ -102,7 +103,9 @@ public class Test {
 				while (!isInterrupted()) {
 					String message = in.readLine();
 					if(message.equals("1")){
-
+						//server.attackHero(18,10,4);
+						minion.addThreat(new Threat(18, 5f, 5f, 0));
+						minion.targetInRangeForAttack = true;
 					}else if (message.equals("2")){
 					}
 				}

@@ -28,7 +28,7 @@ public class Minion {
 	private transient float baseDamage = 5;
 	private transient Integer baseHp = 10;
 	private transient Integer hpPerLevel = 5;
-	private transient Integer timeBetweenAttacks = 1200;
+	private transient Integer timeBetweenAttacks = 2000;
 	private transient Long timeLastAttack = null;
 	private transient ArrayList<Threat> threats = new ArrayList<Threat>();
 	private transient int baseXp = 100;

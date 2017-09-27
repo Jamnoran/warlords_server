@@ -784,7 +784,6 @@ public class GameServer {
 
 				boolean minionDebuffAction = false;
 
-
 				// Check ticks if they should be actioned
 				Iterator<Tick> iterator = ticks.iterator();
 				while (iterator.hasNext()) {
