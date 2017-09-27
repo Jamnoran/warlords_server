@@ -38,16 +38,18 @@ public class Hero {
 	private Integer resource;
 	private Integer maxResource;
 	private float attackRange = 3.0f;
-	private transient float armor = 0;
-	private transient float magicResistance = 0;
+	private float armor = 0;
+	private float magicResistance = 0;
+	private float armorPenetration = 0.0f;
+	private float magicPenetration = 0.0f;
 	private transient Integer hpRegen = 0;
 	private transient Integer resourceRegen = 0;
-	private transient Integer strength;
-	private transient Integer intelligence;
-	private transient Integer stamina;
-	private transient Integer dexterity;
-	private transient Integer baseAttackDamage = 2;
-	private transient Integer baseMaxAttackDamage = 4;
+	private Integer strength;
+	private Integer intelligence;
+	private Integer stamina;
+	private Integer dexterity;
+	private Integer baseAttackDamage = 2;
+	private Integer baseMaxAttackDamage = 4;
 	private transient float attackStrScaling = 0.1f;
 	private transient float attackIntScaling = 0.1f;
 	private transient float criticalMultiplier = 2.0f;
@@ -56,8 +58,6 @@ public class Hero {
 	private transient long timeLastAuto = 0;
 	private transient float baseAttackSpeed = 2.0f;
 	private transient float xpScale = 0.1f;
-	private transient float armorPenetration = 0.0f;
-	private transient float magicPenetration = 0.0f;
 
 	private transient ArrayList<Ability> abilities;
 	private transient ArrayList<Talent> talents;
