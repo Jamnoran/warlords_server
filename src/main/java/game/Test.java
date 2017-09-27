@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.*;
 
 import static java.lang.Thread.sleep;
+import static sun.swing.MenuItemLayoutHelper.max;
 
 public class Test {
 
@@ -25,13 +26,38 @@ public class Test {
 
 	public static void main(String[] args) {
 
-		Sender sender = new Sender();
-		sender.setDaemon(true);
-		sender.start();
 
-		startTestGame();
+		// Armor calculation
+
+		//A - total armor value of all equipped armor pieces
+		//P - penetration value of enemy weapon
+		//M - final result modifier for armor (0.7 means a 30% reduction in damage)
+		//M = (100+P) / (100+A), where M is between 0.2 and 1.
+		//M = POWER( MAX(A*(1-P/100),0), 1/1.3 )
+
+		calculateDamageAfterReduction(0, 0, 100);
+		calculateDamageAfterReduction(200, 0, 100);
+		calculateDamageAfterReduction(200, 80, 100);
+
+
+		//Sender sender = new Sender();
+		//sender.setDaemon(true);
+		//sender.start();
+
+		//startTestGame();
 
 	}
+
+
+
+
+	private static double calculateDamageAfterReduction(double resistance, double penetration, double damage) {
+		double armorAfterPenetration = resistance * (1 - (penetration / 100));
+		double damageMultiplier = damage / ( damage + armorAfterPenetration);
+		double totalDamage = damage * damageMultiplier;
+		return totalDamage;
+	}
+
 
 	private static void startTestGame() {
 		GameServer server = new GameServer(null);

@@ -62,7 +62,8 @@ public class WarlockHaemorrhage extends Spell {
 	public void castTimeCompleted(float amount){
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
-			damageMinion(getTargetEnemyList().get(0), amount);
+
+			damageMinion(getTargetEnemyList().get(0), amount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
 
 			String firstTick = "" + System.currentTimeMillis();
 

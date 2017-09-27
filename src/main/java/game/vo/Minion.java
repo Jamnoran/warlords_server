@@ -32,6 +32,10 @@ public class Minion {
 	private transient Long timeLastAttack = null;
 	private transient ArrayList<Threat> threats = new ArrayList<Threat>();
 	private transient int baseXp = 100;
+	private transient float armor = 0;
+	private transient float magicResistance = 0;
+	private transient float armorPenetration = 0.0f;
+	private transient float magicPenetration = 0.0f;
 	private ArrayList<Buff> buffs = new ArrayList<>();
 	private ArrayList<Buff> deBuffs = new ArrayList<>();
 
@@ -251,9 +255,50 @@ public class Minion {
 		this.deBuffs = deBuffs;
 	}
 
-	public float calculateDamageReceived(float damage) {
+	public float getArmor() {
+		return armor;
+	}
+
+	public void setArmor(float armor) {
+		this.armor = armor;
+	}
+
+	public float getMagicResistance() {
+		return magicResistance;
+	}
+
+	public void setMagicResistance(float magicResistance) {
+		this.magicResistance = magicResistance;
+	}
+
+	public float getArmorPenetration() {
+		return armorPenetration;
+	}
+
+	public void setArmorPenetration(float armorPenetration) {
+		this.armorPenetration = armorPenetration;
+	}
+
+	public float getMagicPenetration() {
+		return magicPenetration;
+	}
+
+	public void setMagicPenetration(float magicPenetration) {
+		this.magicPenetration = magicPenetration;
+	}
+
+	public float calculateDamageReceived(float damage, float penetration, String damageType) {
 		// Calculate if minion has armor or dodge chance
-		return damage;
+		if(damageType.equals("PHYSICAL")){
+			float damageAfterReduction = CalculationUtil.calculateDamageAfterReduction(armor,penetration,damage);
+			// damage * (armor )
+			return damageAfterReduction;
+		}else if(damageType.equals("MAGIC")){
+			float damageAfterReduction = CalculationUtil.calculateDamageAfterReduction(magicResistance,penetration,damage);
+			return damageAfterReduction;
+		}else{
+			return damage;
+		}
 	}
 
 	public boolean takeDamage(float damageAfterMinionCalculation) {

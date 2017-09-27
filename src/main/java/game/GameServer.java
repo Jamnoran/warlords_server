@@ -483,8 +483,9 @@ public class GameServer {
 						e.printStackTrace();
 					}
 
-					if (getMinionById(minionId) != null && getMinionById(minionId).getHp() > 0) {
-						hero.takeDamage(fDamage);
+					Minion min = getMinionById(minionId);
+					if (min != null && min.getHp() > 0) {
+						hero.takeDamage(fDamage, min.getArmorPenetration(), "PHYSICAL");
 						if (hero.getHp() <= 0) {
 							Log.i(TAG, "Hero died, send death animation to client");
 							int numbersAlive = 0;
@@ -538,7 +539,7 @@ public class GameServer {
 						}
 
 						Log.i(TAG, "Found hero that's attacking : " + hero.getClass_type() + " hp of minion is : " + minion.getHp());
-						float totalDamage = Math.round(minion.calculateDamageReceived(hero.getAttackDamage()));
+						float totalDamage = Math.round(minion.calculateDamageReceived(hero.getAttackDamage(), hero.getArmorPenetration(), "PHYSICAL"));
 						dealDamageToMinion(hero, minion, totalDamage);
 
 						//sendCooldownInformation(hero.getAbility(0), hero.getId());

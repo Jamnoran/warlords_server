@@ -60,7 +60,7 @@ public class PriestSmite extends Spell {
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
 			// Damage target
-			damageMinion(getTargetEnemyList().get(0), amount);
+			damageMinion(getTargetEnemyList().get(0), amount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
 		}
 		getAbility().setCasting(false);
 	}

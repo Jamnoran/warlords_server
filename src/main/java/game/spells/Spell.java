@@ -99,7 +99,7 @@ public class Spell {
 			float abilityCost = hero.getMaxHp() * (((float)ability.getResourceCost())/ 100);
 			if(hero.getHp() > Math.round(abilityCost)){
 				Log.i(TAG, "Has hp enough for spell hp cost:  "  + abilityCost);
-				hero.takeDamage(Math.round(abilityCost));
+				hero.takeDamage(Math.round(abilityCost), 0, "TRUE");
 			}
 		}else{
 			int resourceCostCost = ability.getResourceCost();
@@ -122,14 +122,14 @@ public class Spell {
 		getGameServer().sendGameStatus();
 	}
 
-	public void damageMinion(Minion minion, float damageAmount) {
-		float totalDamage = Math.round(minion.calculateDamageReceived(damageAmount));
-		if (minion.takeDamage(totalDamage)) {
+	public void damageMinion(Minion minion, float damageAmount, float penetration, String damageType) {
+		float totalDamageAfterReduction = Math.round(minion.calculateDamageReceived(damageAmount, penetration, damageType));
+		if (minion.takeDamage(totalDamageAfterReduction)) {
 			Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
 			gameServer.minionDied(hero.getId(), minion.getId());
 			gameServer.removeMinion(minion.getId());
 		}else {
-			minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamage, 0.0f));
+			minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamageAfterReduction, 0.0f));
 		}
 	}
 
@@ -141,7 +141,7 @@ public class Spell {
 
 	public void damageHero(Integer heroId, float amount){
 		float totalAmount = Math.round(amount);
-		gameServer.getHeroById(heroId).takeDamage(totalAmount);
+		gameServer.getHeroById(heroId).takeDamage(totalAmount, 0, "TRUE");
 	}
 
 
