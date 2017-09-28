@@ -45,8 +45,6 @@ public class PriestShield extends Spell {
 
 			hero.getBuffs().add(buff);
 
-			//getGameServer().sendHeroBuff(new Buff(hero.getId(), null, Buff.SHIELD, getAbility().getValue(), 3000));
-
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("SHIELD", hero.getId(), getHero().getId(), null, 1));
 		}
