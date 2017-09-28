@@ -462,13 +462,14 @@ public class Hero {
 		// Check items equipped
 
 		// Check talents
-		if(getTalents() != null) {
-			for (Talent talent : getTalents()) {
-				if (talent.getId() == 10) {
+		if(getTalents() != null){
+			for(Talent talent : getTalents()){
+				if(talent.getTalentId() == 10){
 					armorCalculation = armorCalculation + talent.getBaseValue() + (talent.getScaling() * talent.getPointAdded());
 				}
 			}
 		}
+		setArmor(armorCalculation);
 		return armorCalculation;
 	}
 
@@ -488,13 +489,14 @@ public class Hero {
 		// Check items equipped
 
 		// Check talents
-		if(getTalents() != null) {
-			for (Talent talent : getTalents()) {
-				if (talent.getId() == 12) {
+		if(getTalents() != null){
+			for(Talent talent : getTalents()){
+				if(talent.getTalentId() == 12){
 					mrCalculation = mrCalculation + talent.getBaseValue() + (talent.getScaling() * talent.getPointAdded());
 				}
 			}
 		}
+		setMagicResistance(mrCalculation);
 		return mrCalculation;
 	}
 
@@ -633,5 +635,10 @@ public class Hero {
 			return magicPenetration;
 		}
 		return 0;
+	}
+
+	public void recalculateStats() {
+		calculateArmor();
+		calculateMagicResist();
 	}
 }

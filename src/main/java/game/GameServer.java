@@ -69,19 +69,16 @@ public class GameServer {
 			Log.i(TAG, "Added a warrior");
 			Warrior warrior = (Warrior) hero;
 			warrior.generateHeroInformation();
-			//warrior.setStartPosition(getFreeStartPosition());
 			heroes.add(warrior);
 		} else if (hero.isClass(Hero.PRIEST)) {
 			Log.i(TAG, "Added a priest");
 			Priest priest = (Priest) hero;
 			priest.generateHeroInformation();
-			//priest.setStartPosition(getFreeStartPosition());
 			heroes.add(priest);
 		} else if (hero.isClass(Hero.WARLOCK)) {
 			Log.i(TAG, "Added a warlock");
 			Warlock warlock = (Warlock) hero;
 			warlock.generateHeroInformation();
-			//priest.setStartPosition(getFreeStartPosition());
 			heroes.add(warlock);
 		}
 		Log.i(TAG, "Hero joined with this user id: " + hero.getUser_id() + " characters in game: " + heroes.size());
@@ -322,13 +319,25 @@ public class GameServer {
 
 	private void sendTalents(Integer userId) {
 		Gson gson = new Gson();
-		ArrayList<Talent> talents = DatabaseUtil.getHeroTalents(getHeroByUserId("" + userId).getId());
 		Hero hero = getHeroByUserId("" + userId);
-		hero.setTalents(talents);
-		int totalPoints = hero.getLevel();
-		String jsonInString = gson.toJson(new TalentResponse(talents, totalPoints));
-		if (server != null) {
-			server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId("" + userId).getId()), jsonInString));
+		Log.i(TAG, "Sending talents to user");
+		if (hero != null) {
+			ArrayList<Talent> talents = DatabaseUtil.getHeroTalents(hero.getId());
+			hero.setTalents(talents);
+			hero.recalculateStats();
+			int totalPoints = hero.getLevel();
+			String jsonInString = gson.toJson(new TalentResponse(talents, totalPoints));
+			if (server != null) {
+				server.dispatchMessage(new Message(getClientIdByHeroId(hero.getId()), jsonInString));
+			}
+		}
+	}
+
+	private void setTalents(Integer heroId, ArrayList<Talent> talents) {
+		for (Hero hero : heroes) {
+			if (hero.getId() == heroId) {
+				hero.setTalents(talents);
+			}
 		}
 	}
 
