@@ -2,6 +2,7 @@ package game;
 
 import game.io.SpellRequest;
 import game.logging.Log;
+import game.util.DatabaseUtil;
 import game.util.GameUtil;
 import game.vo.Hero;
 import game.vo.Minion;
@@ -62,15 +63,11 @@ public class Test {
 
 	private static void startTestGame() {
 		server = new GameServer(null);
-		hero = new Warlock();
-		hero.setUser_id(6);
-		hero.setClass_type("WARLOCK");
-		hero.setId(18);
-		hero.setLevel(3);
-		hero.generateHeroInformation();
-		minion = new Minion(server);
+
+		hero = DatabaseUtil.getHero(14);
 		server.addHero(hero);
 
+		minion = new Minion(server);
 		minion.setLevel(1);
 		minion.setId(4);
 		minion.generateMinionInformation(5, 1, 5);
@@ -104,8 +101,9 @@ public class Test {
 					String message = in.readLine();
 					if(message.equals("1")){
 						//server.attackHero(18,10,4);
-						minion.addThreat(new Threat(18, 5f, 5f, 0));
-						minion.targetInRangeForAttack = true;
+//						minion.addThreat(new Threat(18, 5f, 5f, 0));
+//						minion.targetInRangeForAttack = true;
+						Log.i(TAG, "Hero armor : " + hero.getArmor());
 					}else if (message.equals("2")){
 					}
 				}
