@@ -462,12 +462,13 @@ public class Hero {
 		// Check items equipped
 
 		// Check talents
-		for(Talent talent : getTalents()){
-			if(talent.getId() == 10){
-				armorCalculation = armorCalculation + talent.getBaseValue() + (talent.getScaling() * talent.getPointAdded());
+		if(getTalents() != null) {
+			for (Talent talent : getTalents()) {
+				if (talent.getId() == 10) {
+					armorCalculation = armorCalculation + talent.getBaseValue() + (talent.getScaling() * talent.getPointAdded());
+				}
 			}
 		}
-
 		return armorCalculation;
 	}
 
@@ -487,12 +488,13 @@ public class Hero {
 		// Check items equipped
 
 		// Check talents
-		for(Talent talent : getTalents()){
-			if(talent.getId() == 12){
-				mrCalculation = mrCalculation + talent.getBaseValue() + (talent.getScaling() * talent.getPointAdded());
+		if(getTalents() != null) {
+			for (Talent talent : getTalents()) {
+				if (talent.getId() == 12) {
+					mrCalculation = mrCalculation + talent.getBaseValue() + (talent.getScaling() * talent.getPointAdded());
+				}
 			}
 		}
-
 		return mrCalculation;
 	}
 
