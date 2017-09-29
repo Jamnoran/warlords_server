@@ -233,6 +233,7 @@ public class GameServer {
 		Minion minion = new Minion(this);
 		minion.setId(minionCount);
 		minion.setLevel(gameLevel);
+		minion.setMinionType(CalculationUtil.getRandomInt(1,2));
 		minion.generateMinionInformation(posX, posZ, posY);
 		minions.add(minion);
 		Log.i(TAG, "Minions spawned : " + minion.toString());

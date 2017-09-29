@@ -23,6 +23,7 @@ public class Minion {
 	private Integer maxHp = null;
 	private transient GameServer game;
 	private int heroTarget = 0;
+	private int minionType = 1;
 
 	public transient boolean targetInRangeForAttack = false;
 	private transient float baseDamage = 5;
@@ -285,6 +286,14 @@ public class Minion {
 
 	public void setMagicPenetration(float magicPenetration) {
 		this.magicPenetration = magicPenetration;
+	}
+
+	public int getMinionType() {
+		return minionType;
+	}
+
+	public void setMinionType(int minionType) {
+		this.minionType = minionType;
 	}
 
 	public float calculateDamageReceived(float damage, float penetration, String damageType) {
