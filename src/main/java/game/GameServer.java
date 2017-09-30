@@ -749,6 +749,12 @@ public class GameServer {
 		if (minion != null && minion.getHeroIdWithMostThreat() == null) {
 			Log.i(TAG, "This minion had no aggro, add towards this hero [" + parsedRequest.getHero_id() + "] Since first to see it");
 			minion.addThreat(new Threat(parsedRequest.getHero_id(), Threat.inRangeThreath, 0, 0));
+		}else{
+			if (minion != null) {
+				Log.i(TAG, "Minion had aggro : " + minion.getHeroIdWithMostThreat());
+			} else {
+				Log.i(TAG, "Did not find minion with id : " + parsedRequest.getMinion_id());
+			}
 		}
 	}
 
