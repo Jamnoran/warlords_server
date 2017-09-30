@@ -105,26 +105,30 @@ public class Minion {
 	}
 
 	private void findNewLocationToWalkTo() {
-		if (GameUtil.isWorldType(GameUtil.DUNGEON_CRAWLER, game.getWorldLevel())) {
+		Integer heroId = getHeroIdWithMostThreat();
+		if(heroId != null){
+			if (!targetInRangeForAttack) {
+				Hero hero = game.getHeroById(heroId);
+				setDesiredPositionX(hero.getPositionX());
+				setDesiredPositionZ(hero.getPositionZ());
+			}
+		}else{
+			if (GameUtil.isWorldType(GameUtil.DUNGEON_CRAWLER, game.getWorldLevel())) {
 
-			//float newX = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
-			//float newZ = CalculationUtil.getRandomFloat(-1.0f, 0.0f);
+				float newX = CalculationUtil.getRandomFloat(-4.0f, 3.0f);
+				float newZ = CalculationUtil.getRandomFloat(-4.0f, 3.0f);
 
-			float newX = CalculationUtil.getRandomFloat(-4.0f, 3.0f);
-			float newZ = CalculationUtil.getRandomFloat(-4.0f, 3.0f);
+				double distance = Math.hypot(getPositionX()-newX, getPositionZ()-newZ);
 
-			double distance = Math.hypot(getPositionX()-newX, getPositionZ()-newZ);
+				setDesiredPositionX(getPositionX() + newX);
+				setDesiredPositionZ(getPositionZ() + newZ);
 
-			setDesiredPositionX(getPositionX() + newX);
-			setDesiredPositionZ(getPositionZ() + newZ);
-
-			if (distance >= 32.0f) {
-				//Log.i(TAG, "Sending run animation for minion distance" + distance);
-				this.game.sendMinionMoveAnimation(getId());
+				if (distance >= 32.0f) {
+					//Log.i(TAG, "Sending run animation for minion distance" + distance);
+					this.game.sendMinionMoveAnimation(getId());
+				}
 			}
 		}
-
-		//Log.i(TAG, "Walking to new position " + getDesiredPositionX() + " x " + getDesiredPositionZ());
 	}
 
 	public void addThreat(Threat threat){
