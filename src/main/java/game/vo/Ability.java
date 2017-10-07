@@ -26,6 +26,7 @@ public class Ability implements Comparator<Ability> {
 	private String timeWhenOffCooldown;
 	private int baseCD;
 	private int position = 0;
+	private float range;
 	private transient long millisLastUse = -1000000;
 	private boolean isCasting = false;
 	private int resourceCost = 0;
@@ -189,6 +190,14 @@ public class Ability implements Comparator<Ability> {
 
 	public void setResourceCost(int resourceCost) {
 		this.resourceCost = resourceCost;
+	}
+
+	public float getRange() {
+		return range;
+	}
+
+	public void setRange(float range) {
+		this.range = range;
 	}
 
 	public int getDefaultTickMillis() {

@@ -91,6 +91,7 @@ public class DatabaseUtil {
 					ability.setDamageType(rs.getString("damage_type"));
 					ability.setBaseCD(rs.getInt("base_cd"));
 					ability.setResourceCost(rs.getInt("resource_cost"));
+					ability.setRange(rs.getFloat("range"));
 					//Display values
 					abilities.add(ability);
 				}

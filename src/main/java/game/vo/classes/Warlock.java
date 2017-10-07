@@ -18,7 +18,7 @@ public class Warlock extends Hero {
 	private transient Integer dexPerLevel = 1;
 	private transient Integer staPerLevel = 2;
 	private transient Integer hpRegen = 1;
-	private transient float attackRange = 4.0f;
+	private transient float attackRange = 8.0f;
 
 	public Warlock() {
 		super();
