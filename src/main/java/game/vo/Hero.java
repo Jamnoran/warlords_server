@@ -560,7 +560,7 @@ public class Hero {
 
 	public void addExp(int calculatedXP) {
 		xp = xp + calculatedXP;
-		float xpForLevel = (this.xpForLevel + (level * (this.xpForLevel * xpScale)));
+		xpForLevel = Math.round(this.xpForLevel + (level * (this.xpForLevel * xpScale)));
 		if(xp >= xpForLevel){
 			Log.i(TAG, "Level up!");
 			level++;
