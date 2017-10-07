@@ -9,6 +9,7 @@ import game.vo.Minion;
 import game.vo.Threat;
 import game.vo.Tick;
 import game.vo.classes.Warlock;
+import game.vo.classes.Warrior;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -28,6 +29,15 @@ public class Test {
 
 	public static void main(String[] args) {
 
+		Warrior hero = new Warrior();
+		hero.generateHeroInformation();
+
+		for(int i = 0 ; i < 10 ; i++){
+			hero.addExp(300);
+			Log.i(TAG, "Xp[" + hero.getXp() + "] Max[" + hero.getXpForLevel() + "] Level[" + hero.getLevel() + "]");
+		}
+
+
 
 		// Armor calculation
 
@@ -42,11 +52,11 @@ public class Test {
 		//calculateDamageAfterReduction(200, 80, 100);
 
 
-		Sender sender = new Sender();
-		sender.setDaemon(true);
-		sender.start();
+		//Sender sender = new Sender();
+		//sender.setDaemon(true);
+		//sender.start();
 
-		startTestGame();
+		//startTestGame();
 
 	}
 

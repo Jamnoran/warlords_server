@@ -29,12 +29,6 @@ public class WarriorTaunt extends Spell {
 				minion.addThreat(new Threat(getHero().getId(), tauntAmount, 0, 0));
 			}
 		}
-		// Set the cooldown for this ability
-		getAbility().setMillisLastUse(getTime());
-		getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
-
-		// Send castbar information
-		getGameServer().sendCastBarInformation(getAbility());
 
 		// Add animation to list
 		getGameServer().getAnimations().add(new GameAnimation("TAUNT", 0, getHero().getId(), null, 2));

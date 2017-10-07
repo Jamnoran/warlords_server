@@ -561,6 +561,7 @@ public class Hero {
 	public void addExp(int calculatedXP) {
 		xp = xp + calculatedXP;
 		float xpForLevel = (this.xpForLevel + (level * (this.xpForLevel * xpScale)));
+		Log.i(TAG, "Xp needed for level up: " + xpForLevel);
 		if(xp >= xpForLevel){
 			Log.i(TAG, "Level up!");
 			level++;
@@ -569,7 +570,6 @@ public class Hero {
 		// Update database
 		DatabaseUtil.updateHero(this);
 	}
-
 
 	public String getSqlInsertQuery() {
 		return "INSERT INTO `warlords`.`heroes` (`id`, `user_id`, `xp`, `level`, `class_type`, `top_game_lvl`) VALUES (NULL, '" + getUser_id() + "', '" + getXp() + "', '" + getLevel() + "', '" + getClass_type() +  "', '" + getTopGameLvl() + "')";
@@ -627,6 +627,7 @@ public class Hero {
 			}
 		}
 	}
+
 
 	public float getPenetration(String damageType) {
 		if(damageType.equals("PHYSICAL")){

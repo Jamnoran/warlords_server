@@ -463,10 +463,15 @@ public class GameServer {
 				Log.i(TAG, "Warlock used restore!");
 				warlockRestore((Warlock) hero, parsedRequest);
 				break;
+			case 29:
+				Log.i(TAG, "Warlock used restore!");
+				warlockBloodBolt((Warlock) hero, parsedRequest);
+				break;
 			default:
 				Log.i(TAG, "Did not find spell with id: " + parsedRequest.getSpell_id());
 				break;
 		}
+		sendGameStatus();
 	}
 
 	/**
@@ -911,7 +916,6 @@ public class GameServer {
 		PriestHeal spell = new PriestHeal(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
-			sendGameStatus();
 		} else {
 			Log.i(TAG, "Could not send spell, probably because of resource or cd");
 		}
@@ -921,7 +925,6 @@ public class GameServer {
 		PriestSmite spell = new PriestSmite(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
-			sendGameStatus();
 		} else {
 			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}
@@ -931,7 +934,6 @@ public class GameServer {
 		PriestShield spell = new PriestShield(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
-			sendGameStatus();
 		} else {
 			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}
@@ -955,7 +957,6 @@ public class GameServer {
 		WarriorCleave spell = new WarriorCleave(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
-			sendGameStatus();
 		} else {
 			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}
@@ -965,7 +966,6 @@ public class GameServer {
 		WarriorTaunt spell = new WarriorTaunt(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
-			sendGameStatus();
 		} else {
 			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}
@@ -975,7 +975,6 @@ public class GameServer {
 		WarriorCharge spell = new WarriorCharge(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
-			sendGameStatus();
 		} else {
 			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}
@@ -999,7 +998,6 @@ public class GameServer {
 		WarlockDrainLife spell = new WarlockDrainLife(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
-			sendGameStatus();
 		} else {
 			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}
@@ -1009,7 +1007,6 @@ public class GameServer {
 		WarlockHaemorrhage spell = new WarlockHaemorrhage(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
-			sendGameStatus();
 		} else {
 			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}
@@ -1019,7 +1016,15 @@ public class GameServer {
 		WarlockRestore spell = new WarlockRestore(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
 		if (spell.init()) {
 			spell.execute();
-			sendGameStatus();
+		} else {
+			Log.i(TAG, "Could not send spell, probably because of mana or cd");
+		}
+	}
+
+	private void warlockBloodBolt(Warlock hero, SpellRequest parsedRequest) {
+		WarlockBloodBolt spell = new WarlockBloodBolt(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		if (spell.init()) {
+			spell.execute();
 		} else {
 			Log.i(TAG, "Could not send spell, probably because of mana or cd");
 		}

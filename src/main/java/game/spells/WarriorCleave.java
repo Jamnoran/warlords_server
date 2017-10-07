@@ -32,13 +32,6 @@ public class WarriorCleave extends Spell {
 				damageMinion(minion, damageAmount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
 
 			}
-			// Set the cooldown for this ability
-			getAbility().setMillisLastUse(getTime());
-			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
-
-			// Send castbar information
-			getGameServer().sendCastBarInformation(getAbility());
-
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("CLEAVE", 0, getHero().getId(), null, 1));
 		}

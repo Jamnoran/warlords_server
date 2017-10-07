@@ -320,6 +320,7 @@ public class Minion {
 			// Give xp to all that participated.
 			for(Threat threat : threats){
 				int calculatedXP = baseXp;
+				// We should make xp amount less if the minions level is not close to heroes
 				this.game.getHeroById(threat.getHeroId()).addExp(calculatedXP);
 			}
 			return true;

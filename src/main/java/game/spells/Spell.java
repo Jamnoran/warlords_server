@@ -67,9 +67,21 @@ public class Spell {
 		}
 
 		// Return false if no target (Check ability target type)
+		if(!checkTargetTypeIsCorrect()){
+			Log.i(TAG, "Sent up wrong target type, we should cancel ability");
+			return false;
+		}
 
 		//getGameServer().sendCooldownInformation(ability, hero.getId());
 		Log.i(TAG, "Spell is ok to cast");
+		return true;
+	}
+
+	private boolean checkTargetTypeIsCorrect() {
+		if(getAbility().getTargetType().equals("SINGLE_FRIENDLY_NOT_SELF")){
+			if(targetFriendlyList.size() == 0 || (targetFriendlyList.size() == 1 && targetFriendlyList.get(0).getId() != getHero().getId()))
+				return false;
+		}
 		return true;
 	}
 
@@ -83,7 +95,7 @@ public class Spell {
 		}else{
 			int resourceCostCost = ability.getResourceCost();
 			if(hero.getResource() >= resourceCostCost){
-				Log.i(TAG, "Has resourses");
+				Log.i(TAG, "Has resources");
 				return true;
 			}else{
 				Log.i(TAG, "Mana cost : " + resourceCostCost + " Mana left : " + hero.getResource());
@@ -96,14 +108,15 @@ public class Spell {
 	public void execute() {
 		Log.i(TAG, "Execute done on spell ");
 		if(hero.getClass_type().equals("WARLOCK")){
-			float abilityCost = hero.getMaxHp() * (((float)ability.getResourceCost())/ 100);
+			float abilityCost = hero.getMaxHp() * (((float)ability.getResourceCost())/ 100); // Cost is in %
 			if(hero.getHp() > Math.round(abilityCost)){
 				Log.i(TAG, "Has hp enough for spell hp cost:  "  + abilityCost);
+				// TODO: Need to have check if ability can cause lethal damage
 				hero.takeDamage(Math.round(abilityCost), 0, "TRUE");
 			}
 		}else{
 			int resourceCostCost = ability.getResourceCost();
-			Log.i(TAG, "Has resourses");
+			Log.i(TAG, "Has resources");
 			hero.setResource(hero.getResource() - resourceCostCost);
 			if(hero.getResource() < 0){
 				hero.setResource(0);
@@ -119,6 +132,7 @@ public class Spell {
 		// Set the cooldown for this ability
 		getAbility().setMillisLastUse(getTime());
 		getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
+		// TODO: This should we be able remove
 		getGameServer().sendGameStatus();
 	}
 
