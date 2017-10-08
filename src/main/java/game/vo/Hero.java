@@ -1,5 +1,6 @@
 package game.vo;
 
+import game.io.CombatTextResponse;
 import game.logging.Log;
 import game.util.CalculationUtil;
 import game.util.DatabaseUtil;
@@ -19,6 +20,7 @@ public class Hero {
 	private Integer user_id = null;
 	private Integer xp = 0;
 	private int xpForLevel = 1000;
+	private transient int baseXpForScaling = 1000;
 	private Integer topGameLvl = 0;
 	// Need xpToLevelUp as well
 	private Integer level = 1;
@@ -355,15 +357,15 @@ public class Hero {
 		this.deBuffs = deBuffs;
 	}
 
-	public void heal(float healAmount) {
-		hp = hp + Math.round(healAmount);
+	public void heal(Amount healAmount) {
+		hp = hp + Math.round(healAmount.getAmount());
 		if(hp > maxHp){
 			hp = maxHp;
 		}
 	}
 
-	public float calculateDamageReceived(float damage) {
-		float newDamage = damage;
+	public float calculateDamageReceived(Amount damage) {
+		float newDamage = damage.getAmount();
 		return newDamage;
 	}
 
@@ -410,26 +412,28 @@ public class Hero {
 		}
 	}
 
-	public float getSpellDamage(Ability ability) {
+	public Amount getSpellDamage(Ability ability) {
+		Amount damage;
 		float multiplier;
 		if(ability.getDamageType().equals("MAGIC")){
 			multiplier = (1 + (getIntelligence() * attackIntScaling));
 		}else{ // PHYSICAL
 			multiplier = (1 + (getStrength() * attackStrScaling));
 		}
-		float damage = CalculationUtil.getRandomInt(ability.getBaseDamage(), ability.getTopDamage()) * multiplier;
+		damage = new Amount(CalculationUtil.getRandomInt(ability.getBaseDamage(), ability.getTopDamage()) * multiplier);
 		if(ability.getCrittable() == 1 && checkIfCritical()){
 			Log.i(TAG, "Critical hit");
-			damage = damage * criticalMultiplier;
+			damage.setAmount(damage.getAmount() * criticalMultiplier);
+			damage.setCrit(true);
 		}
 		return damage;
 	}
 
-	public float getAttackDamage() {
-		float damage = CalculationUtil.getRandomInt(baseAttackDamage, baseMaxAttackDamage) * (1 + (getStrength() * attackStrScaling));
+	public Amount getAttackDamage() {
+		Amount damage = new Amount(CalculationUtil.getRandomInt(baseAttackDamage, baseMaxAttackDamage) * (1 + (getStrength() * attackStrScaling)));
 		if(checkIfCritical()){
 			Log.i(TAG, "Critical hit");
-			damage = damage * criticalMultiplier;
+			damage.setAmount(damage.getAmount() * criticalMultiplier);
 		}
 		return damage;
 	}
@@ -560,8 +564,7 @@ public class Hero {
 
 	public void addExp(int calculatedXP) {
 		xp = xp + calculatedXP;
-		float xpForLevel = (this.xpForLevel + (level * (this.xpForLevel * xpScale)));
-		Log.i(TAG, "Xp needed for level up: " + xpForLevel);
+		xpForLevel = Math.round(baseXpForScaling + (level * (this.baseXpForScaling * xpScale)));
 		if(xp >= xpForLevel){
 			Log.i(TAG, "Level up!");
 			level++;

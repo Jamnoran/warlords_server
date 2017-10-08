@@ -7,6 +7,7 @@ import game.vo.Vector3;
  */
 public class RotateTargetResponse {
 	private String response_type = "ROTATE_TARGET";
+	private int sourceId = 0;
 	private boolean friendly = true;
 	private int idOfTarget = 0;
 	private Vector3 targetPosition;
@@ -43,12 +44,22 @@ public class RotateTargetResponse {
 		this.targetPosition = targetPosition;
 	}
 
+	public int getSourceId() {
+		return sourceId;
+	}
+
+	public void setSourceId(int source) {
+		this.sourceId = source;
+	}
+
 	@Override
 	public String toString() {
 		return "RotateTargetResponse{" +
 				"response_type='" + response_type + '\'' +
+				", sourceId=" + sourceId +
 				", friendly=" + friendly +
 				", idOfTarget=" + idOfTarget +
+				", targetPosition=" + targetPosition +
 				'}';
 	}
 }

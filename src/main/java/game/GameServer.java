@@ -36,7 +36,7 @@ public class GameServer {
 	private ArrayList<GameAnimation> animations = new ArrayList<>();
 	private ArrayList<Message> messages = new ArrayList<>();
 	private World world;
-	private int gameLevel = 1;
+	private int gameLevel = 11;
 
 
 	public GameServer(ServerDispatcher server) {
@@ -287,6 +287,17 @@ public class GameServer {
 		server.dispatchMessage(new Message(jsonInString));
 	}
 
+	public void sendRotateTargetResponse(RotateTargetResponse response){
+		String jsonInString = new Gson().toJson(response);
+		server.dispatchMessage(new Message(jsonInString));
+	}
+
+	public void sendCombatText(CombatTextResponse combatTextResponse) {
+		String jsonInString = new Gson().toJson(combatTextResponse);
+		server.dispatchMessage(new Message(jsonInString));
+	}
+
+
 	/**
 	 * This will be called when a hero joins a game or when requested
 	 *
@@ -481,7 +492,7 @@ public class GameServer {
 	 * @param damage
 	 * @param minionId
 	 */
-	public void attackHero(Integer heroId, float damage, Integer minionId) {
+	public void attackHero(Integer heroId, Amount damage, Integer minionId) {
 		Log.i(TAG, "Minion : " + minionId + " attacked hero: " + heroId);
 		Hero hero = getHeroById(heroId);
 		if (hero != null) {
@@ -501,6 +512,7 @@ public class GameServer {
 					Minion min = getMinionById(minionId);
 					if (min != null && min.getHp() > 0) {
 						hero.takeDamage(fDamage, min.getArmorPenetration(), "PHYSICAL");
+						sendCombatText(new CombatTextResponse(true, hero.getId(), "" + damage.getAmount(), damage.isCrit(), "#FFFF0000"));
 						if (hero.getHp() <= 0) {
 							Log.i(TAG, "Hero died, send death animation to client");
 							int numbersAlive = 0;
@@ -554,8 +566,11 @@ public class GameServer {
 						}
 
 						Log.i(TAG, "Found hero that's attacking : " + hero.getClass_type() + " hp of minion is : " + minion.getHp());
-						float totalDamage = Math.round(minion.calculateDamageReceived(hero.getAttackDamage(), hero.getArmorPenetration(), "PHYSICAL"));
+						Amount amount = hero.getAttackDamage();
+						float totalDamage = Math.round(minion.calculateDamageReceived(amount, hero.getArmorPenetration(), "PHYSICAL"));
 						dealDamageToMinion(hero, minion, totalDamage);
+
+						sendCombatText(new CombatTextResponse(false, minion.getId(), "" + amount.getAmount(), amount.isCrit(), "#FFFF0000"));
 
 						//sendCooldownInformation(hero.getAbility(0), hero.getId());
 
@@ -635,7 +650,7 @@ public class GameServer {
 
 
 	public void updateMinionPositions(ArrayList<Minion> updatedMinions) {
-		// TODO: Do this more efficiant
+		// TODO: Do this more efficient
 		for (Minion minion : updatedMinions) {
 			for (Minion gameMinion : minions) {
 				if (minion.getId() == gameMinion.getId()) {
@@ -644,7 +659,6 @@ public class GameServer {
 					gameMinion.setPositionZ(minion.getPositionZ());
 				}
 			}
-
 		}
 	}
 
@@ -877,14 +891,19 @@ public class GameServer {
 			if (minion.isAlive()) {
 				// Take action for debuffs
 				if (minion.getDeBuffs().size() > 0) {
+					Log.i(TAG, "Debuffs left : " + minion.getDeBuffs().size());
 					Iterator<Buff> iterator = minion.getDeBuffs().iterator();
 					while (iterator.hasNext()) {
 						Buff debuff = iterator.next();
 						long tickTimeConv = Long.parseLong(debuff.tickTime);
 						if (tickTimeConv > 0 && (System.currentTimeMillis() >= tickTimeConv)) {
-							debuff.tickTime = "" + System.currentTimeMillis() + debuff.duration;
+							Log.i(TAG, "It was time for minion debuff changed debuff ticktime to " + (debuff.tickTime + debuff.duration) + " from " + debuff.tickTime);
+							debuff.tickTime = "" + (tickTimeConv + debuff.duration);
 							if (debuff.type == Buff.DOT) {
 								dealDamageToMinion(getHeroById(debuff.heroId), minion, debuff.value);
+
+								sendCombatText(new CombatTextResponse(false, minion.getId(), "" + debuff.value, false, "#FFFF0000"));
+
 								debuff.ticks--;
 								if (debuff.ticks == 0) {
 									iterator.remove();
@@ -906,6 +925,8 @@ public class GameServer {
 	}
 
 
+
+
 	// All spells
 
 
@@ -913,7 +934,7 @@ public class GameServer {
 
 
 	private void priestHeal(Priest hero, SpellRequest parsedRequest) {
-		PriestHeal spell = new PriestHeal(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		PriestHeal spell = new PriestHeal(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
 		if (spell.init()) {
 			spell.execute();
 		} else {
@@ -922,7 +943,7 @@ public class GameServer {
 	}
 
 	private void priestSmite(Priest hero, SpellRequest parsedRequest) {
-		PriestSmite spell = new PriestSmite(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		PriestSmite spell = new PriestSmite(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
 		if (spell.init()) {
 			spell.execute();
 		} else {
@@ -931,7 +952,7 @@ public class GameServer {
 	}
 
 	private void priestShield(Priest hero, SpellRequest parsedRequest) {
-		PriestShield spell = new PriestShield(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		PriestShield spell = new PriestShield(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
 		if (spell.init()) {
 			spell.execute();
 		} else {
@@ -954,7 +975,7 @@ public class GameServer {
 
 	//          Warrior
 	private void warriorCleave(Warrior hero, SpellRequest parsedRequest) {
-		WarriorCleave spell = new WarriorCleave(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		WarriorCleave spell = new WarriorCleave(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
 		if (spell.init()) {
 			spell.execute();
 		} else {
@@ -963,7 +984,7 @@ public class GameServer {
 	}
 
 	private void warriorTaunt(Warrior hero, SpellRequest parsedRequest) {
-		WarriorTaunt spell = new WarriorTaunt(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		WarriorTaunt spell = new WarriorTaunt(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
 		if (spell.init()) {
 			spell.execute();
 		} else {
@@ -972,7 +993,7 @@ public class GameServer {
 	}
 
 	private void warriorCharge(Warrior hero, SpellRequest parsedRequest) {
-		WarriorCharge spell = new WarriorCharge(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		WarriorCharge spell = new WarriorCharge(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
 		if (spell.init()) {
 			spell.execute();
 		} else {
@@ -995,7 +1016,7 @@ public class GameServer {
 	// 		Warlock
 
 	private void warlockDrain(Warlock hero, SpellRequest parsedRequest) {
-		WarlockDrainLife spell = new WarlockDrainLife(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		WarlockDrainLife spell = new WarlockDrainLife(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
 		if (spell.init()) {
 			spell.execute();
 		} else {
@@ -1004,7 +1025,7 @@ public class GameServer {
 	}
 
 	private void warlockHaemorrhage(Warlock hero, SpellRequest parsedRequest) {
-		WarlockHaemorrhage spell = new WarlockHaemorrhage(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		WarlockHaemorrhage spell = new WarlockHaemorrhage(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
 		if (spell.init()) {
 			spell.execute();
 		} else {
@@ -1013,7 +1034,7 @@ public class GameServer {
 	}
 
 	private void warlockRestore(Warlock hero, SpellRequest parsedRequest) {
-		WarlockRestore spell = new WarlockRestore(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		WarlockRestore spell = new WarlockRestore(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
 		if (spell.init()) {
 			spell.execute();
 		} else {
@@ -1022,7 +1043,7 @@ public class GameServer {
 	}
 
 	private void warlockBloodBolt(Warlock hero, SpellRequest parsedRequest) {
-		WarlockBloodBolt spell = new WarlockBloodBolt(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly());
+		WarlockBloodBolt spell = new WarlockBloodBolt(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
 		if (spell.init()) {
 			spell.execute();
 		} else {

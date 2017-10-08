@@ -2,9 +2,7 @@ package game.spells;
 
 import game.GameServer;
 import game.logging.Log;
-import game.vo.Ability;
-import game.vo.GameAnimation;
-import game.vo.Hero;
+import game.vo.*;
 import game.vo.classes.Priest;
 
 import java.util.ArrayList;
@@ -16,8 +14,8 @@ public class PriestSmite extends Spell {
 
 	private static final String TAG = PriestSmite.class.getSimpleName();
 
-	public PriestSmite(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly) {
-		super(time, hero, ability, gameServer, targetEnemy, targetFriendly);
+	public PriestSmite(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
+		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
 
@@ -31,7 +29,7 @@ public class PriestSmite extends Spell {
 
 			// Get damage amount
 			Priest priest = (Priest) getHero();
-			float damageAmount = priest.getSpellDamage(getAbility());
+			Amount damageAmount = priest.getSpellDamage(getAbility());
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
 
 			Thread castTime = new Thread(() -> {
@@ -56,7 +54,7 @@ public class PriestSmite extends Spell {
 	}
 
 
-	public void castTimeCompleted(float amount){
+	public void castTimeCompleted(Amount amount){
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
 			// Damage target

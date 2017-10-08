@@ -1,6 +1,7 @@
 package game.io;
 
 import com.google.gson.annotations.SerializedName;
+import game.vo.Vector3;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,8 @@ public class SpellRequest extends JsonRequest{
 	private float target_position_x;
 	@SerializedName("target_position_z")
 	private float target_position_z;
+	@SerializedName("target_position_y")
+	private float target_position_y;
 	@SerializedName("time")
 	private long time;
 
@@ -64,6 +67,18 @@ public class SpellRequest extends JsonRequest{
 		this.target_position_z = target_position_z;
 	}
 
+	public float getTarget_position_y() {
+		return target_position_y;
+	}
+
+	public void setTarget_position_y(float target_position_y) {
+		this.target_position_y = target_position_y;
+	}
+
+	public Vector3 getVector(){
+		return new Vector3(getTarget_position_x(), getTarget_position_y(), getTarget_position_z());
+	}
+
 	public long getTime() {
 		return time;
 	}
@@ -89,6 +104,7 @@ public class SpellRequest extends JsonRequest{
 				", target_friendly=" + target_friendly +
 				", target_position_x=" + target_position_x +
 				", target_position_z=" + target_position_z +
+				", target_position_y=" + target_position_y +
 				", time=" + time +
 				'}';
 	}

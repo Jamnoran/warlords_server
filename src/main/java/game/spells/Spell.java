@@ -1,6 +1,8 @@
 package game.spells;
 
 import game.GameServer;
+import game.io.CombatTextResponse;
+import game.io.RotateTargetResponse;
 import game.logging.Log;
 import game.vo.*;
 
@@ -19,16 +21,18 @@ public class Spell {
 	private ArrayList<Minion> targetEnemyList;
 	private ArrayList<Integer> targetFriendly;
 	private ArrayList<Hero> targetFriendlyList;
+	private final Vector3 position;
 	private long time;
 
 
-	public Spell(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly) {
+	public Spell(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		this.time = time;
 		this.hero = hero;
 		this.ability = ability;
 		this.gameServer = gameServer;
 		this.targetEnemy = targetEnemy;
 		this.targetFriendly = targetFriendly;
+		this.position = position;
 	}
 
 	public boolean init(){
@@ -78,10 +82,33 @@ public class Spell {
 	}
 
 	private boolean checkTargetTypeIsCorrect() {
-		if(getAbility().getTargetType().equals("SINGLE_FRIENDLY_NOT_SELF")){
+		// Send rotation
+		RotateTargetResponse rotationResponse = new RotateTargetResponse();
+		if (getAbility().getTargetType().equals("SINGLE") || getAbility().getTargetType().equals("DOT")){
+			if(targetEnemyList.size() == 0)
+				return false;
+			rotationResponse.setFriendly(false);
+			rotationResponse.setIdOfTarget(targetEnemyList.get(0).getId());
+		} else if (getAbility().getTargetType().equals("SINGLE_FRIENDLY") || getAbility().getTargetType().equals("HOT")) {
+			if(targetFriendlyList.size() == 0)
+				return false;
+			rotationResponse.setIdOfTarget(targetFriendlyList.get(0).getId());
+		} else if (getAbility().getTargetType().equals("AOE")) {
+			// It's valid to send a AOE spell without a target, it might not do anything but it should be possible
+			rotationResponse.setFriendly(false);
+			rotationResponse.setTargetPosition(position);
+		} else if (getAbility().getTargetType().equals("CONE")) {
+			// It's valid to send a CONE spell without a target, it might not do anything but it should be possible
+			rotationResponse.setFriendly(false);
+			rotationResponse.setTargetPosition(position);
+		} else if(getAbility().getTargetType().equals("SINGLE_FRIENDLY_NOT_SELF")){
 			if(targetFriendlyList.size() == 0 || (targetFriendlyList.size() == 1 && targetFriendlyList.get(0).getId() != getHero().getId()))
 				return false;
+			rotationResponse.setIdOfTarget(targetFriendlyList.get(0).getId());
 		}
+		// Send the rotation to all clients
+		getGameServer().sendRotateTargetResponse(rotationResponse);
+		Log.i(TAG, "Send this rotation message : " + rotationResponse.toString());
 		return true;
 	}
 
@@ -136,21 +163,21 @@ public class Spell {
 		getGameServer().sendGameStatus();
 	}
 
-	public void damageMinion(Minion minion, float damageAmount, float penetration, String damageType) {
+	public void damageMinion(Minion minion, Amount damageAmount, float penetration, String damageType) {
 		float totalDamageAfterReduction = Math.round(minion.calculateDamageReceived(damageAmount, penetration, damageType));
+		gameServer.sendCombatText(new CombatTextResponse(false, minion.getId(), "" + totalDamageAfterReduction, damageAmount.isCrit(), "#FFFF0000"));
 		if (minion.takeDamage(totalDamageAfterReduction)) {
 			Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
 			gameServer.minionDied(hero.getId(), minion.getId());
-			gameServer.removeMinion(minion.getId());
 		}else {
 			minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamageAfterReduction, 0.0f));
 		}
 	}
 
 
-	public void healHero(Integer heroId, float amount) {
-		float totalAmount = Math.round(amount);
-		gameServer.getHeroById(heroId).heal(totalAmount);
+	public void healHero(Integer heroId, Amount amount) {
+		gameServer.getHeroById(heroId).heal(amount);
+		gameServer.sendCombatText(new CombatTextResponse(true, hero.getId(), "" + amount.getAmount(), amount.isCrit(), "#FF00FF00"));
 	}
 
 	public void damageHero(Integer heroId, float amount){

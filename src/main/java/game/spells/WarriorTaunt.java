@@ -13,8 +13,8 @@ public class WarriorTaunt extends Spell {
 
 	private static final String TAG = WarriorTaunt.class.getSimpleName();
 
-	public WarriorTaunt(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly) {
-		super(time, hero, ability, gameServer, targetEnemy, targetFriendly);
+	public WarriorTaunt(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
+		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
 	public void execute() {

@@ -101,7 +101,8 @@ public class Minion {
 	private void attack(Integer heroId) {
 		long time = System.currentTimeMillis();
 		timeLastAttack = time;
-		game.attackHero(heroId, baseDamage, id);
+		Amount damage = new Amount(baseDamage);
+		game.attackHero(heroId, damage, id);
 	}
 
 	private void findNewLocationToWalkTo() {
@@ -300,17 +301,17 @@ public class Minion {
 		this.minionType = minionType;
 	}
 
-	public float calculateDamageReceived(float damage, float penetration, String damageType) {
+	public float calculateDamageReceived(Amount damage, float penetration, String damageType) {
 		// Calculate if minion has armor or dodge chance
 		if(damageType.equals("PHYSICAL")){
-			float damageAfterReduction = CalculationUtil.calculateDamageAfterReduction(armor,penetration,damage);
+			float damageAfterReduction = CalculationUtil.calculateDamageAfterReduction(armor,penetration,damage.getAmount());
 			// damage * (armor )
 			return damageAfterReduction;
 		}else if(damageType.equals("MAGIC")){
-			float damageAfterReduction = CalculationUtil.calculateDamageAfterReduction(magicResistance,penetration,damage);
+			float damageAfterReduction = CalculationUtil.calculateDamageAfterReduction(magicResistance,penetration,damage.getAmount());
 			return damageAfterReduction;
 		}else{
-			return damage;
+			return damage.getAmount();
 		}
 	}
 

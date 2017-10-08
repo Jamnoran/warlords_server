@@ -182,20 +182,22 @@ public class DatabaseUtil {
 	}
 
 	public static Hero updateHero(Hero hero) {
-		Connection connection = getConnection();
-		if (connection != null) {
-			try {
-				Statement stmt = connection.createStatement();
-				stmt.executeUpdate(hero.getSqlUpdateQuery());
-				countOfRequest++;
-				Log.i(TAG, "Update hero_id : " + hero.getId());
-				stmt.close();
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+		if (hero != null && hero.getId() != null && hero.getId() > 0) {
+			Connection connection = getConnection();
+			if (connection != null) {
+				try {
+					Statement stmt = connection.createStatement();
+					stmt.executeUpdate(hero.getSqlUpdateQuery());
+					countOfRequest++;
+					Log.i(TAG, "Update hero_id : " + hero.getId());
+					stmt.close();
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.i(TAG, "Failed to make connection!");
 			}
-		} else {
-			Log.i(TAG, "Failed to make connection!");
 		}
 		return hero;
 	}

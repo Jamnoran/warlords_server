@@ -14,8 +14,8 @@ public class WarlockHaemorrhage extends Spell {
 
 	private static final String TAG = WarlockHaemorrhage.class.getSimpleName();
 
-	public WarlockHaemorrhage(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly) {
-		super(time, hero, ability, gameServer, targetEnemy, targetFriendly);
+	public WarlockHaemorrhage(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
+		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
 
@@ -29,7 +29,7 @@ public class WarlockHaemorrhage extends Spell {
 
 			// Get damage amount
 			Warlock warlock = (Warlock) getHero();
-			float damageAmount = warlock.getSpellDamage(getAbility());
+			Amount damageAmount = warlock.getSpellDamage(getAbility());
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
 
 			Thread castTime = new Thread(() -> {
@@ -59,17 +59,17 @@ public class WarlockHaemorrhage extends Spell {
 	}
 
 
-	public void castTimeCompleted(float amount){
+	public void castTimeCompleted(Amount amount){
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
 
 			damageMinion(getTargetEnemyList().get(0), amount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
 
-			String firstTick = "" + System.currentTimeMillis();
+			long firstTick = System.currentTimeMillis();
 
 			try {
 				if(getGameServer().getMinionById(getTargetEnemy().get(0)) != null) {
-					getGameServer().getMinionById(getTargetEnemy().get(0)).addDebuff(new Buff(getHero().id, getTargetEnemy().get(0), Buff.DOT, Math.round(amount), getAbility().getDefaultTickMillis(), firstTick, getAbility().getValue()));
+					getGameServer().getMinionById(getTargetEnemy().get(0)).addDebuff(new Buff(getHero().id, getTargetEnemy().get(0), Buff.DOT, Math.round(amount.getAmount()), getAbility().getDefaultTickMillis(), "" + firstTick, getAbility().getValue()));
 				}
 			} catch (Exception e) {
 				Log.i(TAG, "What do we get nullpointer on here?");
@@ -77,8 +77,7 @@ public class WarlockHaemorrhage extends Spell {
 			}
 
 			for (int i = 0 ; i < getAbility().getValue() ; i++) {
-				long conv = Long.parseLong(firstTick);
-				getGameServer().addTick(new Tick(conv + (i * getAbility().getDefaultTickMillis()), Tick.MINION_DEBUFF));
+				getGameServer().addTick(new Tick(firstTick + (i * getAbility().getDefaultTickMillis()), Tick.MINION_DEBUFF));
 			}
 			getAbility().setCasting(false);
 		}

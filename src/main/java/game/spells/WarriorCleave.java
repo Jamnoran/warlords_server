@@ -14,8 +14,8 @@ public class WarriorCleave extends Spell {
 
 	private static final String TAG = WarriorCleave.class.getSimpleName();
 
-	public WarriorCleave(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly) {
-		super(time, hero, ability, gameServer, targetEnemy, targetFriendly);
+	public WarriorCleave(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
+		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
 
@@ -25,7 +25,7 @@ public class WarriorCleave extends Spell {
 				Log.i(TAG, "Target minion to damage : " + minion.getId());
 				// Get damage amount
 				Warrior warrior = (Warrior) getHero();
-				float damageAmount = warrior.getSpellDamage(getAbility());
+				Amount damageAmount = warrior.getSpellDamage(getAbility());
 				Log.i(TAG, "Damage for this amount : " + damageAmount);
 
 				// Damage target

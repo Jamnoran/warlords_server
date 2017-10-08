@@ -14,8 +14,8 @@ public class WarriorCharge extends Spell {
 
 	private static final String TAG = WarriorCharge.class.getSimpleName();
 
-	public WarriorCharge(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly) {
-		super(time, hero, ability, gameServer, targetEnemy, targetFriendly);
+	public WarriorCharge(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
+		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
 	public void execute() {

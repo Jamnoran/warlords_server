@@ -4,11 +4,23 @@ package game.io;
  * Created by Jamnoran on 27-Jun-16.
  */
 public class CombatTextResponse {
-	private String response_type = "ROTATE_TARGET";
+	private String response_type = "COMBAT_TEXT";
 	private boolean friendly = true;
 	private int idOfTarget = 0;
 	private String amount;
+	private boolean crit = false;
 	private String color;
+
+	public CombatTextResponse() {
+	}
+
+	public CombatTextResponse(boolean friendly, int idOfTarget, String amount, boolean crit, String color) {
+		this.friendly = friendly;
+		this.idOfTarget = idOfTarget;
+		this.amount = amount;
+		this.crit = crit;
+		this.color = color;
+	}
 
 	public String getResponse_type() {
 		return response_type;
@@ -50,6 +62,14 @@ public class CombatTextResponse {
 		this.color = color;
 	}
 
+	public boolean isCrit() {
+		return crit;
+	}
+
+	public void setCrit(boolean crit) {
+		this.crit = crit;
+	}
+
 	@Override
 	public String toString() {
 		return "CombatTextResponse{" +
@@ -57,6 +77,7 @@ public class CombatTextResponse {
 				", friendly=" + friendly +
 				", idOfTarget=" + idOfTarget +
 				", amount='" + amount + '\'' +
+				", crit=" + crit +
 				", color='" + color + '\'' +
 				'}';
 	}

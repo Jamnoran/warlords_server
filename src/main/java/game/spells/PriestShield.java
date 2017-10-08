@@ -2,10 +2,7 @@ package game.spells;
 
 import game.GameServer;
 import game.logging.Log;
-import game.vo.Ability;
-import game.vo.Buff;
-import game.vo.GameAnimation;
-import game.vo.Hero;
+import game.vo.*;
 import game.vo.classes.Priest;
 
 import java.util.ArrayList;
@@ -17,8 +14,8 @@ public class PriestShield extends Spell {
 
 	private static final String TAG = PriestShield.class.getSimpleName();
 
-	public PriestShield(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly) {
-		super(time, hero, ability, gameServer, targetEnemy, targetFriendly);
+	public PriestShield(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
+		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
 
@@ -28,11 +25,11 @@ public class PriestShield extends Spell {
 			Log.i(TAG, "Target Hero to shield: " + hero.getId());
 			// Get shield amount
 			Priest priest = (Priest) getHero();
-			float shieldAmount = priest.getSpellDamage(getAbility());
+			Amount shieldAmount = priest.getSpellDamage(getAbility());
 			Log.i(TAG, "Shield for this amount : " + shieldAmount);
 
 			int duration = 3000;
-			Buff buff = new Buff(hero.getId(), null, Buff.SHIELD, Math.round(shieldAmount), duration, "0", 0);
+			Buff buff = new Buff(hero.getId(), null, Buff.SHIELD, Math.round(shieldAmount.getAmount()), duration, "0", 0);
 			Thread buffDurationThread = new Thread(() -> {
 				try {
 					Thread.sleep(duration);

@@ -2,9 +2,7 @@ package game.spells;
 
 import game.GameServer;
 import game.logging.Log;
-import game.vo.Ability;
-import game.vo.GameAnimation;
-import game.vo.Hero;
+import game.vo.*;
 import game.vo.classes.Warlock;
 
 import java.util.ArrayList;
@@ -16,8 +14,8 @@ public class WarlockRestore extends Spell {
 
 	private static final String TAG = WarlockRestore.class.getSimpleName();
 
-	public WarlockRestore(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly) {
-		super(time, hero, ability, gameServer, targetEnemy, targetFriendly);
+	public WarlockRestore(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
+		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
 
@@ -32,7 +30,7 @@ public class WarlockRestore extends Spell {
 			// Get damage amount
 			Warlock warlock = (Warlock) getHero();
 			float hpCost = getHero().getMaxHp() * (getAbility().getResourceCost() / 100);
-			float damageAmount = warlock.getSpellDamage(getAbility());
+			Amount damageAmount = warlock.getSpellDamage(getAbility());
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
 
 			Thread castTime = new Thread(() -> {
@@ -55,13 +53,13 @@ public class WarlockRestore extends Spell {
 	}
 
 
-	public void castTimeCompleted(float amount, float hpCost){
+	public void castTimeCompleted(Amount amount, float hpCost){
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
 
 			damageHero(getHero().id, hpCost);
 
-			restoreResources(getTargetFriendly().get(0), amount);
+			restoreResources(getTargetFriendly().get(0), amount.getAmount());
 			getAbility().setCasting(false);
 		}
 	}

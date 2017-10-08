@@ -2,9 +2,7 @@ package game.spells;
 
 import game.GameServer;
 import game.logging.Log;
-import game.vo.Ability;
-import game.vo.GameAnimation;
-import game.vo.Hero;
+import game.vo.*;
 import game.vo.classes.Warlock;
 
 import java.util.ArrayList;
@@ -16,8 +14,8 @@ public class WarlockBloodBolt extends Spell {
 
 	private static final String TAG = WarlockBloodBolt.class.getSimpleName();
 
-	public WarlockBloodBolt(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly) {
-		super(time, hero, ability, gameServer, targetEnemy, targetFriendly);
+	public WarlockBloodBolt(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
+		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
 
@@ -27,7 +25,7 @@ public class WarlockBloodBolt extends Spell {
 
 			// Get damage amount
 			Warlock warlock = (Warlock) getHero();
-			float damageAmount = warlock.getSpellDamage(getAbility());
+			Amount damageAmount = warlock.getSpellDamage(getAbility());
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
 			Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 			// Damage target

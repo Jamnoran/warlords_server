@@ -1,10 +1,9 @@
 package game.spells;
 
 import game.GameServer;
+import game.io.CombatTextResponse;
 import game.logging.Log;
-import game.vo.Ability;
-import game.vo.GameAnimation;
-import game.vo.Hero;
+import game.vo.*;
 import game.vo.classes.Priest;
 
 import java.util.ArrayList;
@@ -16,8 +15,8 @@ public class PriestHeal extends Spell {
 
 	private static final String TAG = PriestHeal.class.getSimpleName();
 
-	public PriestHeal(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly) {
-		super(time, hero, ability, gameServer, targetEnemy, targetFriendly);
+	public PriestHeal(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
+		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
 
@@ -30,11 +29,11 @@ public class PriestHeal extends Spell {
 
 					// Get heal amount
 					Priest priest = (Priest) getHero();
-					float healAmount = priest.getSpellDamage(getAbility());
+					Amount healAmount = priest.getSpellDamage(getAbility());
 					Log.i(TAG, "Healing for this amount : " + healAmount);
 
 					// Heal target (don't overheal)
-					hero.heal(healAmount);
+					healHero(hero.getId(), healAmount);
 
 					// Add animation to list
 					getGameServer().getAnimations().add(new GameAnimation("HEAL", hero.getId(), getHero().getId(), null, 2));
