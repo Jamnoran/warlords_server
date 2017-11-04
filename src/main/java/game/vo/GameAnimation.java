@@ -15,6 +15,14 @@ public class GameAnimation {
 	public GameAnimation() {
 	}
 
+	/**
+	 * Game animation sent to client
+	 * @param animation_type Variable name as identifier to client, this can be "CLEAVE", "HEAL" for example
+	 * @param target_id target of animation can be friendly or enemy
+	 * @param source_id source of animation (often the hero casting spell)
+	 * @param position
+	 * @param sAnimationId
+	 */
 	public GameAnimation(String animation_type, Integer target_id, Integer source_id, Vector3 position, Integer sAnimationId) {
 		this.animation_type = animation_type;
 		this.target_id = target_id;

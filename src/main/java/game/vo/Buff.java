@@ -7,6 +7,7 @@ public class Buff {
 	public static final Integer SPEED = 1;
 	public static final Integer SHIELD = 2;
 	public static final Integer DOT = 3;
+	public static final Integer HOT = 4;
 
 	public Integer heroId = 0;
 	public Integer target = 0;
