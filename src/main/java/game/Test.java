@@ -1,23 +1,14 @@
 package game;
 
-import game.io.SpellRequest;
 import game.logging.Log;
 import game.util.DatabaseUtil;
-import game.util.GameUtil;
 import game.vo.Hero;
 import game.vo.Minion;
-import game.vo.Threat;
-import game.vo.Tick;
-import game.vo.classes.Warlock;
 import game.vo.classes.Warrior;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-
-import static java.lang.Thread.sleep;
-import static sun.swing.MenuItemLayoutHelper.max;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Test {
 
@@ -27,7 +18,18 @@ public class Test {
 	private static Minion minion;
 
 	public static void main(String[] args) {
+		Hero hero = DatabaseUtil.getHero(16);
 
+
+		Warrior warr = (Warrior) hero;
+
+		warr.generateHeroInformation();
+
+		Log.i(TAG, "Got hero with hp: " + warr.getHp());
+
+		warr.takeDamage(100,0, "PHYSICAL");
+
+		Log.i(TAG, "Hero hp after damage " + warr.getHp());
 	}
 
 

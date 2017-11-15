@@ -12,7 +12,6 @@ public class Warlock extends Hero {
 
 	// Base stats
 	private transient Integer hpPerLevel = 10;
-	private transient Integer resourcePerLevel = 10;
 	private transient Integer strPerLevel = 1;
 	private transient Integer intPerLevel = 3;
 	private transient Integer dexPerLevel = 1;

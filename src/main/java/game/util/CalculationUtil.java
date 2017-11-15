@@ -1,5 +1,7 @@
 package game.util;
 
+import game.logging.Log;
+
 /**
  * Created by Jamnoran on 01-Jul-16.
  */
@@ -27,6 +29,7 @@ public class CalculationUtil {
 		float armorAfterPenetration = resistance * (1 - (penetration / 100));
 		float damageMultiplier = damage / ( damage + armorAfterPenetration);
 		float totalDamage = damage * damageMultiplier;
+		Log.i(TAG, "Caculating damage with this resistance: " + resistance + " This penetration : " + penetration + " and this base damage: " + damage + " total damage : " + totalDamage);
 		return totalDamage;
 	}
 }

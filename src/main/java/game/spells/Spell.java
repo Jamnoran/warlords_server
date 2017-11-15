@@ -142,7 +142,7 @@ public class Spell {
 				hero.takeDamage(Math.round(abilityCost), 0, "TRUE");
 			}
 		}else{
-			int resourceCostCost = ability.getResourceCost();
+			float resourceCostCost = ability.getResourceCost();
 			Log.i(TAG, "Has resources");
 			hero.setResource(hero.getResource() - resourceCostCost);
 			if(hero.getResource() < 0){

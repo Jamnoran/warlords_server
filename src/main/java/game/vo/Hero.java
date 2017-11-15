@@ -35,17 +35,17 @@ public class Hero {
 
 
 	// Hero stats
-	private Integer hp;
-	private Integer maxHp;
-	private Integer resource;
-	private Integer maxResource;
+	private float hp;
+	private float maxHp;
+	private float resource;
+	private float maxResource;
 	private float attackRange = 3.0f;
 	private float armor = 0;
 	private float magicResistance = 0;
 	private float armorPenetration = 0.0f;
 	private float magicPenetration = 0.0f;
-	private transient Integer hpRegen = 0;
-	private transient Integer resourceRegen = 0;
+	private transient float hpRegen = 0;
+	private transient float resourceRegen = 0;
 	private Integer strength;
 	private Integer intelligence;
 	private Integer stamina;
@@ -109,27 +109,27 @@ public class Hero {
 		this.topGameLvl = topGameLvl;
 	}
 
-	public Integer getResource() {
+	public float getResource() {
 		return resource;
 	}
 
-	public void setResource(Integer resource) {
+	public void setResource(float resource) {
 		this.resource = resource;
 	}
 
-	public Integer getMaxResource() {
+	public float getMaxResource() {
 		return maxResource;
 	}
 
-	public void setMaxResource(Integer maxResource) {
+	public void setMaxResource(float maxResource) {
 		this.maxResource = maxResource;
 	}
 
-	public Integer getHpRegen() {
+	public float getHpRegen() {
 		return hpRegen;
 	}
 
-	public void setHpRegen(Integer hpRegen) {
+	public void setHpRegen(float hpRegen) {
 		this.hpRegen = hpRegen;
 	}
 
@@ -141,7 +141,7 @@ public class Hero {
 		this.attackRange = attackRange;
 	}
 
-	public Integer getResourceRegen() {
+	public float getResourceRegen() {
 		return resourceRegen;
 	}
 
@@ -218,19 +218,19 @@ public class Hero {
 		this.class_type = class_type;
 	}
 
-	public Integer getHp() {
+	public float getHp() {
 		return hp;
 	}
 
-	public void setHp(Integer hp) {
+	public void setHp(float hp) {
 		this.hp = hp;
 	}
 
-	public Integer getMaxHp() {
+	public float getMaxHp() {
 		return maxHp;
 	}
 
-	public void setMaxHp(Integer maxHp) {
+	public void setMaxHp(float maxHp) {
 		this.maxHp = maxHp;
 	}
 
@@ -584,7 +584,7 @@ public class Hero {
 
 	public void regenTick() {
 		// Calculate if amount is different based on talents etc.
-		Integer hpAmount = hpRegen;
+		float hpAmount = hpRegen;
 		if(hp >= 1 && hp < maxHp){
 			hp = hp + hpAmount;
 //			Log.i(TAG, "Hp reg: " + hpAmount);
@@ -592,10 +592,9 @@ public class Hero {
 				hp = maxHp;
 			}
 		}
-		if (hp >= 1 && resourceRegen != null && resource != null) {
-			Integer resourceAmount = resourceRegen;
+		if (hp >= 1) {
+			float resourceAmount = resourceRegen;
 			if(resource < maxResource){
-//				Log.i(TAG, "Resource reg: " + resourceAmount);
 				resource = resource + resourceAmount;
 				if(resource > maxResource){
 					resource = maxResource;
