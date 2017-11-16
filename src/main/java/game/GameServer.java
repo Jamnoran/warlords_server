@@ -862,6 +862,7 @@ public class GameServer {
 							minion.takeAction();
 						}
 					}
+					Log.i(TAG, "Minion action");
 					ticks.add(new Tick((System.currentTimeMillis() + minionActionTickTime), Tick.MINION_ACTION));
 				}
 
