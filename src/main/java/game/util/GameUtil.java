@@ -10,7 +10,7 @@ public class GameUtil {
 	public static int BOSS = 0;
 
 	public static boolean isWorldType(int type, int worldLevel) {
-		if(type == worldLevel){
+		if(type == getWorldTypeFromLevel(worldLevel)){
 			return true;
 		}
 		return false;
