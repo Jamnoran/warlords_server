@@ -831,7 +831,6 @@ public class GameServer {
 						}
 						if (tick.typeOfTick == Tick.MINION_ACTION) {
 							addMinionAction = true;
-							Log.i(TAG, "Activated this tick : " + tick.timeToActivate + " of type " + tick.typeOfTick);
 						}
 						if (tick.typeOfTick == Tick.HERO_REGEN) {
 							addHeroRegen = true;
@@ -862,7 +861,6 @@ public class GameServer {
 							minion.takeAction();
 						}
 					}
-					Log.i(TAG, "Minion action");
 					ticks.add(new Tick((System.currentTimeMillis() + minionActionTickTime), Tick.MINION_ACTION));
 				}
 
