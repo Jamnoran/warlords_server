@@ -831,6 +831,7 @@ public class GameServer {
 						}
 						if (tick.typeOfTick == Tick.MINION_ACTION) {
 							addMinionAction = true;
+							Log.i(TAG, "Activated this tick : " + tick.timeToActivate + " of type " + tick.typeOfTick);
 						}
 						if (tick.typeOfTick == Tick.HERO_REGEN) {
 							addHeroRegen = true;
