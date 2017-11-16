@@ -85,7 +85,7 @@ public class Spell {
 		// Send rotation
 		RotateTargetResponse rotationResponse = new RotateTargetResponse();
 		if (getAbility().getTargetType().equals("SINGLE") || getAbility().getTargetType().equals("DOT")){
-			if(targetEnemyList.size() == 0)
+			if(targetEnemyList == null || targetEnemyList.size() == 0)
 				return false;
 			rotationResponse.setFriendly(false);
 			rotationResponse.setIdOfTarget(targetEnemyList.get(0).getId());
