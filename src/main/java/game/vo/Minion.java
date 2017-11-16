@@ -120,7 +120,6 @@ public class Minion {
 				setDesiredPositionZ(hero.getPositionZ());
 			}
 		}else{
-			Log.i(TAG, "Trying to find a place to walk to: " + game.getWorldLevel());
 			if (GameUtil.isWorldType(GameUtil.DUNGEON_CRAWLER, game.getWorldLevel())) {
 
 				float newX = CalculationUtil.getRandomFloat(-4.0f, 3.0f);
@@ -132,7 +131,6 @@ public class Minion {
 				setDesiredPositionZ(getPositionZ() + newZ);
 
 				if (distance >= 32.0f) {
-					Log.i(TAG, "Sending run animation for minion distance" + distance);
 					this.game.sendMinionMoveAnimation(getId());
 				}
 			}
