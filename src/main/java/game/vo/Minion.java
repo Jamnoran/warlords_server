@@ -9,6 +9,8 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class Minion {
+	public static int ZOMBIE = 1;
+	public static int SKELETON = 2;
 
 	private static final String TAG = Minion.class.getSimpleName();
 	private Integer id = 1;
@@ -19,8 +21,8 @@ public class Minion {
 	private float desiredPositionZ = 10.0f;
 	private float desiredPositionY = 10.0f;
 	private Integer level = 1;
-	private Integer hp = null;
-	private Integer maxHp = null;
+	private float hp = 0;
+	private float maxHp = 0;
 	private transient GameServer game;
 	private int heroTarget = 0;
 	private int minionType = 1;
@@ -49,7 +51,11 @@ public class Minion {
 	}
 
 	public void generateMinionInformation(float posX, float posZ, float posY){
+		setMinionType(CalculationUtil.getRandomInt(1,2));
 		setHp(baseHp + (hpPerLevel * level));
+		if(minionType == SKELETON){
+			setArmor(5);
+		}
 		setMaxHp(getHp());
 		setPositionX(posX);
 		setDesiredPositionX(posX);
@@ -160,7 +166,6 @@ public class Minion {
 			return currentHero.getHeroId();
 		} else {
 			// Check if a hero is in range, in that case add some threat on that (this will mean the first hero getting close will aggro this minion)
-			//return heroInRange();
 			return null;
 		}
 	}
@@ -172,19 +177,19 @@ public class Minion {
 		this.level = level;
 	}
 
-	public Integer getHp() {
+	public float getHp() {
 		return hp;
 	}
 
-	public void setHp(Integer hp) {
+	public void setHp(float hp) {
 		this.hp = hp;
 	}
 
-	public Integer getMaxHp() {
+	public float getMaxHp() {
 		return maxHp;
 	}
 
-	public void setMaxHp(Integer maxHp) {
+	public void setMaxHp(float maxHp) {
 		this.maxHp = maxHp;
 	}
 
