@@ -152,7 +152,7 @@ public class Spell {
 
 		setSpellCooldown();
 		// Send castbar information
-		getGameServer().sendCastBarInformation(getAbility());
+		getGameServer().sendCastBarInformation(hero.getId(), getAbility());
 	}
 
 	public void setSpellCooldown(){

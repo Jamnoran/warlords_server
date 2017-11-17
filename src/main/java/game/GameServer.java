@@ -407,10 +407,10 @@ public class GameServer {
 	}
 
 
-	public void sendCastBarInformation(Ability ability) {
+	public void sendCastBarInformation(Integer heroId, Ability ability) {
 		String jsonInString = new Gson().toJson(new AbilityStatusResponse(ability));
 		if (server != null) {
-			server.dispatchMessage(new Message(jsonInString));
+			server.dispatchMessage(new Message(getClientIdByHeroId(heroId), jsonInString));
 		}
 	}
 
@@ -576,7 +576,7 @@ public class GameServer {
 						Log.i(TAG, "Minion size now: " + minions.size());
 						// Send updated status a while after animation is sent for mapping to animation hitting minion.
 						sendGameStatus();
-						sendCastBarInformation(hero.getAbility(0));
+						sendCastBarInformation(hero.getId(), hero.getAbility(0));
 					}
 				};
 				thread.start();

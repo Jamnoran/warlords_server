@@ -44,7 +44,7 @@ public class WarriorCharge extends Spell {
 
 
 			// Send castbar information
-			getGameServer().sendCastBarInformation(getAbility());
+			getGameServer().sendCastBarInformation(getHero().getId(), getAbility());
 
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("CHARGE", 0, getHero().getId(), null, 1));
