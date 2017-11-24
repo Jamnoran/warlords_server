@@ -36,7 +36,7 @@ public class GameServer {
 	private ArrayList<GameAnimation> animations = new ArrayList<>();
 	private ArrayList<Message> messages = new ArrayList<>();
 	private World world;
-	private int gameLevel = 11;
+	private int gameLevel = 2;
 
 
 	public GameServer(ServerDispatcher server) {
