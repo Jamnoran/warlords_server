@@ -18,10 +18,8 @@ public class ServerDispatcher extends Thread {
 	private Vector mMessageQueue = new Vector();
 	private Vector mClients = new Vector();
 	private String serverId;
-
 	private GameServer gameServer;
 	private String gameType;
-
 	private long createdAt = 0;
 
 	/**
