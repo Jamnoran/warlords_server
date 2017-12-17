@@ -120,7 +120,7 @@ public class Minion {
 				setDesiredPositionZ(hero.getPositionZ());
 			}
 		}else{
-			if (GameUtil.isWorldType(GameUtil.DUNGEON_CRAWLER, game.getWorldLevel())) {
+			if (GameUtil.isWorldType(World.CRAWLER, game.getWorldLevel())) {
 
 				float newX = CalculationUtil.getRandomFloat(-4.0f, 3.0f);
 				float newZ = CalculationUtil.getRandomFloat(-4.0f, 3.0f);

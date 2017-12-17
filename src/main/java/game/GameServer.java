@@ -36,7 +36,7 @@ public class GameServer {
 	private ArrayList<GameAnimation> animations = new ArrayList<>();
 	private ArrayList<Message> messages = new ArrayList<>();
 	private World world;
-	private int gameLevel = 2;
+	private int gameLevel = 1;
 
 
 	public GameServer(ServerDispatcher server) {
@@ -205,6 +205,7 @@ public class GameServer {
 	private void sendWorld(Integer heroId) {
 		String jsonInString = new Gson().toJson(new WorldResponse(world));
 		if (server != null) {
+			Log.i(TAG, "Sending world to hero: " + heroId);
 			server.dispatchMessage(new Message(getClientIdByHeroId(heroId), jsonInString));
 		}
 	}
