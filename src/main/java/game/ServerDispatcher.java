@@ -95,7 +95,7 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("SPELL")) {
 				SpellRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SpellRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.spell(parsedRequest);
+				gameServer.sendSpell(parsedRequest);
 			} else if (request.isType("MINION_AGGRO")) {
 				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
