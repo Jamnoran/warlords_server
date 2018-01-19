@@ -6,6 +6,7 @@ import game.spells.*;
 import game.io.*;
 import game.util.CalculationUtil;
 import game.util.DatabaseUtil;
+import game.util.GameUtil;
 import game.util.SpellUtil;
 import game.vo.*;
 import game.vo.classes.Priest;
@@ -39,6 +40,7 @@ public class GameServer {
 	private World world;
 	private int gameLevel = 1;
 	private SpellUtil spellUtil;
+	private GameUtil gameUtil;
 
 
 	public GameServer(ServerDispatcher server) {
@@ -47,6 +49,7 @@ public class GameServer {
 		createWorld();
 		startGameTicks();
 		spellUtil = new SpellUtil();
+		gameUtil = new GameUtil();
 	}
 
 
@@ -618,7 +621,6 @@ public class GameServer {
 		return null;
 	}
 
-
 	public Hero getHeroById(Integer heroId) {
 		for (Hero hero : heroes) {
 			if (hero.getId() == heroId) {
@@ -665,24 +667,6 @@ public class GameServer {
 	}
 
 	/**
-	 * Goes through the list of heroes and returning the hero that has the lowest hp
-	 *
-	 * @return hero
-	 */
-	public Hero getHeroWithLowestHp() {
-		Hero targetHero = null;
-		for (Hero lowestHpHero : heroes) {
-			if (targetHero == null) {
-				targetHero = lowestHpHero;
-			} else if (lowestHpHero.getHp() < targetHero.getHp()) {
-				targetHero = lowestHpHero;
-				Log.i(TAG, "Found a target with lower hp : " + lowestHpHero.getId());
-			}
-		}
-		return targetHero;
-	}
-
-	/**
 	 * Util method to get a client by his hero id, good to have if needing to send specified message to that client instead of to all clients
 	 *
 	 * @param heroId
@@ -718,20 +702,6 @@ public class GameServer {
 		}
 	}
 
-	public void minionTargetInRange(MinionAggroRequest parsedRequest) {
-		Minion minion = getMinionById(parsedRequest.getMinion_id());
-		if (minion != null && parsedRequest.getHero_id() > 0) {
-			Log.i(TAG, "Target is in range for an attack");
-			minion.targetInRangeForAttack = true;
-		} else {
-			Log.i(TAG, "Target is out of range for an attack");
-			if (minion != null) {
-				minion.targetInRangeForAttack = false;
-			}
-		}
-	}
-
-
 	// Living game world
 
 	private Thread tickThread;
@@ -744,10 +714,11 @@ public class GameServer {
 	public ArrayList<Tick> ticks = new ArrayList<>();
 
 	private void startGameTicks() {
-		ticks.add(new Tick((System.currentTimeMillis() + gameStatusTickTime), Tick.GAME_STATUS));
-		ticks.add(new Tick((System.currentTimeMillis() + minionActionTickTime), Tick.MINION_ACTION));
-		ticks.add(new Tick((System.currentTimeMillis() + heroRegenTickTime), Tick.HERO_REGEN));
-		ticks.add(new Tick((System.currentTimeMillis() + requestMinionPositionTickTime), Tick.REQUEST_MINION_POSITION));
+		long time = System.currentTimeMillis();
+		ticks.add(new Tick((time + gameStatusTickTime), Tick.GAME_STATUS));
+		ticks.add(new Tick((time + minionActionTickTime), Tick.MINION_ACTION));
+		ticks.add(new Tick((time + heroRegenTickTime), Tick.HERO_REGEN));
+		ticks.add(new Tick((time + requestMinionPositionTickTime), Tick.REQUEST_MINION_POSITION));
 		Log.i(TAG, "Starting new thread");
 		tickThread = new Thread(() -> {
 			while (gameRunning) {
@@ -838,7 +809,7 @@ public class GameServer {
 						Buff debuff = iterator.next();
 						long tickTimeConv = Long.parseLong(debuff.tickTime);
 						if (tickTimeConv > 0 && (System.currentTimeMillis() >= tickTimeConv)) {
-							Log.i(TAG, "It was time for minion debuff changed debuff ticktime to " + (debuff.tickTime + debuff.duration) + " from " + debuff.tickTime);
+							Log.i(TAG, "It was time for minion debuff changed debuff tick time to " + (debuff.tickTime + debuff.duration) + " from " + debuff.tickTime);
 							debuff.tickTime = "" + (tickTimeConv + debuff.duration);
 							if (debuff.type == Buff.DOT) {
 								dealDamageToMinion(getHeroById(debuff.heroId), minion, debuff.value);
@@ -868,5 +839,9 @@ public class GameServer {
 
 	public void sendSpell(SpellRequest parsedRequest) {
 		spellUtil.spell(parsedRequest, this);
+	}
+
+	public GameUtil getGameUtil(){
+		return gameUtil;
 	}
 }

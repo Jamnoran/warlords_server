@@ -103,7 +103,7 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("MINION_TARGET_IN_RANGE")) {
 				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.minionTargetInRange(parsedRequest);
+				gameServer.getGameUtil().minionTargetInRange(parsedRequest);
 			} else if (request.isType("CLICKED_PORTAL")) {
 				ClickPortalRequest parsedRequest = gson.fromJson(aMessage.getMessage(), ClickPortalRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
