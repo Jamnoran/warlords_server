@@ -4,8 +4,13 @@ import game.GameServer;
 import game.io.MinionAggroRequest;
 import game.logging.Log;
 import game.vo.Hero;
+import game.vo.Item;
 import game.vo.Minion;
 import game.vo.World;
+import game.vo.classes.Warrior;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * Created by Eric on 2017-02-02.
@@ -69,5 +74,24 @@ public class GameUtil {
 			}
 		}
 		return targetHero;
+	}
+
+	public static ArrayList<Item> generateLoot(Hero hero) {
+		ArrayList<Item> loot = new ArrayList<>();
+
+		ArrayList<Item> items = DatabaseUtil.getItems(hero.getLevel());
+
+		// Roll if hero got these items
+		for (Item item : items) {
+			int rate = CalculationUtil.getRandomInt(0,1000);
+			Log.i(TAG, "Drop rate : " + rate + " /" + Math.round(item.getDropRate() * 1000));
+			if(rate <= (item.getDropRate() * 1000)){
+				item.generateInfo();
+				item.setHeroId(hero.getId());
+				DatabaseUtil.addLoot(item);
+				loot.add(item);
+			}
+		}
+		return loot;
 	}
 }
