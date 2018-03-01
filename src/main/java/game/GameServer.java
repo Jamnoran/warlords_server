@@ -2,7 +2,6 @@ package game;
 
 import com.google.gson.Gson;
 import game.logging.Log;
-import game.spells.*;
 import game.io.*;
 import game.util.CalculationUtil;
 import game.util.DatabaseUtil;
@@ -91,6 +90,7 @@ public class GameServer {
 		sendGameStatus();
 		sendAbilities("" + hero.getUser_id());
 		sendTalents(hero.getUser_id());
+		getHeroItems("" + hero.getUser_id(), true);
 
 		if (!gameStarted) {
 			gameStarted = true;
@@ -702,6 +702,23 @@ public class GameServer {
 		}
 	}
 
+
+	public ArrayList<Item> getHeroItems(String userId, boolean sendToClient) {
+		Hero hero = getHeroByUserId(userId);
+		ArrayList<Item> items = DatabaseUtil.getLoot(hero.getId());
+
+		if(sendToClient){
+			HeroItemsResponse response = new HeroItemsResponse(items);
+			if (server != null) {
+				String json = new Gson().toJson(response);
+				Log.i(TAG, "Sending these items to client : " + json);
+				server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), json));
+			}
+		}
+		return items;
+	}
+
+
 	// Living game world
 
 	private Thread tickThread;
@@ -844,4 +861,5 @@ public class GameServer {
 	public GameUtil getGameUtil(){
 		return gameUtil;
 	}
+
 }

@@ -127,6 +127,9 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("RESTART_LEVEL")) {
 				Log.i(TAG, "parsedRequest : " + request.toString());
 				gameServer.restartLevel();
+			} else if (request.isType("GET_ITEMS")) {
+				Log.i(TAG, "parsedRequest : " + request.toString());
+				gameServer.getHeroItems(request.getUser_id(), true);
 			} else if (request.isType("UPDATE_MINION_POSITION")) {
 				//Log.i(TAG, "parsedRequest : " + request.toString());
 				UpdateMinionPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateMinionPositionRequest.class);

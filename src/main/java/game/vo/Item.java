@@ -11,7 +11,7 @@ public class Item {
 	private String image;
 	private String classType;
 	private String rarity;
-	private int base;
+	private int baseStat;
 	private int top;
 	private float dropRate;
 	private int levelReq;
@@ -85,12 +85,12 @@ public class Item {
 		this.rarity = rarity;
 	}
 
-	public int getBase() {
-		return base;
+	public int getBaseStat() {
+		return baseStat;
 	}
 
-	public void setBase(int base) {
-		this.base = base;
+	public void setBaseStat(int baseStat) {
+		this.baseStat = baseStat;
 	}
 
 	public int getTop() {
@@ -168,7 +168,7 @@ public class Item {
 				", image='" + image + '\'' +
 				", classType='" + classType + '\'' +
 				", rarity='" + rarity + '\'' +
-				", base=" + base +
+				", baseStat=" + baseStat +
 				", top=" + top +
 				", dropRate=" + dropRate +
 				", levelReq=" + levelReq +
@@ -181,11 +181,11 @@ public class Item {
 	}
 
 	public String getSqlInsertQuery() {
-		return "INSERT into loot SET hero_id = " + getHeroId() + " , item_id = " + getItemId()+ ", base = " + getBase() + ", top = " + getTop();
+		return "INSERT into loot SET hero_id = " + getHeroId() + " , item_id = " + getItemId()+ ", baseStat = " + getBaseStat() + ", top = " + getTop();
 	}
 
 	public void generateInfo() {
-		setBase(CalculationUtil.getRandomInt(getBase(), getTop()));
+		setBaseStat(CalculationUtil.getRandomInt(getBaseStat(), getTop()));
 		setItemId(getId());
 	}
 }

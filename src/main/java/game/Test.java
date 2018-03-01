@@ -35,7 +35,7 @@ public class Test {
 
 		ArrayList<Item> loot = DatabaseUtil.getLoot(warr.getId());
 
-				//ArrayList<Item> loot = GameUtil.generateLoot(warr);
+		//ArrayList<Item> loot = GameUtil.generateLoot(warr);
 		Log.i(TAG, "Got this many items: " + loot.size());
 		for (Item item : loot) {
 			Log.i(TAG, "Item : " + item.toString());

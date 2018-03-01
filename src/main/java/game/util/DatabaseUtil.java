@@ -257,7 +257,7 @@ public class DatabaseUtil {
 					//Retrieve by column name
 					item.setId(rs.getInt("id"));
 					item.setName(rs.getString("name"));
-					item.setBase(rs.getInt("base"));
+					item.setBaseStat(rs.getInt("base"));
 					item.setTop(rs.getInt("top"));
 					item.setPosition(rs.getString("position"));
 					item.setClassType(rs.getString("class"));
@@ -296,7 +296,7 @@ public class DatabaseUtil {
 					item.setHeroId(rs.getInt("hero_id"));
 					item.setItemId(rs.getInt("item_id"));
 					item.setName(rs.getString("name"));
-					item.setBase(rs.getInt("base"));
+					item.setBaseStat(rs.getInt("base"));
 					item.setTop(rs.getInt("top"));
 					item.setClassType(rs.getString("class"));
 					item.setPosition(rs.getString("position"));
