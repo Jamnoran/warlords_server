@@ -2,13 +2,16 @@ package game;
 
 import game.logging.Log;
 import game.util.DatabaseUtil;
+import game.util.GameUtil;
 import game.vo.Hero;
+import game.vo.Item;
 import game.vo.Minion;
 import game.vo.classes.Warrior;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class Test {
 
@@ -20,16 +23,23 @@ public class Test {
 	public static void main(String[] args) {
 		Hero hero = DatabaseUtil.getHero(16);
 
-
 		Warrior warr = (Warrior) hero;
 
 		warr.generateHeroInformation();
 
-		Log.i(TAG, "Got hero with hp: " + warr.getHp());
+		//Log.i(TAG, "Got hero with hp: " + warr.getHp());
 
 		warr.takeDamage(100,0, "PHYSICAL");
 
-		Log.i(TAG, "Hero hp after damage " + warr.getHp());
+		//Log.i(TAG, "Hero hp after damage " + warr.getHp());
+
+		ArrayList<Item> loot = DatabaseUtil.getLoot(warr.getId());
+
+		//ArrayList<Item> loot = GameUtil.generateLoot(warr);
+		Log.i(TAG, "Got this many items: " + loot.size());
+		for (Item item : loot) {
+			Log.i(TAG, "Item : " + item.toString());
+		}
 	}
 
 

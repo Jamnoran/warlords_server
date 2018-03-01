@@ -95,7 +95,7 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("SPELL")) {
 				SpellRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SpellRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.spell(parsedRequest);
+				gameServer.sendSpell(parsedRequest);
 			} else if (request.isType("MINION_AGGRO")) {
 				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
@@ -103,7 +103,7 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("MINION_TARGET_IN_RANGE")) {
 				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.minionTargetInRange(parsedRequest);
+				gameServer.getGameUtil().minionTargetInRange(parsedRequest);
 			} else if (request.isType("CLICKED_PORTAL")) {
 				ClickPortalRequest parsedRequest = gson.fromJson(aMessage.getMessage(), ClickPortalRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
@@ -127,6 +127,9 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("RESTART_LEVEL")) {
 				Log.i(TAG, "parsedRequest : " + request.toString());
 				gameServer.restartLevel();
+			} else if (request.isType("GET_ITEMS")) {
+				Log.i(TAG, "parsedRequest : " + request.toString());
+				gameServer.getHeroItems(request.getUser_id(), true);
 			} else if (request.isType("UPDATE_MINION_POSITION")) {
 				//Log.i(TAG, "parsedRequest : " + request.toString());
 				UpdateMinionPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateMinionPositionRequest.class);

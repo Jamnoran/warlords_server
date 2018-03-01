@@ -2,10 +2,11 @@ package game;
 
 import com.google.gson.Gson;
 import game.logging.Log;
-import game.spells.*;
 import game.io.*;
 import game.util.CalculationUtil;
 import game.util.DatabaseUtil;
+import game.util.GameUtil;
+import game.util.SpellUtil;
 import game.vo.*;
 import game.vo.classes.Priest;
 import game.vo.classes.Warlock;
@@ -37,6 +38,8 @@ public class GameServer {
 	private ArrayList<Message> messages = new ArrayList<>();
 	private World world;
 	private int gameLevel = 1;
+	private SpellUtil spellUtil;
+	private GameUtil gameUtil;
 
 
 	public GameServer(ServerDispatcher server) {
@@ -44,6 +47,8 @@ public class GameServer {
 		this.server = server;
 		createWorld();
 		startGameTicks();
+		spellUtil = new SpellUtil();
+		gameUtil = new GameUtil();
 	}
 
 
@@ -85,6 +90,7 @@ public class GameServer {
 		sendGameStatus();
 		sendAbilities("" + hero.getUser_id());
 		sendTalents(hero.getUser_id());
+		getHeroItems("" + hero.getUser_id(), true);
 
 		if (!gameStarted) {
 			gameStarted = true;
@@ -424,68 +430,6 @@ public class GameServer {
 
 
 	/**
-	 * Important method that handles the spells sent up from clients that a hero wants to initiate a spell
-	 * This method takes as parameters
-	 * heroId
-	 * spellId
-	 * targetFriendly
-	 * targetEnemy
-	 * Location
-	 *
-	 * @param parsedRequest
-	 */
-	public void spell(SpellRequest parsedRequest) {
-		Log.i(TAG, "Handle spell " + parsedRequest.toString());
-		Hero hero = getHeroById(parsedRequest.getHeroId());
-		switch (parsedRequest.getSpell_id()) {
-			case 8:
-				Log.i(TAG, "Warrior used taunt!");
-				warriorTaunt((Warrior) hero, parsedRequest);
-				break;
-			case 7:
-				Log.i(TAG, "Warrior used cleave!");
-				warriorCleave((Warrior) hero, parsedRequest);
-				break;
-			case 1:
-				Log.i(TAG, "Warrior used Charge!");
-				warriorCharge((Warrior) hero, parsedRequest);
-				break;
-			case 2:
-				Log.i(TAG, "Priest used Heal!");
-				priestHeal((Priest) hero, parsedRequest);
-				break;
-			case 3:
-				Log.i(TAG, "Priest used Smite!");
-				priestSmite((Priest) hero, parsedRequest);
-				break;
-			case 6:
-				Log.i(TAG, "Priest used Shield!");
-				priestShield((Priest) hero, parsedRequest);
-				break;
-			case 26:
-				Log.i(TAG, "Warlock used drain life!");
-				warlockDrain((Warlock) hero, parsedRequest);
-				break;
-			case 27:
-				Log.i(TAG, "Warlock used haemorrhage!");
-				warlockHaemorrhage((Warlock) hero, parsedRequest);
-				break;
-			case 28:
-				Log.i(TAG, "Warlock used restore!");
-				warlockRestore((Warlock) hero, parsedRequest);
-				break;
-			case 29:
-				Log.i(TAG, "Warlock used restore!");
-				warlockBloodBolt((Warlock) hero, parsedRequest);
-				break;
-			default:
-				Log.i(TAG, "Did not find spell with id: " + parsedRequest.getSpell_id());
-				break;
-		}
-		sendGameStatus();
-	}
-
-	/**
 	 * This method is called when a minion attacks a hero.
 	 *
 	 * @param heroId
@@ -677,7 +621,6 @@ public class GameServer {
 		return null;
 	}
 
-
 	public Hero getHeroById(Integer heroId) {
 		for (Hero hero : heroes) {
 			if (hero.getId() == heroId) {
@@ -724,24 +667,6 @@ public class GameServer {
 	}
 
 	/**
-	 * Goes through the list of heroes and returning the hero that has the lowest hp
-	 *
-	 * @return hero
-	 */
-	public Hero getHeroWithLowestHp() {
-		Hero targetHero = null;
-		for (Hero lowestHpHero : heroes) {
-			if (targetHero == null) {
-				targetHero = lowestHpHero;
-			} else if (lowestHpHero.getHp() < targetHero.getHp()) {
-				targetHero = lowestHpHero;
-				Log.i(TAG, "Found a target with lower hp : " + lowestHpHero.getId());
-			}
-		}
-		return targetHero;
-	}
-
-	/**
 	 * Util method to get a client by his hero id, good to have if needing to send specified message to that client instead of to all clients
 	 *
 	 * @param heroId
@@ -777,17 +702,20 @@ public class GameServer {
 		}
 	}
 
-	public void minionTargetInRange(MinionAggroRequest parsedRequest) {
-		Minion minion = getMinionById(parsedRequest.getMinion_id());
-		if (minion != null && parsedRequest.getHero_id() > 0) {
-			Log.i(TAG, "Target is in range for an attack");
-			minion.targetInRangeForAttack = true;
-		} else {
-			Log.i(TAG, "Target is out of range for an attack");
-			if (minion != null) {
-				minion.targetInRangeForAttack = false;
+
+	public ArrayList<Item> getHeroItems(String userId, boolean sendToClient) {
+		Hero hero = getHeroByUserId(userId);
+		ArrayList<Item> items = DatabaseUtil.getLoot(hero.getId());
+
+		if(sendToClient){
+			HeroItemsResponse response = new HeroItemsResponse(items);
+			if (server != null) {
+				String json = new Gson().toJson(response);
+				Log.i(TAG, "Sending these items to client : " + json);
+				server.dispatchMessage(new Message(getClientIdByHeroId(getHeroByUserId(userId).getId()), json));
 			}
 		}
+		return items;
 	}
 
 
@@ -803,10 +731,11 @@ public class GameServer {
 	public ArrayList<Tick> ticks = new ArrayList<>();
 
 	private void startGameTicks() {
-		ticks.add(new Tick((System.currentTimeMillis() + gameStatusTickTime), Tick.GAME_STATUS));
-		ticks.add(new Tick((System.currentTimeMillis() + minionActionTickTime), Tick.MINION_ACTION));
-		ticks.add(new Tick((System.currentTimeMillis() + heroRegenTickTime), Tick.HERO_REGEN));
-		ticks.add(new Tick((System.currentTimeMillis() + requestMinionPositionTickTime), Tick.REQUEST_MINION_POSITION));
+		long time = System.currentTimeMillis();
+		ticks.add(new Tick((time + gameStatusTickTime), Tick.GAME_STATUS));
+		ticks.add(new Tick((time + minionActionTickTime), Tick.MINION_ACTION));
+		ticks.add(new Tick((time + heroRegenTickTime), Tick.HERO_REGEN));
+		ticks.add(new Tick((time + requestMinionPositionTickTime), Tick.REQUEST_MINION_POSITION));
 		Log.i(TAG, "Starting new thread");
 		tickThread = new Thread(() -> {
 			while (gameRunning) {
@@ -897,7 +826,7 @@ public class GameServer {
 						Buff debuff = iterator.next();
 						long tickTimeConv = Long.parseLong(debuff.tickTime);
 						if (tickTimeConv > 0 && (System.currentTimeMillis() >= tickTimeConv)) {
-							Log.i(TAG, "It was time for minion debuff changed debuff ticktime to " + (debuff.tickTime + debuff.duration) + " from " + debuff.tickTime);
+							Log.i(TAG, "It was time for minion debuff changed debuff tick time to " + (debuff.tickTime + debuff.duration) + " from " + debuff.tickTime);
 							debuff.tickTime = "" + (tickTimeConv + debuff.duration);
 							if (debuff.type == Buff.DOT) {
 								dealDamageToMinion(getHeroById(debuff.heroId), minion, debuff.value);
@@ -925,130 +854,12 @@ public class GameServer {
 	}
 
 
-
-
-	// All spells
-
-
-	//          Priest
-
-
-	private void priestHeal(Priest hero, SpellRequest parsedRequest) {
-		PriestHeal spell = new PriestHeal(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
-		if (spell.init()) {
-			spell.execute();
-		} else {
-			Log.i(TAG, "Could not send spell, probably because of resource or cd");
-		}
+	public void sendSpell(SpellRequest parsedRequest) {
+		spellUtil.spell(parsedRequest, this);
 	}
 
-	private void priestSmite(Priest hero, SpellRequest parsedRequest) {
-		PriestSmite spell = new PriestSmite(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
-		if (spell.init()) {
-			spell.execute();
-		} else {
-			Log.i(TAG, "Could not send spell, probably because of mana or cd");
-		}
-	}
-
-	private void priestShield(Priest hero, SpellRequest parsedRequest) {
-		PriestShield spell = new PriestShield(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
-		if (spell.init()) {
-			spell.execute();
-		} else {
-			Log.i(TAG, "Could not send spell, probably because of mana or cd");
-		}
-	}
-
-	private void priesHealOverTime(Priest hero, SpellRequest parsedRequest) {
-
-	}
-
-	private void priesAOEHeal(Priest hero, SpellRequest parsedRequest) {
-
-	}
-
-	private void priesBuff(Priest hero, SpellRequest parsedRequest) {
-
-	}
-
-
-	//          Warrior
-	private void warriorCleave(Warrior hero, SpellRequest parsedRequest) {
-		WarriorCleave spell = new WarriorCleave(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
-		if (spell.init()) {
-			spell.execute();
-		} else {
-			Log.i(TAG, "Could not send spell, probably because of mana or cd");
-		}
-	}
-
-	private void warriorTaunt(Warrior hero, SpellRequest parsedRequest) {
-		WarriorTaunt spell = new WarriorTaunt(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
-		if (spell.init()) {
-			spell.execute();
-		} else {
-			Log.i(TAG, "Could not send spell, probably because of mana or cd");
-		}
-	}
-
-	private void warriorCharge(Warrior hero, SpellRequest parsedRequest) {
-		WarriorCharge spell = new WarriorCharge(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
-		if (spell.init()) {
-			spell.execute();
-		} else {
-			Log.i(TAG, "Could not send spell, probably because of mana or cd");
-		}
-	}
-
-	private void warriorSlam(Warrior hero, SpellRequest parsedRequest) {
-
-	}
-
-	private void warriorBarricade(Warrior hero, SpellRequest parsedRequest) {
-
-	}
-
-	private void warriorBuff(Warrior hero, SpellRequest parsedRequest) {
-
-	}
-
-	// 		Warlock
-
-	private void warlockDrain(Warlock hero, SpellRequest parsedRequest) {
-		WarlockDrainLife spell = new WarlockDrainLife(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
-		if (spell.init()) {
-			spell.execute();
-		} else {
-			Log.i(TAG, "Could not send spell, probably because of mana or cd");
-		}
-	}
-
-	private void warlockHaemorrhage(Warlock hero, SpellRequest parsedRequest) {
-		WarlockHaemorrhage spell = new WarlockHaemorrhage(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
-		if (spell.init()) {
-			spell.execute();
-		} else {
-			Log.i(TAG, "Could not send spell, probably because of mana or cd");
-		}
-	}
-
-	private void warlockRestore(Warlock hero, SpellRequest parsedRequest) {
-		WarlockRestore spell = new WarlockRestore(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
-		if (spell.init()) {
-			spell.execute();
-		} else {
-			Log.i(TAG, "Could not send spell, probably because of mana or cd");
-		}
-	}
-
-	private void warlockBloodBolt(Warlock hero, SpellRequest parsedRequest) {
-		WarlockBloodBolt spell = new WarlockBloodBolt(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), this, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
-		if (spell.init()) {
-			spell.execute();
-		} else {
-			Log.i(TAG, "Could not send spell, probably because of mana or cd");
-		}
+	public GameUtil getGameUtil(){
+		return gameUtil;
 	}
 
 }

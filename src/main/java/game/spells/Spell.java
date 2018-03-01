@@ -43,7 +43,7 @@ public class Spell {
 		}else{
 			// Auto set the lowest hp friendly target otherwise
 			targetFriendlyList = new ArrayList<>();
-			targetFriendlyList.add(gameServer.getHeroWithLowestHp());
+			targetFriendlyList.add(gameServer.getGameUtil().getHeroWithLowestHp());
 		}
 		// Fix from single target to the list of targets
 		if(targetEnemy != null && targetEnemy.size() > 0){
