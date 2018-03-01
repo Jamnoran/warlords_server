@@ -17,7 +17,7 @@ public class World {
 	public static final int HORDE = 2;
 	public static final int GAUNTLET = 3;
 	private transient GameServer server;
-	private int worldLevel = 3;
+	private int worldLevel = 1;
 	private int worldType = 1; // 1 = normal, 2 = horde, 3 = gauntlet, 4 = tanky? 5 = boss
 	private ArrayList<Point> spawnPoints = new ArrayList<>();
 	private int seed = 0;
