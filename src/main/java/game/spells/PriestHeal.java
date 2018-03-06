@@ -1,7 +1,6 @@
 package game.spells;
 
 import game.GameServer;
-import game.io.CombatTextResponse;
 import game.logging.Log;
 import game.vo.*;
 import game.vo.classes.Priest;

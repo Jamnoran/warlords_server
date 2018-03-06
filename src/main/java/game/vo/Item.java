@@ -13,13 +13,14 @@ public class Item {
 	private String rarity;
 	private int baseStat;
 	private int top;
-	private float dropRate;
+	private transient float dropRate;
 	private int levelReq;
 	private int statId_1;
 	private int statId_2;
 	private int statId_3;
 	private int statId_4;
 	private boolean equipped = false;
+	private Integer positionId;
 
 	public long getId() {
 		return id;
@@ -157,6 +158,14 @@ public class Item {
 		this.equipped = equipped;
 	}
 
+	public Integer getPositionId() {
+		return positionId;
+	}
+
+	public void setPositionId(Integer positionId) {
+		this.positionId = positionId;
+	}
+
 	@Override
 	public String toString() {
 		return "Item{" +
@@ -177,6 +186,7 @@ public class Item {
 				", statId_3=" + statId_3 +
 				", statId_4=" + statId_4 +
 				", equipped=" + equipped +
+				", positionId=" + positionId +
 				'}';
 	}
 

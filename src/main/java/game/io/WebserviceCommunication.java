@@ -1,19 +1,15 @@
 package game.io;
 
 import com.google.gson.Gson;
-import game.Test;
+import game.io.Responses.RegisterGameServerResponse;
 import game.logging.Log;
-import game.vo.Server;
-import game.vo.ServerList;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 
 /**
  * Created by Eric on 2017-03-05.

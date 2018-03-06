@@ -2,13 +2,12 @@ package game;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import game.io.Requests.*;
 import game.logging.Log;
 import game.io.*;
 import game.util.DatabaseUtil;
 import game.vo.Hero;
 import game.vo.Message;
-import game.io.SendMessageRequest;
-import game.io.UpdateMinionPositionRequest;
 
 import java.util.Vector;
 
@@ -130,6 +129,10 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("GET_ITEMS")) {
 				Log.i(TAG, "parsedRequest : " + request.toString());
 				gameServer.getHeroItems(request.getUser_id(), true);
+			} else if (request.isType("UPDATE_ITEM_POSITION")) {
+				Log.i(TAG, "parsedRequest : " + request.toString());
+				UpdateHeroItemPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateHeroItemPositionRequest.class);
+				gameServer.updateItemPosition(request.getUser_id(), parsedRequest);
 			} else if (request.isType("UPDATE_MINION_POSITION")) {
 				//Log.i(TAG, "parsedRequest : " + request.toString());
 				UpdateMinionPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateMinionPositionRequest.class);

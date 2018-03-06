@@ -1,7 +1,7 @@
 package game.util;
 
 import game.GameServer;
-import game.io.SpellRequest;
+import game.io.Requests.SpellRequest;
 import game.logging.Log;
 import game.spells.*;
 import game.vo.Hero;

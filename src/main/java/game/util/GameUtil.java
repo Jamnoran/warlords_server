@@ -1,15 +1,13 @@
 package game.util;
 
 import game.GameServer;
-import game.io.MinionAggroRequest;
+import game.io.Requests.MinionAggroRequest;
 import game.logging.Log;
 import game.vo.Hero;
 import game.vo.Item;
 import game.vo.Minion;
 import game.vo.World;
-import game.vo.classes.Warrior;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**

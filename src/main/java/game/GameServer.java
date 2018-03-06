@@ -1,6 +1,8 @@
 package game;
 
 import com.google.gson.Gson;
+import game.io.Requests.*;
+import game.io.Responses.*;
 import game.logging.Log;
 import game.io.*;
 import game.util.CalculationUtil;
@@ -11,7 +13,6 @@ import game.vo.*;
 import game.vo.classes.Priest;
 import game.vo.classes.Warlock;
 import game.vo.classes.Warrior;
-import game.io.MessageResponse;
 
 import java.util.*;
 
@@ -716,6 +717,11 @@ public class GameServer {
 			}
 		}
 		return items;
+	}
+
+
+	public void updateItemPosition(String userId, UpdateHeroItemPositionRequest request) {
+		DatabaseUtil.updateHeroItemPosition(request.getItemId(), request.getNewPosition());
 	}
 
 

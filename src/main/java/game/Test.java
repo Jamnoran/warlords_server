@@ -21,25 +21,27 @@ public class Test {
 	private static Minion minion;
 
 	public static void main(String[] args) {
-		Hero hero = DatabaseUtil.getHero(16);
+//		Hero hero = DatabaseUtil.getHero(16);
+//
+//		Warrior warr = (Warrior) hero;
+//
+//		warr.generateHeroInformation();
+//
+//		//Log.i(TAG, "Got hero with hp: " + warr.getHp());
+//
+//		warr.takeDamage(100,0, "PHYSICAL");
+//
+//		//Log.i(TAG, "Hero hp after damage " + warr.getHp());
+//
+//		ArrayList<Item> loot = DatabaseUtil.getLoot(warr.getId());
+//
+//		//ArrayList<Item> loot = GameUtil.generateLoot(warr);
+//		Log.i(TAG, "Got this many items: " + loot.size());
+//		for (Item item : loot) {
+//			Log.i(TAG, "Item : " + item.toString());
+//		}
 
-		Warrior warr = (Warrior) hero;
-
-		warr.generateHeroInformation();
-
-		//Log.i(TAG, "Got hero with hp: " + warr.getHp());
-
-		warr.takeDamage(100,0, "PHYSICAL");
-
-		//Log.i(TAG, "Hero hp after damage " + warr.getHp());
-
-		ArrayList<Item> loot = DatabaseUtil.getLoot(warr.getId());
-
-		//ArrayList<Item> loot = GameUtil.generateLoot(warr);
-		Log.i(TAG, "Got this many items: " + loot.size());
-		for (Item item : loot) {
-			Log.i(TAG, "Item : " + item.toString());
-		}
+		DatabaseUtil.updateHeroItemPosition(2,3);
 	}
 
 
