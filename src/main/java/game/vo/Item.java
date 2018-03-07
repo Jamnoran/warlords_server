@@ -3,6 +3,21 @@ package game.vo;
 import game.util.CalculationUtil;
 
 public class Item {
+
+	public static final String LEGENDARY = "LEGENDARY";
+	public static final String RARE = "RARE";
+	public static final String UNCOMMON = "UNCOMMON";
+	public static final String COMMON = "COMMON";
+
+	public static String MAIN_HAND = "MAIN HAND";
+	public static String OFF_HAND = "OFF_HAND";
+	public static String HEAD = "HEAD";
+	public static String SHOULDERS = "SHOULDERS";
+	public static String CHEST = "CHEST";
+	public static String LEGS = "LEGS";
+	public static String BOOTS = "BOOTS";
+
+
 	private long id;
 	private long heroId;
 	private long itemId;

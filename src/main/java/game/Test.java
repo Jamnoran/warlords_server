@@ -1,18 +1,13 @@
 package game;
 
 import game.logging.Log;
-import game.util.DatabaseUtil;
-import game.util.GameUtil;
+import game.util.ItemUtil;
 import game.vo.Hero;
-import game.vo.Item;
 import game.vo.Minion;
-import game.vo.classes.Warrior;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.regex.Pattern;
-import java.util.ArrayList;
 
 public class Test {
 
@@ -20,6 +15,7 @@ public class Test {
 	private static Hero hero;
 	private static GameServer server;
 	private static Minion minion;
+	private String randomType;
 
 	public static void main(String[] args) {
 //		Hero hero = DatabaseUtil.getHero(16);
@@ -42,10 +38,12 @@ public class Test {
 //			Log.i(TAG, "Item : " + item.toString());
 //		}
 
-		DatabaseUtil.updateHeroItemPosition(2,3);
+		//DatabaseUtil.updateHeroItemPosition(2,3);
 		//Log.i(TAG, "Hero hp after damage " + warr.getHp());
 
+		Log.i(TAG, "Generate item : " + ItemUtil.generateItem(10));
 	}
+
 
 	static class Sender extends Thread {
 
