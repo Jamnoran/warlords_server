@@ -9,6 +9,7 @@ import game.vo.classes.Warrior;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.regex.Pattern;
 
 public class Test {
 
@@ -18,21 +19,20 @@ public class Test {
 	private static Minion minion;
 
 	public static void main(String[] args) {
-		Hero hero = DatabaseUtil.getHero(16);
+		//Hero hero = DatabaseUtil.getHero(16);
 
 
-		Warrior warr = (Warrior) hero;
+		//Warrior warr = (Warrior) hero;
 
-		warr.generateHeroInformation();
+		//warr.generateHeroInformation();
 
-		Log.i(TAG, "Got hero with hp: " + warr.getHp());
+		//Log.i(TAG, "Got hero with hp: " + warr.getHp());
 
-		warr.takeDamage(100,0, "PHYSICAL");
+		//warr.takeDamage(100,0, "PHYSICAL");
 
-		Log.i(TAG, "Hero hp after damage " + warr.getHp());
+		//Log.i(TAG, "Hero hp after damage " + warr.getHp());
+
 	}
-
-
 
 	static class Sender extends Thread {
 
