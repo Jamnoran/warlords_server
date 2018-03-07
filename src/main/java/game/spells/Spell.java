@@ -1,8 +1,8 @@
 package game.spells;
 
 import game.GameServer;
-import game.io.CombatTextResponse;
-import game.io.RotateTargetResponse;
+import game.io.Responses.CombatTextResponse;
+import game.io.Responses.RotateTargetResponse;
 import game.logging.Log;
 import game.vo.*;
 
@@ -43,7 +43,7 @@ public class Spell {
 		}else{
 			// Auto set the lowest hp friendly target otherwise
 			targetFriendlyList = new ArrayList<>();
-			targetFriendlyList.add(gameServer.getHeroWithLowestHp());
+			targetFriendlyList.add(gameServer.getGameUtil().getHeroWithLowestHp());
 		}
 		// Fix from single target to the list of targets
 		if(targetEnemy != null && targetEnemy.size() > 0){
@@ -85,7 +85,7 @@ public class Spell {
 		// Send rotation
 		RotateTargetResponse rotationResponse = new RotateTargetResponse();
 		if (getAbility().getTargetType().equals("SINGLE") || getAbility().getTargetType().equals("DOT")){
-			if(targetEnemyList.size() == 0)
+			if(targetEnemyList == null || targetEnemyList.size() == 0)
 				return false;
 			rotationResponse.setFriendly(false);
 			rotationResponse.setIdOfTarget(targetEnemyList.get(0).getId());
@@ -152,7 +152,7 @@ public class Spell {
 
 		setSpellCooldown();
 		// Send castbar information
-		getGameServer().sendCastBarInformation(getAbility());
+		getGameServer().sendCastBarInformation(hero.getId(), getAbility());
 	}
 
 	public void setSpellCooldown(){

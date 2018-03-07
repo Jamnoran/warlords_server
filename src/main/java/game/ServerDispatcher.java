@@ -2,13 +2,12 @@ package game;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import game.io.Requests.*;
 import game.logging.Log;
 import game.io.*;
 import game.util.DatabaseUtil;
 import game.vo.Hero;
 import game.vo.Message;
-import game.io.SendMessageRequest;
-import game.io.UpdateMinionPositionRequest;
 
 import java.util.Vector;
 
@@ -18,10 +17,8 @@ public class ServerDispatcher extends Thread {
 	private Vector mMessageQueue = new Vector();
 	private Vector mClients = new Vector();
 	private String serverId;
-
 	private GameServer gameServer;
 	private String gameType;
-
 	private long createdAt = 0;
 
 	/**
@@ -97,7 +94,7 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("SPELL")) {
 				SpellRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SpellRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.spell(parsedRequest);
+				gameServer.sendSpell(parsedRequest);
 			} else if (request.isType("MINION_AGGRO")) {
 				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
@@ -105,7 +102,7 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("MINION_TARGET_IN_RANGE")) {
 				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.minionTargetInRange(parsedRequest);
+				gameServer.getGameUtil().minionTargetInRange(parsedRequest);
 			} else if (request.isType("CLICKED_PORTAL")) {
 				ClickPortalRequest parsedRequest = gson.fromJson(aMessage.getMessage(), ClickPortalRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
@@ -129,6 +126,13 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("RESTART_LEVEL")) {
 				Log.i(TAG, "parsedRequest : " + request.toString());
 				gameServer.restartLevel();
+			} else if (request.isType("GET_ITEMS")) {
+				Log.i(TAG, "parsedRequest : " + request.toString());
+				gameServer.getHeroItems(request.getUser_id(), true);
+			} else if (request.isType("UPDATE_ITEM_POSITION")) {
+				Log.i(TAG, "parsedRequest : " + request.toString());
+				UpdateHeroItemPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateHeroItemPositionRequest.class);
+				gameServer.updateItemPosition(request.getUser_id(), parsedRequest);
 			} else if (request.isType("UPDATE_MINION_POSITION")) {
 				//Log.i(TAG, "parsedRequest : " + request.toString());
 				UpdateMinionPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateMinionPositionRequest.class);

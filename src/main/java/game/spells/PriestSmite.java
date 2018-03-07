@@ -43,7 +43,7 @@ public class PriestSmite extends Spell {
 			castTime.start();
 
 			// Send castbar information
-			getGameServer().sendCastBarInformation(getAbility());
+			getGameServer().sendCastBarInformation(getHero().getId(), getAbility());
 
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("SMITE", 0, getHero().getId(), null, 2));

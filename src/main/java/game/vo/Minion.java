@@ -65,22 +65,6 @@ public class Minion {
 		setDesiredPositionY(posY);
 	}
 
-//	public void startAI(){
-//		Thread thread = new Thread(){
-//			public void run(){
-//				while(hp > 0){
-//					takeAction();
-//					try {
-//						sleep(10000);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//		};
-//		thread.start();
-//	}
-
 	public void takeAction() {
 		if (hp > 0) {
 			if (!attackIfHasEnemy()) {
@@ -120,7 +104,7 @@ public class Minion {
 				setDesiredPositionZ(hero.getPositionZ());
 			}
 		}else{
-			if (GameUtil.isWorldType(GameUtil.DUNGEON_CRAWLER, game.getWorldLevel())) {
+			if (GameUtil.isWorldType(World.CRAWLER, game.getWorldLevel())) {
 
 				float newX = CalculationUtil.getRandomFloat(-4.0f, 3.0f);
 				float newZ = CalculationUtil.getRandomFloat(-4.0f, 3.0f);
@@ -131,7 +115,6 @@ public class Minion {
 				setDesiredPositionZ(getPositionZ() + newZ);
 
 				if (distance >= 32.0f) {
-					//Log.i(TAG, "Sending run animation for minion distance" + distance);
 					this.game.sendMinionMoveAnimation(getId());
 				}
 			}

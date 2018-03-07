@@ -1,6 +1,5 @@
 package game.vo;
 
-import game.io.CombatTextResponse;
 import game.logging.Log;
 import game.util.CalculationUtil;
 import game.util.DatabaseUtil;

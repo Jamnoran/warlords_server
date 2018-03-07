@@ -47,7 +47,7 @@ public class WarlockHaemorrhage extends Spell {
 			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
 
 			// Send castbar information
-			getGameServer().sendCastBarInformation(getAbility());
+			getGameServer().sendCastBarInformation(getHero().getId(), getAbility());
 
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("HAEMORRHAGE", 0, getHero().getId(), null, 1));
