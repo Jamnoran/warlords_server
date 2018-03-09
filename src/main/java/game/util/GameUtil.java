@@ -76,7 +76,6 @@ public class GameUtil {
 
 	public static ArrayList<Item> generateLoot(Hero hero) {
 		ArrayList<Item> loot = new ArrayList<>();
-
 		ArrayList<Item> items = DatabaseUtil.getItems(hero.getLevel());
 
 		// Check if there is enough items to roll otherwise create new items
