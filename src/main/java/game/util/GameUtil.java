@@ -79,12 +79,23 @@ public class GameUtil {
 
 		ArrayList<Item> items = DatabaseUtil.getItems(hero.getLevel());
 
+		// Check if there is enough items to roll otherwise create new items
+		if(items.size() < 5){
+			Log.i(TAG, "Not enough items to loot through, generate a couple more. " + items.size() + " of 5");
+			for(int i = 0; i < (5 - items.size()) ; i++ ){
+				Item item = ItemUtil.generateItem(hero.getLevel(), hero);
+				Log.i(TAG, "Generated item cause there was not enough in database.");
+				items.add(item);
+				DatabaseUtil.addItem(item);
+			}
+		}
+
 		// Roll if hero got these items
 		for (Item item : items) {
 			int rate = CalculationUtil.getRandomInt(0,1000);
 			Log.i(TAG, "Drop rate : " + rate + " /" + Math.round(item.getDropRate() * 1000));
 			if(rate <= (item.getDropRate() * 1000)){
-				item.generateInfo();
+				item.generateInfo(true);
 				item.setHeroId(hero.getId());
 				DatabaseUtil.addLoot(item);
 				loot.add(item);

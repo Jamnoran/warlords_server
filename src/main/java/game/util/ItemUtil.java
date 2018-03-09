@@ -1,14 +1,22 @@
 package game.util;
 
+import game.logging.Log;
+import game.vo.Hero;
 import game.vo.Item;
+import game.vo.ItemStat;
 
 public class ItemUtil {
 
 
-	public static Item generateItem(int level){
+	private static final String TAG = ItemUtil.class.getSimpleName();
+
+	public static Item generateItem(int level, Hero hero){
 		Item item = new Item();
 
 		item.setLevelReq(level);
+
+		item.setClassType("all");
+
 		item.setPosition(getRandomType());
 
 		item = generateRarity(item);
@@ -20,8 +28,7 @@ public class ItemUtil {
 		item.setBaseStat(getBaseStats(level, item));
 		item.setTop(getBaseStats(item.getBaseStat(), item));
 
-
-		item.generateInfo();
+		item.generateInfo(false);
 		return item;
 	}
 
@@ -49,16 +56,16 @@ public class ItemUtil {
 		int chance = CalculationUtil.getRandomInt(0,100);
 		if(chance < 1){
 			item.setRarity(Item.LEGENDARY);
-			item.setDropRate(0.01f);
+			item.setDropRate(0.001f);
 		}else if(chance < 5){
 			item.setRarity(Item.RARE);
-			item.setDropRate(0.05f);
+			item.setDropRate(0.005f);
 		}else if (chance < 20){
 			item.setRarity(Item.UNCOMMON);
-			item.setDropRate(0.1f);
+			item.setDropRate(0.01f);
 		}else{
 			item.setRarity(Item.COMMON);
-			item.setDropRate(0.2f);
+			item.setDropRate(0.02f);
 		}
 		return item;
 	}
@@ -108,13 +115,9 @@ public class ItemUtil {
 			base = (int) (base * 1.05);
 		}
 		if(item.getPosition().equals(Item.MAIN_HAND)){
-			double highest = (base + (base * 0.5));
-			int high = (int) highest;
-			return CalculationUtil.getRandomInt(base, high);
+			return CalculationUtil.getRandomInt(base, (int) (base + (base * 0.5)));
 		}else{
-			double highest = (base + (base * 0.5));
-			int high = (int) highest;
-			return CalculationUtil.getRandomInt(base, high);
+			return CalculationUtil.getRandomInt(base, (int) (base + (base * 0.5)));
 		}
 	}
 
@@ -139,5 +142,58 @@ public class ItemUtil {
 		return null;
 	}
 
+	public static Item generateExtraStats(Item item) {
+		if(item.getRarity().equals(Item.LEGENDARY)){
+			ItemStat stat = createStat(true, item);
+			item.setStatId_4(stat.getId());
+			Log.i(TAG, "Generated stat: " + stat.toString());
+		}
+		if (item.getRarity().equals(Item.RARE) || item.getRarity().equals(Item.LEGENDARY)){
+			ItemStat stat = createStat(true, item);
+			item.setStatId_3(stat.getId());
+			Log.i(TAG, "Generated stat: " + stat.toString());
+		}
+		if (item.getRarity().equals(Item.UNCOMMON) || item.getRarity().equals(Item.RARE) || item.getRarity().equals(Item.LEGENDARY)){
+			ItemStat stat = createStat(true, item);
+			item.setStatId_2(stat.getId());
+			Log.i(TAG, "Generated stat: " + stat.toString());
+		}
 
+		if((item.getRarity().equals(Item.UNCOMMON) || item.getRarity().equals(Item.RARE) || item.getRarity().equals(Item.LEGENDARY)) || item.getLevelReq() >= 10){
+			ItemStat stat = createStat(true, item);
+			item.setStatId_1(stat.getId());
+			Log.i(TAG, "Generated stat: " + stat.toString());
+		}
+		return item;
+	}
+
+	private static ItemStat createStat(boolean addToDatabase, Item item) {
+		ItemStat stat = new ItemStat();
+		stat.setBaseStat(getBaseStats(item.getLevelReq(), item));
+		stat.setTop(getBaseStats(stat.getBaseStat(), item));
+
+		int random = CalculationUtil.getRandomInt(0,3);
+		switch (random){
+			case(0):
+				stat.setName("Armor");
+				stat.setType(ItemStat.ARMOR);
+				break;
+			case(1):
+				stat.setName("Critical chance");
+				stat.setType(ItemStat.CRIT);
+				break;
+			case(2):
+				stat.setName("Hp");
+				stat.setType(ItemStat.HP);
+				break;
+			case(3):
+				stat.setName("Life steal");
+				stat.setType(ItemStat.LIFE_STEAL);
+				break;
+		}
+		// Add to database
+		stat = DatabaseUtil.addItemStat(stat);
+
+		return stat;
+	}
 }
