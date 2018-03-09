@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class GameUtil {
 	private static final String TAG = GameUtil.class.getSimpleName();
 	private GameServer gameServer;
+	private static int itemsForEachLevel = 5;
 
 	public GameServer getGameServer() {
 		return gameServer;
@@ -79,9 +80,9 @@ public class GameUtil {
 		ArrayList<Item> items = DatabaseUtil.getItems(hero.getLevel());
 
 		// Check if there is enough items to roll otherwise create new items
-		if(items.size() < 5){
-			Log.i(TAG, "Not enough items to loot through, generate a couple more. " + items.size() + " of 5");
-			for(int i = 0; i < (5 - items.size()) ; i++ ){
+		if(items.size() < itemsForEachLevel){
+			Log.i(TAG, "Not enough items to loot through, generate a couple more. " + items.size() + " of " + itemsForEachLevel);
+			for(int i = 0; i < (itemsForEachLevel - items.size()) ; i++ ){
 				Item item = ItemUtil.generateItem(hero.getLevel(), hero);
 				Log.i(TAG, "Generated item cause there was not enough in database.");
 				items.add(item);
