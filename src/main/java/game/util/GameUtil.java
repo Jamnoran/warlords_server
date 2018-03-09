@@ -45,14 +45,16 @@ public class GameUtil {
 
 
 	public void minionTargetInRange(MinionAggroRequest parsedRequest) {
-		Minion minion = gameServer.getMinionById(parsedRequest.getMinion_id());
-		if (minion != null && parsedRequest.getHero_id() > 0) {
-			Log.i(TAG, "Target is in range for an attack");
-			minion.targetInRangeForAttack = true;
-		} else {
-			Log.i(TAG, "Target is out of range for an attack");
-			if (minion != null) {
-				minion.targetInRangeForAttack = false;
+		if (gameServer != null && parsedRequest.getMinion_id() != null) {
+			Minion minion = gameServer.getMinionById(parsedRequest.getMinion_id());
+			if (minion != null && parsedRequest.getHero_id() > 0) {
+				Log.i(TAG, "Target is in range for an attack");
+				minion.targetInRangeForAttack = true;
+			} else {
+				Log.i(TAG, "Target is out of range for an attack");
+				if (minion != null) {
+					minion.targetInRangeForAttack = false;
+				}
 			}
 		}
 	}

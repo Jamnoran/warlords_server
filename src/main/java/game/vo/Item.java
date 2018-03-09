@@ -3,9 +3,9 @@ package game.vo;
 import game.util.CalculationUtil;
 
 public class Item {
-	private long id;
-	private long heroId;
-	private long itemId;
+	private int id;
+	private int heroId;
+	private int itemId;
 	private String name;
 	private String position;
 	private String image;
@@ -13,7 +13,7 @@ public class Item {
 	private String rarity;
 	private int baseStat;
 	private int top;
-	private float dropRate;
+	private transient float dropRate;
 	private int levelReq;
 	private int statId_1;
 	private int statId_2;
@@ -21,27 +21,27 @@ public class Item {
 	private int statId_4;
 	private boolean equipped = false;
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
-	public long getHeroId() {
+	public int getHeroId() {
 		return heroId;
 	}
 
-	public void setHeroId(long heroId) {
+	public void setHeroId(int heroId) {
 		this.heroId = heroId;
 	}
 
-	public long getItemId() {
+	public int getItemId() {
 		return itemId;
 	}
 
-	public void setItemId(long itemId) {
+	public void setItemId(int itemId) {
 		this.itemId = itemId;
 	}
 
