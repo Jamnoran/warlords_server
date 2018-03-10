@@ -281,13 +281,17 @@ public class DatabaseUtil {
 		return items;
 	}
 
-	public static void updateHeroItemPosition(Integer itemId, Integer newPosition) {
+	public static void updateHeroItem(Integer itemId, Integer newPosition, boolean equipped) {
 		if (itemId != null && newPosition != null) {
 			Connection connection = getConnection();
 			if (connection != null) {
 				try {
 					Statement stmt = connection.createStatement();
-					stmt.executeUpdate("update loot set position = " + newPosition + " where id=" + itemId);
+					int equippedValue = 0;
+					if(equipped){
+						equippedValue = 1;
+					}
+					stmt.executeUpdate("update loot set position_id = " + newPosition + ", equipped = "+ equippedValue +" where id=" + itemId);
 					countOfRequest++;
 					Log.i(TAG, "Update item : " + itemId + " to new position " + newPosition);
 					stmt.close();
@@ -308,7 +312,7 @@ public class DatabaseUtil {
 		if (connection != null) {
 			try {
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT loot.id,loot.hero_id,loot.item_id, loot.equipped, loot.base,loot.top, loot.positionId, items.name, items.class, items.image, items.position, items.rarity, loot.stat_id_1, loot.stat_id_2, loot.stat_id_3, loot.stat_id_4 from loot, items where hero_id = " + heroId +" and loot.item_id = items.id");
+				ResultSet rs = stmt.executeQuery("SELECT loot.id,loot.hero_id,loot.item_id, loot.equipped, loot.base,loot.top, loot.position_id, items.name, items.class, items.image, items.position, items.rarity, loot.stat_id_1, loot.stat_id_2, loot.stat_id_3, loot.stat_id_4 from loot, items where hero_id = " + heroId +" and loot.item_id = items.id");
 				countOfRequest++;
 				while (rs.next()) {
 					Item item = new Item();
@@ -321,7 +325,7 @@ public class DatabaseUtil {
 					item.setTop(rs.getInt("top"));
 					item.setClassType(rs.getString("class"));
 					item.setPosition(rs.getString("position"));
-					item.setPositionId(rs.getInt("positionId"));
+					item.setPositionId(rs.getInt("position_id"));
 					item.setStatId_1(rs.getLong("stat_id_1"));
 					item.setStatId_2(rs.getLong("stat_id_2"));
 					item.setStatId_3(rs.getLong("stat_id_3"));

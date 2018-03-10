@@ -721,7 +721,7 @@ public class GameServer {
 
 
 	public void updateItemPosition(String userId, UpdateHeroItemPositionRequest request) {
-		DatabaseUtil.updateHeroItemPosition(request.getItemId(), request.getNewPosition());
+		DatabaseUtil.updateHeroItem(request.getItemId(), request.getNewPosition(), request.getEquipped());
 	}
 
 

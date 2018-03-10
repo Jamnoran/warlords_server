@@ -17,6 +17,8 @@ public class UpdateHeroItemPositionRequest extends JsonRequest {
 	private Integer itemId;
 	@SerializedName("new_position")
 	private Integer newPosition;
+	@SerializedName("equipped")
+	private boolean equipped;
 
 	public Integer getHeroId() {
 		return heroId;
@@ -42,12 +44,21 @@ public class UpdateHeroItemPositionRequest extends JsonRequest {
 		this.newPosition = newPosition;
 	}
 
+	public boolean getEquipped() {
+		return equipped;
+	}
+
+	public void setEquipped(boolean equipped) {
+		this.equipped = equipped;
+	}
+
 	@Override
 	public String toString() {
 		return "UpdateHeroItemPositionRequest{" +
 				"heroId=" + heroId +
 				", itemId=" + itemId +
 				", newPosition=" + newPosition +
+				", equipped=" + equipped +
 				'}';
 	}
 }

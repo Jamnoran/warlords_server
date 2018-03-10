@@ -37,11 +37,14 @@ public class Test {
 //
 //		ArrayList<Item> loot = DatabaseUtil.getLoot(warr.getId());
 //
-		ArrayList<Item> loot = GameUtil.generateLoot(warr);
-		Log.i(TAG, "Got this many items: " + loot.size());
-		for (Item item : loot) {
-			Log.i(TAG, "Item : " + item.toString());
-		}
+
+		DatabaseUtil.updateHeroItem(2, 4, false);
+
+//		ArrayList<Item> loot = GameUtil.generateLoot(warr);
+//		Log.i(TAG, "Got this many items: " + loot.size());
+//		for (Item item : loot) {
+//			Log.i(TAG, "Item : " + item.toString());
+//		}
 
 		//DatabaseUtil.updateHeroItemPosition(2,3);
 		//Log.i(TAG, "Hero hp after damage " + warr.getHp());
