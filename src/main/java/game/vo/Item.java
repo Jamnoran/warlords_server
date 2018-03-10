@@ -1,11 +1,28 @@
 package game.vo;
 
 import game.util.CalculationUtil;
+import game.util.ItemUtil;
+
+import java.util.ArrayList;
 
 public class Item {
-	private int id;
-	private int heroId;
-	private int itemId;
+	public static final String LEGENDARY = "LEGENDARY";
+	public static final String RARE = "RARE";
+	public static final String UNCOMMON = "UNCOMMON";
+	public static final String COMMON = "COMMON";
+
+	public static String MAIN_HAND = "MAIN_HAND";
+	public static String OFF_HAND = "OFF_HAND";
+	public static String HEAD = "HEAD";
+	public static String SHOULDERS = "SHOULDERS";
+	public static String CHEST = "CHEST";
+	public static String LEGS = "LEGS";
+	public static String BOOTS = "BOOTS";
+
+
+	private long id;
+	private long heroId;
+	private long itemId;
 	private String name;
 	private String position;
 	private String image;
@@ -15,33 +32,35 @@ public class Item {
 	private int top;
 	private transient float dropRate;
 	private int levelReq;
-	private int statId_1;
-	private int statId_2;
-	private int statId_3;
-	private int statId_4;
+	private long statId_1;
+	private long statId_2;
+	private long statId_3;
+	private long statId_4;
 	private boolean equipped = false;
+	private Integer positionId;
+	private ArrayList<ItemStat> stats = null;
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
-	public int getHeroId() {
+	public long getHeroId() {
 		return heroId;
 	}
 
-	public void setHeroId(int heroId) {
+	public void setHeroId(long heroId) {
 		this.heroId = heroId;
 	}
 
-	public int getItemId() {
+	public long getItemId() {
 		return itemId;
 	}
 
-	public void setItemId(int itemId) {
+	public void setItemId(long itemId) {
 		this.itemId = itemId;
 	}
 
@@ -117,35 +136,35 @@ public class Item {
 		this.levelReq = levelReq;
 	}
 
-	public int getStatId_1() {
+	public long getStatId_1() {
 		return statId_1;
 	}
 
-	public void setStatId_1(int statId_1) {
+	public void setStatId_1(long statId_1) {
 		this.statId_1 = statId_1;
 	}
 
-	public int getStatId_2() {
+	public long getStatId_2() {
 		return statId_2;
 	}
 
-	public void setStatId_2(int statId_2) {
+	public void setStatId_2(long statId_2) {
 		this.statId_2 = statId_2;
 	}
 
-	public int getStatId_3() {
+	public long getStatId_3() {
 		return statId_3;
 	}
 
-	public void setStatId_3(int statId_3) {
+	public void setStatId_3(long statId_3) {
 		this.statId_3 = statId_3;
 	}
 
-	public int getStatId_4() {
+	public long getStatId_4() {
 		return statId_4;
 	}
 
-	public void setStatId_4(int statId_4) {
+	public void setStatId_4(long statId_4) {
 		this.statId_4 = statId_4;
 	}
 
@@ -155,6 +174,22 @@ public class Item {
 
 	public void setEquipped(boolean equipped) {
 		this.equipped = equipped;
+	}
+
+	public Integer getPositionId() {
+		return positionId;
+	}
+
+	public void setPositionId(Integer positionId) {
+		this.positionId = positionId;
+	}
+
+	public ArrayList<ItemStat> getStats() {
+		return stats;
+	}
+
+	public void setStats(ArrayList<ItemStat> stats) {
+		this.stats = stats;
 	}
 
 	@Override
@@ -177,15 +212,32 @@ public class Item {
 				", statId_3=" + statId_3 +
 				", statId_4=" + statId_4 +
 				", equipped=" + equipped +
+				", positionId=" + positionId +
+				", stats=" + stats +
 				'}';
 	}
-
-	public String getSqlInsertQuery() {
-		return "INSERT into loot SET hero_id = " + getHeroId() + " , item_id = " + getItemId()+ ", baseStat = " + getBaseStat() + ", top = " + getTop();
+	public String getSqlInsertQueryItem() {
+		return "INSERT into items SET name = \"" + getName()+ "\", class=\""+getClassType()+"\", position=\""+getPosition()+"\",image=\""+getImage()+"\",drop_rate="+getDropRate()+", level_req="+getLevelReq()+", rarity=\""+getRarity()+"\", base_stat = " + getBaseStat() + ", top = " + getTop();
 	}
 
-	public void generateInfo() {
+	public String getSqlInsertQueryLoot() {
+		return "INSERT into loot SET hero_id = " + getHeroId() + " , item_id = " + getItemId() + ", stat_id_1 = " + getStatId_1() + ", stat_id_2 = " + getStatId_2() + ", stat_id_3 = " + getStatId_3() + ", stat_id_4 = " + getStatId_4() + ", base_stat = " + getBaseStat() + ", top = " + getTop();
+	}
+
+	/**
+	 * This is done when item is generated and added to users inventory
+	 */
+	public void generateInfo(boolean generateStat) {
 		setBaseStat(CalculationUtil.getRandomInt(getBaseStat(), getTop()));
-		setItemId(getId());
+
+		if (generateStat) {
+			// Generate extra item stats
+			Item item = ItemUtil.generateExtraStats(this);
+			setStatId_1(item.getStatId_1());
+			setStatId_2(item.getStatId_2());
+			setStatId_3(item.getStatId_3());
+			setStatId_4(item.getStatId_4());
+			setItemId(getId());
+		}
 	}
 }

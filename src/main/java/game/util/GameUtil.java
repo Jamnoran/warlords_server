@@ -1,15 +1,13 @@
 package game.util;
 
 import game.GameServer;
-import game.io.MinionAggroRequest;
+import game.io.Requests.MinionAggroRequest;
 import game.logging.Log;
 import game.vo.Hero;
 import game.vo.Item;
 import game.vo.Minion;
 import game.vo.World;
-import game.vo.classes.Warrior;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -18,6 +16,7 @@ import java.util.ArrayList;
 public class GameUtil {
 	private static final String TAG = GameUtil.class.getSimpleName();
 	private GameServer gameServer;
+	private static int itemsForEachLevel = 5;
 
 	public GameServer getGameServer() {
 		return gameServer;
@@ -56,6 +55,11 @@ public class GameUtil {
 					minion.targetInRangeForAttack = false;
 				}
 			}
+		}else{
+			Log.i(TAG, "Something wrong, either gameserver is null or minion_id is");
+			if (gameServer == null) {
+				Log.i(TAG, "GameServer is null");
+			}
 		}
 	}
 
@@ -67,28 +71,43 @@ public class GameUtil {
 	 */
 	public Hero getHeroWithLowestHp() {
 		Hero targetHero = null;
-		for (Hero lowestHpHero : gameServer.getHeroes()) {
-			if (targetHero == null) {
-				targetHero = lowestHpHero;
-			} else if (lowestHpHero.getHp() < targetHero.getHp()) {
-				targetHero = lowestHpHero;
-				Log.i(TAG, "Found a target with lower hp : " + lowestHpHero.getId());
+
+		if (gameServer != null && gameServer.getHeroes() != null) {
+			for (Hero lowestHpHero : gameServer.getHeroes()) {
+				if (targetHero == null) {
+					targetHero = lowestHpHero;
+				} else if (lowestHpHero.getHp() < targetHero.getHp()) {
+					targetHero = lowestHpHero;
+					Log.i(TAG, "Found a target with lower hp : " + lowestHpHero.getId());
+				}
 			}
+		}else{
+			Log.i(TAG, "We did not find heroes or gameserver");
 		}
 		return targetHero;
 	}
 
 	public static ArrayList<Item> generateLoot(Hero hero) {
 		ArrayList<Item> loot = new ArrayList<>();
-
 		ArrayList<Item> items = DatabaseUtil.getItems(hero.getLevel());
+
+		// Check if there is enough items to roll otherwise create new items
+		if(items.size() < itemsForEachLevel){
+			Log.i(TAG, "Not enough items to loot through, generate a couple more. " + items.size() + " of " + itemsForEachLevel);
+			for(int i = 0; i < (itemsForEachLevel - items.size()) ; i++ ){
+				Item item = ItemUtil.generateItem(hero.getLevel(), hero);
+				Log.i(TAG, "Generated item cause there was not enough in database.");
+				items.add(item);
+				DatabaseUtil.addItem(item);
+			}
+		}
 
 		// Roll if hero got these items
 		for (Item item : items) {
 			int rate = CalculationUtil.getRandomInt(0,1000);
 			Log.i(TAG, "Drop rate : " + rate + " /" + Math.round(item.getDropRate() * 1000));
 			if(rate <= (item.getDropRate() * 1000)){
-				item.generateInfo();
+				item.generateInfo(true);
 				item.setHeroId(hero.getId());
 				DatabaseUtil.addLoot(item);
 				loot.add(item);

@@ -2,13 +2,12 @@ package game;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import game.io.Requests.*;
 import game.logging.Log;
 import game.io.*;
 import game.util.DatabaseUtil;
 import game.vo.Hero;
 import game.vo.Message;
-import game.io.SendMessageRequest;
-import game.io.UpdateMinionPositionRequest;
 
 import java.util.Vector;
 
@@ -73,7 +72,7 @@ public class ServerDispatcher extends Thread {
 		Gson gson = new GsonBuilder().create();
 		JsonRequest request = JsonRequest.parse(aMessage);
 		if (request != null) {
-			if (!request.isType("UPDATE_MINION_POSITION") && !request.isType("MOVE")) {
+			if (!request.isType("UPDATE_MINION_POSITION") && !request.isType("MOVE") && !request.isType("ATTACK")) {
 				Log.i(TAG, "JsonRequest: " + request.toString());
 			}
 			if (request.isType("GET_STATUS")) {
@@ -86,11 +85,11 @@ public class ServerDispatcher extends Thread {
 				gameServer.addSpawnPoints(parsedRequest.getPoints());
 			} else if (request.isType("ATTACK")) {
 				AttackRequest parsedRequest = gson.fromJson(aMessage.getMessage(), AttackRequest.class);
-				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				//Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				gameServer.attack(parsedRequest.getHeroId(), parsedRequest.getMinion_id(), parsedRequest.getTime());
 			} else if (request.isType("MOVE")) {
 				MoveRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MoveRequest.class);
-				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
+				//Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
 				gameServer.heroMove(parsedRequest);
 			} else if (request.isType("SPELL")) {
 				SpellRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SpellRequest.class);
@@ -130,6 +129,10 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("GET_ITEMS")) {
 				Log.i(TAG, "parsedRequest : " + request.toString());
 				gameServer.getHeroItems(request.getUser_id(), true);
+			} else if (request.isType("UPDATE_ITEM_POSITION")) {
+				Log.i(TAG, "parsedRequest : " + request.toString());
+				UpdateHeroItemPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateHeroItemPositionRequest.class);
+				gameServer.updateItemPosition(request.getUser_id(), parsedRequest);
 			} else if (request.isType("UPDATE_MINION_POSITION")) {
 				//Log.i(TAG, "parsedRequest : " + request.toString());
 				UpdateMinionPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateMinionPositionRequest.class);

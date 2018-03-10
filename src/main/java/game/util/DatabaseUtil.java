@@ -257,13 +257,14 @@ public class DatabaseUtil {
 					//Retrieve by column name
 					item.setId(rs.getInt("id"));
 					item.setName(rs.getString("name"));
-					item.setBaseStat(rs.getInt("base"));
+					item.setBaseStat(rs.getInt("base_stat"));
 					item.setTop(rs.getInt("top"));
 					item.setPosition(rs.getString("position"));
 					item.setClassType(rs.getString("class"));
 					item.setDropRate(rs.getFloat("drop_rate"));
 					item.setImage(rs.getString("image"));
 					item.setLevelReq(rs.getInt("level_req"));
+					item.setRarity(rs.getString("rarity"));
 
 					//Display values
 					items.add(item);
@@ -280,6 +281,26 @@ public class DatabaseUtil {
 		return items;
 	}
 
+	public static void updateHeroItemPosition(Integer itemId, Integer newPosition) {
+		if (itemId != null && newPosition != null) {
+			Connection connection = getConnection();
+			if (connection != null) {
+				try {
+					Statement stmt = connection.createStatement();
+					stmt.executeUpdate("update loot set position = " + newPosition + " where id=" + itemId);
+					countOfRequest++;
+					Log.i(TAG, "Update item : " + itemId + " to new position " + newPosition);
+					stmt.close();
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			} else {
+				Log.i(TAG, "Failed to make connection!");
+			}
+		}
+	}
+
 
 	public static ArrayList<Item> getLoot(int heroId){
 		ArrayList<Item> items = new ArrayList<>();
@@ -287,7 +308,7 @@ public class DatabaseUtil {
 		if (connection != null) {
 			try {
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT loot.id,loot.hero_id,loot.item_id, loot.equipped, loot.base,loot.top,items.name,items.class,items.image,items.position,items.rarity from loot, items where hero_id = " + heroId +" and loot.item_id = items.id");
+				ResultSet rs = stmt.executeQuery("SELECT loot.id,loot.hero_id,loot.item_id, loot.equipped, loot.base_stat,loot.top, loot.positionId, items.name, items.class, items.image, items.position, items.rarity, loot.stat_id_1, loot.stat_id_2, loot.stat_id_3, loot.stat_id_4 from loot, items where hero_id = " + heroId +" and loot.item_id = items.id");
 				countOfRequest++;
 				while (rs.next()) {
 					Item item = new Item();
@@ -296,10 +317,15 @@ public class DatabaseUtil {
 					item.setHeroId(rs.getInt("hero_id"));
 					item.setItemId(rs.getInt("item_id"));
 					item.setName(rs.getString("name"));
-					item.setBaseStat(rs.getInt("base"));
+					item.setBaseStat(rs.getInt("base_stat"));
 					item.setTop(rs.getInt("top"));
 					item.setClassType(rs.getString("class"));
 					item.setPosition(rs.getString("position"));
+					item.setPositionId(rs.getInt("positionId"));
+					item.setStatId_1(rs.getLong("stat_id_1"));
+					item.setStatId_2(rs.getLong("stat_id_2"));
+					item.setStatId_3(rs.getLong("stat_id_3"));
+					item.setStatId_4(rs.getLong("stat_id_4"));
 					Integer eq = rs.getInt("equipped");
 					if(eq == 1){
 						item.setEquipped(true);
@@ -320,7 +346,6 @@ public class DatabaseUtil {
 		}
 		return items;
 	}
-
 
 	public static ArrayList<Talent> getHeroTalents(Integer heroId){
 		ArrayList<Talent> talents = getTalents();
@@ -403,7 +428,7 @@ public class DatabaseUtil {
 		if (connection != null) {
 			try {
 				Statement stmt = connection.createStatement();
-				stmt.executeUpdate(item.getSqlInsertQuery());
+				stmt.executeUpdate(item.getSqlInsertQueryLoot());
 				countOfRequest++;
 				int autoIncKeyFromApi = -1;
 				ResultSet rs = stmt.getGeneratedKeys();
@@ -424,7 +449,58 @@ public class DatabaseUtil {
 		return item;
 	}
 
+	public static Item addItem(Item item) {
+		Connection connection = getConnection();
+		if (connection != null) {
+			try {
+				Statement stmt = connection.createStatement();
+				Log.i(TAG, "[" + item.getSqlInsertQueryItem()+ "]");
+				stmt.executeUpdate(item.getSqlInsertQueryItem());
+				countOfRequest++;
+				int autoIncKeyFromApi = -1;
+				ResultSet rs = stmt.getGeneratedKeys();
+				if (rs.next()) {
+					autoIncKeyFromApi = rs.getInt(1);
+					item.setId(autoIncKeyFromApi);
+				} else {
+					// throw an exception from here
+					Log.i(TAG, "Could not get user_id");
+				}
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.i(TAG, "Failed to make connection!");
+		}
+		return item;
+	}
 
+	public static ItemStat addItemStat(ItemStat itemStat) {
+		Connection connection = getConnection();
+		if (connection != null) {
+			try {
+				Statement stmt = connection.createStatement();
+				stmt.executeUpdate(itemStat.getSqlInsertQuery());
+				countOfRequest++;
+				int autoIncKeyFromApi = -1;
+				ResultSet rs = stmt.getGeneratedKeys();
+				if (rs.next()) {
+					autoIncKeyFromApi = rs.getInt(1);
+					itemStat.setId(autoIncKeyFromApi);
+				} else {
+					// throw an exception from here
+					Log.i(TAG, "Could not get user_id");
+				}
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.i(TAG, "Failed to make connection!");
+		}
+		return itemStat;
+	}
 
 
 

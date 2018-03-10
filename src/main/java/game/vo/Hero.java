@@ -1,6 +1,5 @@
 package game.vo;
 
-import game.io.CombatTextResponse;
 import game.logging.Log;
 import game.util.CalculationUtil;
 import game.util.DatabaseUtil;
@@ -557,7 +556,7 @@ public class Hero {
 			Log.i(TAG, "Setting timeoffcd to : " + getAbility(0).getTimeWhenOffCooldown());
 			return true;
 		}else{
-			Log.i(TAG, "Time until next attack : " + timeWhenNextAttackIsReady);
+			//Log.i(TAG, "Time until next attack : " + timeWhenNextAttackIsReady);
 		}
 		return false;
 	}

@@ -2,11 +2,11 @@ package game;
 
 import com.google.gson.Gson;
 import game.io.*;
+import game.io.Requests.GameSlotRequest;
+import game.io.Requests.JoinServerRequest;
+import game.io.Responses.GameSlotResponse;
 import game.logging.Log;
-import game.util.DatabaseUtil;
-import game.vo.Hero;
 import game.vo.Message;
-import game.vo.User;
 
 import java.util.ArrayList;
 import java.util.Iterator;

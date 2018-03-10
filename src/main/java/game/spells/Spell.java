@@ -1,8 +1,8 @@
 package game.spells;
 
 import game.GameServer;
-import game.io.CombatTextResponse;
-import game.io.RotateTargetResponse;
+import game.io.Responses.CombatTextResponse;
+import game.io.Responses.RotateTargetResponse;
 import game.logging.Log;
 import game.vo.*;
 
