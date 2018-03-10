@@ -312,7 +312,7 @@ public class DatabaseUtil {
 		if (connection != null) {
 			try {
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT loot.id,loot.hero_id,loot.item_id, loot.equipped, loot.base,loot.top, loot.position_id, items.name, items.class, items.image, items.position, items.rarity, loot.stat_id_1, loot.stat_id_2, loot.stat_id_3, loot.stat_id_4 from loot, items where hero_id = " + heroId +" and loot.item_id = items.id");
+				ResultSet rs = stmt.executeQuery("SELECT loot.id,loot.hero_id,loot.item_id, loot.equipped, loot.base_stat, loot.top, loot.position_id, items.name, items.class, items.image, items.position, items.rarity, loot.stat_id_1, loot.stat_id_2, loot.stat_id_3, loot.stat_id_4 from loot, items where hero_id = " + heroId +" and loot.item_id = items.id");
 				countOfRequest++;
 				while (rs.next()) {
 					Item item = new Item();

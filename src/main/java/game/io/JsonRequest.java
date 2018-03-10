@@ -2,6 +2,7 @@ package game.io;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import game.logging.Log;
 import game.vo.Message;
@@ -20,8 +21,12 @@ public class JsonRequest implements Serializable {
         Gson gson = new GsonBuilder().create();
         JsonRequest request = null;
         if (aMessage != null && aMessage.getMessage() != null) {
-	        request = gson.fromJson(aMessage.getMessage(), JsonRequest.class);
-        }
+			try {
+				request = gson.fromJson(aMessage.getMessage(), JsonRequest.class);
+			} catch (JsonSyntaxException e) {
+				e.printStackTrace();
+			}
+		}
 		return request;
 	}
 

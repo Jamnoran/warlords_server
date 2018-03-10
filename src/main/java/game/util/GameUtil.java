@@ -44,14 +44,21 @@ public class GameUtil {
 
 
 	public void minionTargetInRange(MinionAggroRequest parsedRequest) {
-		Minion minion = gameServer.getMinionById(parsedRequest.getMinion_id());
-		if (minion != null && parsedRequest.getHero_id() > 0) {
-			Log.i(TAG, "Target is in range for an attack");
-			minion.targetInRangeForAttack = true;
-		} else {
-			Log.i(TAG, "Target is out of range for an attack");
-			if (minion != null) {
-				minion.targetInRangeForAttack = false;
+		if (gameServer != null && parsedRequest.getMinion_id() != null) {
+			Minion minion = gameServer.getMinionById(parsedRequest.getMinion_id());
+			if (minion != null && parsedRequest.getHero_id() > 0) {
+				Log.i(TAG, "Target is in range for an attack");
+				minion.targetInRangeForAttack = true;
+			} else {
+				Log.i(TAG, "Target is out of range for an attack");
+				if (minion != null) {
+					minion.targetInRangeForAttack = false;
+				}
+			}
+		}else{
+			Log.i(TAG, "Something wrong, either gameserver is null or minion_id is");
+			if (gameServer == null) {
+				Log.i(TAG, "GameServer is null");
 			}
 		}
 	}
@@ -64,13 +71,18 @@ public class GameUtil {
 	 */
 	public Hero getHeroWithLowestHp() {
 		Hero targetHero = null;
-		for (Hero lowestHpHero : gameServer.getHeroes()) {
-			if (targetHero == null) {
-				targetHero = lowestHpHero;
-			} else if (lowestHpHero.getHp() < targetHero.getHp()) {
-				targetHero = lowestHpHero;
-				Log.i(TAG, "Found a target with lower hp : " + lowestHpHero.getId());
+
+		if (gameServer != null && gameServer.getHeroes() != null) {
+			for (Hero lowestHpHero : gameServer.getHeroes()) {
+				if (targetHero == null) {
+					targetHero = lowestHpHero;
+				} else if (lowestHpHero.getHp() < targetHero.getHp()) {
+					targetHero = lowestHpHero;
+					Log.i(TAG, "Found a target with lower hp : " + lowestHpHero.getId());
+				}
 			}
+		}else{
+			Log.i(TAG, "We did not find heroes or gameserver");
 		}
 		return targetHero;
 	}

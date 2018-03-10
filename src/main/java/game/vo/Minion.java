@@ -76,6 +76,7 @@ public class Minion {
 	private boolean attackIfHasEnemy() {
 		Integer heroId = getHeroIdWithMostThreat();
 		if(heroId != null){
+			Log.i(TAG, "Minion taking action, hp : " + hp + " aggro: " + getHeroIdWithMostThreat());
 			if (targetInRangeForAttack) {
 				long time = System.currentTimeMillis();
 				if (timeLastAttack == null || ((time - timeLastAttack) >= timeBetweenAttacks)) {

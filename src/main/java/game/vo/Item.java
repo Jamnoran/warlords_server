@@ -6,7 +6,6 @@ import game.util.ItemUtil;
 import java.util.ArrayList;
 
 public class Item {
-
 	public static final String LEGENDARY = "LEGENDARY";
 	public static final String RARE = "RARE";
 	public static final String UNCOMMON = "UNCOMMON";

@@ -50,6 +50,7 @@ public class GameServer {
 		startGameTicks();
 		spellUtil = new SpellUtil();
 		gameUtil = new GameUtil();
+		gameUtil.setGameServer(this);
 	}
 
 
@@ -492,9 +493,6 @@ public class GameServer {
 	 */
 	public void attack(Integer heroId, Integer minionId, long timeForAttackRequest) {
 		Hero hero = getHeroById(heroId);
-		if (hero != null) {
-			Log.i(TAG, "Hero " + hero.getId() + " Hero attacked minion: " + minionId + " minions count : " + minions.size());
-		}
 		if (hero != null && hero.readyForAutoAttack(timeForAttackRequest)) {
 			Minion minion = getMinionById(minionId);
 			if (minion != null) {
@@ -530,7 +528,7 @@ public class GameServer {
 				Log.i(TAG, "Hero is trying to attack a minion that is already dead or non existing");
 			}
 		} else {
-			Log.i(TAG, "Hero is not ready for auto attack");
+			//Log.i(TAG, "Hero is not ready for auto attack");
 		}
 	}
 
@@ -581,7 +579,7 @@ public class GameServer {
 			usersHero.setDesiredPositionX(parsedRequest.getDesiredPositionX());
 			usersHero.setDesiredPositionY(parsedRequest.getDesiredPositionY());
 			usersHero.setDesiredPositionZ(parsedRequest.getDesiredPositionZ());
-			Log.i(TAG, "Hero : " + usersHero.toString());
+			//Log.i(TAG, "Hero : " + usersHero.toString());
 
 			animations.add(new GameAnimation("HERO_RUN", null, usersHero.getId(), null, 0));
 		}
@@ -792,6 +790,7 @@ public class GameServer {
 					ticks.add(new Tick((System.currentTimeMillis() + gameStatusTickTime), Tick.GAME_STATUS));
 				}
 				if (addMinionAction) {
+					//Log.i(TAG, "Minion actions : " + minions.size());
 					for (Minion minion : minions) {
 						if (minion.isAlive()) {
 							minion.takeAction();
