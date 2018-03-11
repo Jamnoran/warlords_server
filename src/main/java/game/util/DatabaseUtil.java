@@ -336,6 +336,20 @@ public class DatabaseUtil {
 					}
 					item.setImage(rs.getString("image"));
 
+					item.setStats(new ArrayList<>());
+					if(item.getStatId_1() > 0){
+						item.getStats().add(getItemStat(item.getStatId_1(), connection));
+					}
+					if(item.getStatId_2() > 0){
+						item.getStats().add(getItemStat(item.getStatId_2(), connection));
+					}
+					if(item.getStatId_3() > 0){
+						item.getStats().add(getItemStat(item.getStatId_3(), connection));
+					}
+					if(item.getStatId_4() > 0){
+						item.getStats().add(getItemStat(item.getStatId_4(), connection));
+					}
+
 					//Display values
 					items.add(item);
 				}
@@ -349,6 +363,42 @@ public class DatabaseUtil {
 			Log.i(TAG, "Failed to make connection!");
 		}
 		return items;
+	}
+
+	private static ItemStat getItemStat(long statId, Connection connection) {
+		ItemStat stat = null;
+		boolean connWasNull = false;
+		if (connection == null) {
+			connWasNull = true;
+			connection = getConnection();
+		}
+		if (connection != null) {
+			try {
+				Statement stmt = connection.createStatement();
+				ResultSet rs = stmt.executeQuery("SELECT * FROM item_stats where id = " + statId);
+				countOfRequest++;
+				while (rs.next()) {
+					stat = new ItemStat();
+					//Retrieve by column name
+					stat.setId(statId);
+					stat.setName(rs.getString("name"));
+					stat.setType(rs.getString("type"));
+					stat.setBaseStat(rs.getInt("base_stat"));
+					stat.setTop(rs.getInt("top"));
+					//Display values
+				}
+				rs.close();
+				stmt.close();
+				if (connWasNull) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.i(TAG, "Failed to make connection!");
+		}
+		return stat;
 	}
 
 	public static ArrayList<Talent> getHeroTalents(Integer heroId){

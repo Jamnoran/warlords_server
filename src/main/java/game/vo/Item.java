@@ -238,6 +238,8 @@ public class Item {
 			setStatId_3(item.getStatId_3());
 			setStatId_4(item.getStatId_4());
 			setItemId(getId());
+
+			setPositionId(-1);
 		}
 	}
 }

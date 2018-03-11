@@ -3,6 +3,7 @@ package game.vo;
 public class ItemStat {
 
 	public static final String ARMOR = "ARMOR";
+	public static final String MAGIC_RESIST = "MAGIC_RESIST";
 	public static final String CRIT = "CRIT";
 	public static final String LIFE_STEAL = "LIFE_STEAL";
 	public static final String HP = "HP";

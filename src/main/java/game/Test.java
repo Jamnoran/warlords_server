@@ -23,7 +23,7 @@ public class Test {
 	private String randomType;
 
 	public static void main(String[] args) {
-		Hero hero = DatabaseUtil.getHero(16);
+		Hero hero = DatabaseUtil.getHero(14);
 //
 		Warrior warr = (Warrior) hero;
 //
@@ -35,16 +35,15 @@ public class Test {
 //
 //		//Log.i(TAG, "Hero hp after damage " + warr.getHp());
 //
-//		ArrayList<Item> loot = DatabaseUtil.getLoot(warr.getId());
-//
+		ArrayList<Item> loot = DatabaseUtil.getLoot(warr.getId());
 
-		DatabaseUtil.updateHeroItem(2, 4, false);
+//		DatabaseUtil.updateHeroItem(2, 4, false);
 
 //		ArrayList<Item> loot = GameUtil.generateLoot(warr);
-//		Log.i(TAG, "Got this many items: " + loot.size());
-//		for (Item item : loot) {
-//			Log.i(TAG, "Item : " + item.toString());
-//		}
+		Log.i(TAG, "Got this many items: " + loot.size());
+		for (Item item : loot) {
+			Log.i(TAG, "Item : " + item.toString());
+		}
 
 		//DatabaseUtil.updateHeroItemPosition(2,3);
 		//Log.i(TAG, "Hero hp after damage " + warr.getHp());

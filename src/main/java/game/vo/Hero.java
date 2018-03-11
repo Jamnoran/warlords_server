@@ -62,6 +62,7 @@ public class Hero {
 
 	private transient ArrayList<Ability> abilities;
 	private transient ArrayList<Talent> talents;
+	private transient ArrayList<Item> items;
 	private ArrayList<Buff> buffs = new ArrayList<>();
 	private ArrayList<Buff> deBuffs = new ArrayList<>();
 
@@ -356,6 +357,14 @@ public class Hero {
 		this.deBuffs = deBuffs;
 	}
 
+	public ArrayList<Item> getItems() {
+		return items;
+	}
+
+	public void setItems(ArrayList<Item> items) {
+		this.items = items;
+	}
+
 	public void heal(Amount healAmount) {
 		hp = hp + Math.round(healAmount.getAmount());
 		if(hp > maxHp){
@@ -463,6 +472,13 @@ public class Hero {
 		// Check base stats
 
 		// Check items equipped
+		if(getItems() != null) {
+			for (Item item : getItems()) {
+				if(!item.getPosition().equals(Item.MAIN_HAND)){
+					armorCalculation = armorCalculation + item.getBaseStat();
+				}
+			}
+		}
 
 		// Check talents
 		if(getTalents() != null){
