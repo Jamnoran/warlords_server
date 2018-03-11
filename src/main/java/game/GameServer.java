@@ -719,6 +719,7 @@ public class GameServer {
 
 
 	public void updateItemPosition(String userId, UpdateHeroItemPositionRequest request) {
+		Log.i(TAG, "Updated item " + request.getItemId() + " To pos: " + request.getNewPosition());
 		DatabaseUtil.updateHeroItem(request.getItemId(), request.getNewPosition(), request.getEquipped());
 	}
 
