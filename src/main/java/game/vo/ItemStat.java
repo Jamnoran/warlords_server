@@ -55,7 +55,7 @@ public class ItemStat {
 	}
 
 	public String getSqlInsertQuery() {
-		return "INSERT into item_stats SET name=\"" + getName() + "\" , type=\"" + getType()+ "\", baseStat = " + getBaseStat() + ", top = " + getTop();
+		return "INSERT into item_stats SET name=\"" + getName() + "\" , type=\"" + getType()+ "\", base_stat = " + getBaseStat() + ", top = " + getTop();
 	}
 
 	@Override
