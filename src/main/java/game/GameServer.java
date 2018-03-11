@@ -705,7 +705,7 @@ public class GameServer {
 	public ArrayList<Item> getHeroItems(String userId, boolean sendToClient) {
 		Hero hero = getHeroByUserId(userId);
 		ArrayList<Item> items = DatabaseUtil.getLoot(hero.getId());
-
+		hero.setItems(items);
 		if(sendToClient){
 			HeroItemsResponse response = new HeroItemsResponse(items);
 			if (server != null) {

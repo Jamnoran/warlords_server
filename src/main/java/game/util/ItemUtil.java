@@ -175,8 +175,8 @@ public class ItemUtil {
 		int random = CalculationUtil.getRandomInt(0,3);
 		switch (random){
 			case(0):
-				stat.setName("Armor");
-				stat.setType(ItemStat.ARMOR);
+				stat.setName("Magic resist");
+				stat.setType(ItemStat.MAGIC_RESIST);
 				break;
 			case(1):
 				stat.setName("Critical chance");
