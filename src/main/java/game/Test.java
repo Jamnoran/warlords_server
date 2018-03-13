@@ -12,6 +12,7 @@ import game.vo.classes.Warrior;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 public class Test {
@@ -35,14 +36,19 @@ public class Test {
 //
 //		//Log.i(TAG, "Hero hp after damage " + warr.getHp());
 //
-		ArrayList<Item> loot = DatabaseUtil.getLoot(warr.getId());
+		//ArrayList<Item> loot = DatabaseUtil.getLoot(warr.getId());
 
 //		DatabaseUtil.updateHeroItem(2, 4, false);
 
 //		ArrayList<Item> loot = GameUtil.generateLoot(warr);
-		Log.i(TAG, "Got this many items: " + loot.size());
-		for (Item item : loot) {
-			Log.i(TAG, "Item : " + item.toString());
+//		Log.i(TAG, "Got this many items: " + loot.size());
+//		for (Item item : loot) {
+//			Log.i(TAG, "Item : " + item.toString());
+//		}
+
+		for (int i = 0; i < 5; i++) {
+			Log.i(TAG, "Generate name " + GameUtil.generateItemName(Item.CHEST));
+			Log.i(TAG, "Generate name " + GameUtil.generateItemName(Item.MAIN_HAND));
 		}
 
 		//DatabaseUtil.updateHeroItemPosition(2,3);

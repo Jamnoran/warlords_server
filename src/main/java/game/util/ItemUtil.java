@@ -71,39 +71,7 @@ public class ItemUtil {
 	}
 
 	private static String generateName(Item item) {
-		String name = null;
-		if(item.getPosition().equals(Item.MAIN_HAND)){
-			name = "Sword";
-		}else if(item.getPosition().equals(Item.OFF_HAND)){
-			name = "Shield";
-		}else if (item.getPosition().equals(Item.HEAD)){
-			name = "Helmet";
-		}else if (item.getPosition().equals(Item.SHOULDERS)){
-			name = "Shoulders";
-		}else if (item.getPosition().equals(Item.CHEST)){
-			name = "Armor";
-		}else if (item.getPosition().equals(Item.LEGS)){
-			name = "Leggings";
-		}else if (item.getPosition().equals(Item.BOOTS)){
-			name = "Boots";
-		}
-		int random = CalculationUtil.getRandomInt(0,3);
-		switch (random){
-			case(0):
-				name = name + " of doom";
-				break;
-			case(1):
-				name = name + " of death";
-				break;
-			case(2):
-				name = name + " of fluff";
-				break;
-			case(3):
-				name = name + " of iron";
-				break;
-		}
-
-		return name;
+		return GameUtil.generateItemName(item.getPosition());
 	}
 
 	private static int getBaseStats(int base, Item item) {
