@@ -13,6 +13,9 @@ jar {
         attributes 'Implementation-Title': 'Gradle Quickstart',
                 'Main-Class': 'game.Server'
     }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 dependencies {
