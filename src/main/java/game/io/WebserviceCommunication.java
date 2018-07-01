@@ -16,7 +16,7 @@ import java.net.URL;
  */
 public class WebserviceCommunication {
 	private static final String TAG = WebserviceCommunication.class.getSimpleName();
-	private static String  registerServer = "http://www.warlord.ga:8000/warlords_webservice/register_server.php";
+	private static String  registerServer = "http://erca.online:8000/warlords_webservice/register_server.php";
 	private static final String USER_AGENT = "Mozilla/5.0";
 	private static String ip = "2.248.122.35";
 //	private static String ip = "192.168.0.207";
