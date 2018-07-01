@@ -29,7 +29,7 @@ public class SpellUtil {
     public void spell(SpellRequest parsedRequest, GameServer gServer) {
         gameServer = gServer;
         Log.i(TAG, "Handle spell " + parsedRequest.toString());
-        Hero hero = gameServer.getHeroById(parsedRequest.getHeroId());
+        Hero hero = GameUtil.getHeroById(parsedRequest.getHeroId(), gameServer.getHeroes());
         switch (parsedRequest.getSpell_id()) {
             case 8:
                 Log.i(TAG, "Warrior used taunt!");

@@ -19,7 +19,8 @@ public class WarriorTaunt extends Spell {
 
 	public void execute() {
 		// Taunt amount
-		float tauntAmount = getAbility().getBaseDamage();
+		float scaleAmount = getScaleFromTalents();
+		float tauntAmount = getAbility().getBaseDamage() * (1 + scaleAmount);
 
 		if (getTargetEnemyList() != null) {
 			for (Minion minion : getTargetEnemyList()) {
@@ -36,4 +37,14 @@ public class WarriorTaunt extends Spell {
 		super.execute();
 	}
 
+	private float getScaleFromTalents() {
+		int scaleId = 2;
+		float scaleAmount = 0.0f;
+		for(Talent talent : getHero().getTalents()){
+			if(talent.getId() == scaleId){
+				scaleAmount = scaleAmount + talent.getScaling() * talent.getPointAdded();
+			}
+		}
+		return scaleAmount;
+	}
 }

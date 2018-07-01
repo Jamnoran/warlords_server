@@ -13,9 +13,13 @@ import java.util.ArrayList;
 public class WarriorCharge extends Spell {
 
 	private static final String TAG = WarriorCharge.class.getSimpleName();
+	private int cdTalentId = 1;
+	private int costTalentId = 3;
 
 	public WarriorCharge(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
+		super.setCDTalentId(cdTalentId);
+		super.setCostTalentId(costTalentId);
 	}
 
 	public void execute() {
@@ -37,11 +41,9 @@ public class WarriorCharge extends Spell {
 
 			getHero().getBuffs().add(buff);
 
-
 			// Set the cooldown for this ability
 			getAbility().setMillisLastUse(getTime());
 			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
-
 
 			// Send castbar information
 			getGameServer().sendCastBarInformation(getHero().getId(), getAbility());
@@ -53,5 +55,4 @@ public class WarriorCharge extends Spell {
 		}
 		super.execute();
 	}
-
 }

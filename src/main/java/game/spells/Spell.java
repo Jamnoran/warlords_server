@@ -4,6 +4,7 @@ import game.GameServer;
 import game.io.Responses.CombatTextResponse;
 import game.io.Responses.RotateTargetResponse;
 import game.logging.Log;
+import game.util.GameUtil;
 import game.vo.*;
 
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public class Spell {
 	private ArrayList<Hero> targetFriendlyList;
 	private final Vector3 position;
 	private long time;
+	private int CDTalentId;
+	private int costTalentId;
 
 
 	public Spell(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
@@ -39,7 +42,7 @@ public class Spell {
 		// Check if has a friendly target
 		if(targetFriendly != null && targetFriendly.size() > 0 && targetFriendly.get(0) > 0){
 			targetFriendlyList = new ArrayList<>();
-			targetFriendlyList.add(gameServer.getHeroById(targetFriendly.get(0)));
+			targetFriendlyList.add(GameUtil.getHeroById(targetFriendly.get(0), gameServer.getHeroes()));
 		}else{
 			// Auto set the lowest hp friendly target otherwise
 			targetFriendlyList = new ArrayList<>();
@@ -49,7 +52,7 @@ public class Spell {
 		if(targetEnemy != null && targetEnemy.size() > 0){
 			targetEnemyList = new ArrayList<>();
 			for(Integer minionId : targetEnemy){
-				Minion min = gameServer.getMinionById(minionId);
+				Minion min = GameUtil.getMinionById(minionId, gameServer.getMinions());
 				if (min != null) {
 					targetEnemyList.add(min);
 				}else{
@@ -113,19 +116,19 @@ public class Spell {
 	}
 
 	private boolean checkForResourses(Hero hero, Ability ability) {
+		float resCost = ability.calculateResourceCost(hero, this);
 		if(hero.getClass_type().equals("WARLOCK")){
-			float abilityCost = hero.getMaxHp() * (ability.getResourceCost() / 100);
+			float abilityCost = hero.getMaxHp() * (resCost / 100);
 			if(hero.getHp() > Math.round(abilityCost)){
 				Log.i(TAG, "Has hp enough for spell");
 				return true;
 			}
 		}else{
-			int resourceCostCost = ability.getResourceCost();
-			if(hero.getResource() >= resourceCostCost){
+			if(hero.getResource() >= resCost){
 				Log.i(TAG, "Has resources");
 				return true;
 			}else{
-				Log.i(TAG, "Mana cost : " + resourceCostCost + " Mana left : " + hero.getResource());
+				Log.i(TAG, "Mana cost : " + resCost + " Mana left : " + hero.getResource());
 			}
 
 		}
@@ -158,9 +161,9 @@ public class Spell {
 	public void setSpellCooldown(){
 		// Set the cooldown for this ability
 		getAbility().setMillisLastUse(getTime());
-		getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
-		// TODO: This should we be able remove
-		getGameServer().sendGameStatus();
+		getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().calculateCooldown(getHero(), this)));
+//		 TODO: This should we be able remove
+//		getGameServer().sendGameStatus();
 	}
 
 	public void damageMinion(Minion minion, Amount damageAmount, float penetration, String damageType) {
@@ -176,19 +179,19 @@ public class Spell {
 
 
 	public void healHero(Integer heroId, Amount amount) {
-		gameServer.getHeroById(heroId).heal(amount);
+		GameUtil.getHeroById(heroId, gameServer.getHeroes()).heal(amount);
 		gameServer.sendCombatText(new CombatTextResponse(true, hero.getId(), "" + amount.getAmount(), amount.isCrit(), "#FF00FF00"));
 	}
 
 	public void damageHero(Integer heroId, float amount){
 		float totalAmount = Math.round(amount);
-		gameServer.getHeroById(heroId).takeDamage(totalAmount, 0, "TRUE");
+		GameUtil.getHeroById(heroId, gameServer.getHeroes()).takeDamage(totalAmount, 0, "TRUE");
 	}
 
 
 	public void restoreResources(Integer heroId, float amount) {
 		float totalAmount = Math.round(amount);
-		gameServer.getHeroById(heroId).restoreResource(totalAmount);
+		GameUtil.getHeroById(heroId, gameServer.getHeroes()).restoreResource(totalAmount);
 	}
 
 	public Ability getAbility() {
@@ -253,5 +256,21 @@ public class Spell {
 
 	public void setTargetFriendlyList(ArrayList<Hero> targetFriendlyList) {
 		this.targetFriendlyList = targetFriendlyList;
+	}
+
+	public void setCDTalentId(int CDTalentId) {
+		this.CDTalentId = CDTalentId;
+	}
+
+	public int getCDTalentId() {
+		return CDTalentId;
+	}
+
+	public int getCostTalentId() {
+		return costTalentId;
+	}
+
+	public void setCostTalentId(int costTalentId) {
+		this.costTalentId = costTalentId;
 	}
 }

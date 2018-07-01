@@ -1,6 +1,7 @@
 package game.vo;
 
 import game.logging.Log;
+import game.spells.Spell;
 
 import java.util.Comparator;
 
@@ -220,6 +221,37 @@ public class Ability implements Comparator<Ability> {
 		return Integer.compare(o1.getId(), o2.getId());
 	}
 
+	public long calculateCooldown(Hero hero, Spell spell) {
+		long calculatedCD = (long)((float) getBaseCD() * (1  - getCDReduction(hero, spell)));
+		Log.i(TAG, "Calculated CD: " + calculatedCD + " Original : " + getBaseCD());
+		return calculatedCD;
+	}
+
+	public float getCDReduction(Hero hero, Spell spell) {
+		float reduction = 0.0f;
+		Log.i(TAG, "Checking for talent with id : " + spell.getCDTalentId() + " for ability " + getName());
+		if(hero.getTalents() != null){
+			for(Talent talent : hero.getTalents()){
+				if(talent.getTalentId() == spell.getCDTalentId()){
+					reduction = reduction + talent.getScaling() * talent.getPointAdded();
+				}
+			}
+		}
+		return reduction;
+	}
+
+	public float calculateResourceCost(Hero hero, Spell spell) {
+		float reduction = 0.0f;
+		if(hero.getTalents() != null){
+			for(Talent talent : hero.getTalents()){
+				if(talent.getTalentId() == spell.getCostTalentId()){
+					reduction = reduction + talent.getScaling() * talent.getPointAdded();
+				}
+			}
+		}
+		return getResourceCost() * (1 - reduction);
+	}
+
 	@Override
 	public String toString() {
 		return "Ability{" +
@@ -245,4 +277,5 @@ public class Ability implements Comparator<Ability> {
 				", resourceCost=" + resourceCost +
 				'}';
 	}
+
 }

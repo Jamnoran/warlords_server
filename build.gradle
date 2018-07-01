@@ -4,9 +4,15 @@ repositories {
     mavenCentral()
 }
 
-
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Quickstart',
+                'Main-Class': 'game.Server'
+    }
 }
 
 dependencies {

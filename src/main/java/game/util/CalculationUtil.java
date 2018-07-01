@@ -20,7 +20,6 @@ public class CalculationUtil {
 
 	public static boolean rollDice(int percentage) {
 		if(getRandomInt(0,100) <= percentage){
-//			Log.i(TAG, "Successful dice");
 			return true;
 		}
 		return false;
