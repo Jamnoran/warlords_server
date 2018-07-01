@@ -6,6 +6,7 @@ import game.io.Requests.*;
 import game.logging.Log;
 import game.io.*;
 import game.util.DatabaseUtil;
+import game.util.GameUtil;
 import game.vo.Hero;
 import game.vo.Message;
 
@@ -34,7 +35,7 @@ public class ServerDispatcher extends Thread {
 		Hero hero = DatabaseUtil.getHero(heroId);
 		if (hero != null && hero.id > 0) {
 			Log.i(TAG, "Got this hero: " + hero.toString());
-			gameServer.addHero(hero);
+			gameServer.getGameUtil().addHero(hero, gameServer.getHeroes());
 		} else {
 			Log.i(TAG, "Could not find hero");
 		}
@@ -82,7 +83,7 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("SPAWN_POINTS")) {
 				SpawnPointsRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SpawnPointsRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.addSpawnPoints(parsedRequest.getPoints());
+				gameServer.getGameUtil().addSpawnPoints(parsedRequest.getPoints());
 			} else if (request.isType("ATTACK")) {
 				AttackRequest parsedRequest = gson.fromJson(aMessage.getMessage(), AttackRequest.class);
 				//Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
@@ -98,7 +99,7 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("MINION_AGGRO")) {
 				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.minionAggro(parsedRequest);
+				GameUtil.minionAggro(parsedRequest, gameServer.getMinions());
 			} else if (request.isType("MINION_TARGET_IN_RANGE")) {
 				MinionAggroRequest parsedRequest = gson.fromJson(aMessage.getMessage(), MinionAggroRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
@@ -106,7 +107,7 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("CLICKED_PORTAL")) {
 				ClickPortalRequest parsedRequest = gson.fromJson(aMessage.getMessage(), ClickPortalRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.clickPortal(parsedRequest.getHero_id());
+				gameServer.getGameUtil().clickPortal(parsedRequest.getHero_id(), gameServer.getHeroes());
 			} else if (request.isType("GET_ABILITIES")) {
 				Log.i(TAG, "parsedRequest : " + request.toString());
 				gameServer.sendAbilities(request.getUser_id());
@@ -128,15 +129,15 @@ public class ServerDispatcher extends Thread {
 				gameServer.restartLevel();
 			} else if (request.isType("GET_ITEMS")) {
 				Log.i(TAG, "parsedRequest : " + request.toString());
-				gameServer.getHeroItems(request.getUser_id(), true);
+				gameServer.getHeroItems(GameUtil.getHeroByUserId(request.getUser_id(), gameServer.getHeroes()), true);
 			} else if (request.isType("UPDATE_ITEM_POSITION")) {
 				UpdateHeroItemPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateHeroItemPositionRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.updateItemPosition(request.getUser_id(), parsedRequest);
+				GameUtil.updateItemPosition(request.getUser_id(), parsedRequest);
 			} else if (request.isType("UPDATE_MINION_POSITION")) {
 				//Log.i(TAG, "parsedRequest : " + request.toString());
 				UpdateMinionPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateMinionPositionRequest.class);
-				gameServer.updateMinionPositions(parsedRequest.getMinions());
+				GameUtil.updateMinionPositions(parsedRequest.getMinions(), gameServer.getMinions());
 			} else if (request.isType("SEND_MESSAGE")) {
 				SendMessageRequest parsedRequest = gson.fromJson(aMessage.getMessage(), SendMessageRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());

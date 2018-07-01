@@ -100,7 +100,7 @@ public class Minion {
 		Integer heroId = getHeroIdWithMostThreat();
 		if(heroId != null){
 			if (!targetInRangeForAttack) {
-				Hero hero = game.getHeroById(heroId);
+				Hero hero = GameUtil.getHeroById(heroId, game.getHeroes());
 				setDesiredPositionX(hero.getPositionX());
 				setDesiredPositionZ(hero.getPositionZ());
 			}
@@ -140,7 +140,7 @@ public class Minion {
 		Threat currentHero = null;
 		for(Threat threat : threats){
 			if(currentHero == null || (threat.getAmount() > currentHero.getAmount())){
-				if (this.game.getHeroById(threat.getHeroId()).getHp() > 0) {
+				if (GameUtil.getHeroById(threat.getHeroId(), game.getHeroes()).getHp() > 0) {
 					currentHero = threat;
 				}
 			}
@@ -311,7 +311,7 @@ public class Minion {
 			for(Threat threat : threats){
 				int calculatedXP = baseXp;
 				// We should make xp amount less if the minions level is not close to heroes
-				this.game.getHeroById(threat.getHeroId()).addExp(calculatedXP);
+				GameUtil.getHeroById(threat.getHeroId(), game.getHeroes()).addExp(calculatedXP);
 			}
 			return true;
 		}

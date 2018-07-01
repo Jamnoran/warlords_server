@@ -523,35 +523,6 @@ public class Hero {
 		this.magicResistance = magicResistance;
 	}
 
-	@Override
-	public String toString() {
-		return "Hero{" +
-				"id=" + id +
-				", user_id=" + user_id +
-				", xp=" + xp +
-				", level=" + level +
-				", topGameLvl=" + topGameLvl +
-				", positionX=" + positionX +
-				", positionZ=" + positionZ +
-				", desiredPositionX=" + desiredPositionX +
-				", desiredPositionZ=" + desiredPositionZ +
-				", class_type='" + class_type + '\'' +
-				", hp=" + hp +
-				", alive=" + alive +
-				", attackRange=" + attackRange +
-				", maxHp=" + maxHp +
-				", strength=" + strength +
-				", intelligence=" + intelligence +
-				", stamina=" + stamina +
-				", dexterity=" + dexterity +
-				", baseAttackDamage=" + baseAttackDamage +
-				", baseMaxAttackDamage=" + baseMaxAttackDamage +
-				", attackStrScaling=" + attackStrScaling +
-				", criticalMultiplier=" + criticalMultiplier +
-				", criticalChance=" + criticalChance +
-				'}';
-	}
-
 	public Ability getAbility(Integer spellId) {
 		for (Ability ability : getAbilities()){
 			if(ability.getId() == spellId){
@@ -658,5 +629,35 @@ public class Hero {
 	public void recalculateStats() {
 		calculateArmor();
 		calculateMagicResist();
+	}
+
+
+	@Override
+	public String toString() {
+		return "Hero{" +
+				"id=" + id +
+				", user_id=" + user_id +
+				", xp=" + xp +
+				", level=" + level +
+				", topGameLvl=" + topGameLvl +
+				", positionX=" + positionX +
+				", positionZ=" + positionZ +
+				", desiredPositionX=" + desiredPositionX +
+				", desiredPositionZ=" + desiredPositionZ +
+				", class_type='" + class_type + '\'' +
+				", hp=" + hp +
+				", alive=" + alive +
+				", attackRange=" + attackRange +
+				", maxHp=" + maxHp +
+				", strength=" + strength +
+				", intelligence=" + intelligence +
+				", stamina=" + stamina +
+				", dexterity=" + dexterity +
+				", baseAttackDamage=" + baseAttackDamage +
+				", baseMaxAttackDamage=" + baseMaxAttackDamage +
+				", attackStrScaling=" + attackStrScaling +
+				", criticalMultiplier=" + criticalMultiplier +
+				", criticalChance=" + criticalChance +
+				'}';
 	}
 }

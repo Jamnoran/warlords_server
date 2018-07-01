@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class DatabaseUtil {
 	private static final String TAG = DatabaseUtil.class.getSimpleName();
-	private static String ip = "warlord.ga";
+	private static String ip = "erca.online";
 //	private static String ip = "192.168.0.215";
 	private static String port = "8889";
 	private static String user = "warlord_clients";

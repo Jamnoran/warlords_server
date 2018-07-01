@@ -2,6 +2,7 @@ package game.spells;
 
 import game.GameServer;
 import game.logging.Log;
+import game.util.GameUtil;
 import game.vo.*;
 import game.vo.classes.Warlock;
 
@@ -68,8 +69,8 @@ public class WarlockHaemorrhage extends Spell {
 			long firstTick = System.currentTimeMillis();
 
 			try {
-				if(getGameServer().getMinionById(getTargetEnemy().get(0)) != null) {
-					getGameServer().getMinionById(getTargetEnemy().get(0)).addDebuff(new Buff(getHero().id, getTargetEnemy().get(0), Buff.DOT, Math.round(amount.getAmount()), getAbility().getDefaultTickMillis(), "" + firstTick, getAbility().getValue()));
+				if(GameUtil.getMinionById(getTargetEnemy().get(0), getGameServer().getMinions()) != null) {
+					GameUtil.getMinionById(getTargetEnemy().get(0), getGameServer().getMinions()).addDebuff(new Buff(getHero().id, getTargetEnemy().get(0), Buff.DOT, Math.round(amount.getAmount()), getAbility().getDefaultTickMillis(), "" + firstTick, getAbility().getValue()));
 				}
 			} catch (Exception e) {
 				Log.i(TAG, "What do we get nullpointer on here?");
@@ -77,7 +78,7 @@ public class WarlockHaemorrhage extends Spell {
 			}
 
 			for (int i = 0 ; i < getAbility().getValue() ; i++) {
-				getGameServer().addTick(new Tick(firstTick + (i * getAbility().getDefaultTickMillis()), Tick.MINION_DEBUFF));
+				getGameServer().getTickEngine().addTick(new Tick(firstTick + (i * getAbility().getDefaultTickMillis()), Tick.MINION_DEBUFF));
 			}
 			getAbility().setCasting(false);
 		}
