@@ -44,6 +44,7 @@ public class TickEngine {
 				boolean addMinionAction = false;
 				boolean addHeroRegen = false;
 				boolean addRequestMinionPosition = false;
+				boolean addHeroBuff = false;
 
 				boolean minionDebuffAction = false;
 
@@ -63,6 +64,9 @@ public class TickEngine {
 						}
 						if (tick.typeOfTick == Tick.HERO_REGEN) {
 							addHeroRegen = true;
+						}
+						if (tick.typeOfTick == Tick.BUFF) {
+							addHeroBuff = true;
 						}
 						if (tick.typeOfTick == Tick.REQUEST_MINION_POSITION) {
 							addRequestMinionPosition = true;
@@ -97,6 +101,10 @@ public class TickEngine {
 					server.getGameUtil().minionDebuffs(server.getMinions(), server.getHeroes());
 				}
 
+				if (addHeroBuff) {
+					Log.i(TAG, "Hero buff");
+					server.getGameUtil().heroBuffs(server.getMinions(), server.getHeroes());
+				}
 				if (addHeroRegen) {
 					for (Hero hero : server.getHeroes()) {
 						hero.regenTick();

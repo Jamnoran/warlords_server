@@ -36,7 +36,7 @@ public class GameServer {
 	private ArrayList<GameAnimation> animations = new ArrayList<>();
 	private ArrayList<Message> messages = new ArrayList<>();
 	private World world;
-	public int gameLevel = 1;
+	public int gameLevel = 11;
 	private SpellUtil spellUtil;
 	private GameUtil gameUtil;
 	private TickEngine tickEngine;
@@ -391,7 +391,7 @@ public class GameServer {
 						float totalDamage = Math.round(minion.calculateDamageReceived(amount, hero.getArmorPenetration(), "PHYSICAL"));
 						getGameUtil().dealDamageToMinion(hero, minion, totalDamage);
 
-						sendCombatText(new CombatTextResponse(false, minion.getId(), "" + amount.getAmount(), amount.isCrit(), "#FFFF0000"));
+						sendCombatText(new CombatTextResponse(false, minion.getId(), "" + amount.getAmount(), amount.isCrit(), "#FFFFFFFF"));
 
 						//sendCooldownInformation(hero.getAbility(0), hero.getId());
 

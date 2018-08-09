@@ -168,7 +168,7 @@ public class Spell {
 
 	public void damageMinion(Minion minion, Amount damageAmount, float penetration, String damageType) {
 		float totalDamageAfterReduction = Math.round(minion.calculateDamageReceived(damageAmount, penetration, damageType));
-		gameServer.sendCombatText(new CombatTextResponse(false, minion.getId(), "" + totalDamageAfterReduction, damageAmount.isCrit(), "#FFFF0000"));
+		gameServer.sendCombatText(new CombatTextResponse(false, minion.getId(), "" + totalDamageAfterReduction, damageAmount.isCrit(), "#FFFFFFFF"));
 		if (minion.takeDamage(totalDamageAfterReduction)) {
 			Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
 			gameServer.minionDied(hero.getId(), minion.getId());

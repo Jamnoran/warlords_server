@@ -386,7 +386,7 @@ public class GameUtil {
 							if (debuff.type == Buff.DOT) {
 								dealDamageToMinion(GameUtil.getHeroById(debuff.heroId, heroes), minion, debuff.value);
 
-								getGameServer().sendCombatText(new CombatTextResponse(false, minion.getId(), "" + debuff.value, false, "#FFFF0000"));
+								getGameServer().sendCombatText(new CombatTextResponse(false, minion.getId(), "" + debuff.value, false, "#FFFFFFFF"));
 
 								debuff.ticks--;
 								if (debuff.ticks == 0) {
@@ -394,6 +394,19 @@ public class GameUtil {
 								}
 							}
 						}
+					}
+				}
+			}
+		}
+	}
+
+	public void heroBuffs(ArrayList<Minion> minions, ArrayList<Hero> heroes) {
+		for(Hero hero : heroes){
+			if(hero.getBuffs().size() > 0){
+				for(Buff buff : hero.getBuffs()) {
+					if (buff.type == Buff.HOT) {
+						Log.i(TAG, "Healed for " + buff.value);
+						hero.heal(new Amount(buff.value));
 					}
 				}
 			}

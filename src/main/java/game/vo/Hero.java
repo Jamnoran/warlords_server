@@ -345,6 +345,10 @@ public class Hero {
 		return buffs;
 	}
 
+	public void addBuff(Buff buff){
+		buffs.add(buff);
+	}
+
 	public void setBuffs(ArrayList<Buff> buffs){
 		this.buffs = buffs;
 	}

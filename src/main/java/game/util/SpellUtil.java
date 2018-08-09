@@ -55,6 +55,10 @@ public class SpellUtil {
                 Log.i(TAG, "Priest used Shield!");
                 priestShield((Priest) hero, parsedRequest);
                 break;
+            case 5:
+                Log.i(TAG, "Priest used Heal over time!");
+                priesHealOverTime((Priest) hero, parsedRequest);
+                break;
             case 26:
                 Log.i(TAG, "Warlock used drain life!");
                 warlockDrain((Warlock) hero, parsedRequest);
@@ -114,7 +118,12 @@ public class SpellUtil {
     }
 
     private void priesHealOverTime(Priest hero, SpellRequest parsedRequest) {
-
+        PriestHealOverTime spell = new PriestHealOverTime(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), gameServer, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
+        if (spell.init()) {
+            spell.execute();
+        } else {
+            Log.i(TAG, "Could not send spell, probably because of mana or cd");
+        }
     }
 
     private void priesAOEHeal(Priest hero, SpellRequest parsedRequest) {

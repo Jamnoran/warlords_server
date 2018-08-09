@@ -59,26 +59,27 @@ public class WarlockHaemorrhage extends Spell {
 		super.execute();
 	}
 
-
-	public void castTimeCompleted(Amount amount){
+	private void castTimeCompleted(Amount amount){
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
 
 			damageMinion(getTargetEnemyList().get(0), amount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
 
-			long firstTick = System.currentTimeMillis();
+			if(getTargetEnemyList().get(0).isAlive()){
+				long firstTick = System.currentTimeMillis();
 
-			try {
-				if(GameUtil.getMinionById(getTargetEnemy().get(0), getGameServer().getMinions()) != null) {
-					GameUtil.getMinionById(getTargetEnemy().get(0), getGameServer().getMinions()).addDebuff(new Buff(getHero().id, getTargetEnemy().get(0), Buff.DOT, Math.round(amount.getAmount()), getAbility().getDefaultTickMillis(), "" + firstTick, getAbility().getValue()));
+				try {
+					if(GameUtil.getMinionById(getTargetEnemy().get(0), getGameServer().getMinions()) != null) {
+						GameUtil.getMinionById(getTargetEnemy().get(0), getGameServer().getMinions()).addDebuff(new Buff(getHero().id, getTargetEnemy().get(0), Buff.DOT, Math.round(amount.getAmount()), getAbility().getDefaultTickMillis(), "" + firstTick, getAbility().getValue()));
+					}
+				} catch (Exception e) {
+					Log.i(TAG, "What do we get nullpointer on here?");
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				Log.i(TAG, "What do we get nullpointer on here?");
-				e.printStackTrace();
-			}
 
-			for (int i = 0 ; i < getAbility().getValue() ; i++) {
-				getGameServer().getTickEngine().addTick(new Tick(firstTick + (i * getAbility().getDefaultTickMillis()), Tick.MINION_DEBUFF));
+				for (int i = 0 ; i < getAbility().getValue() ; i++) {
+					getGameServer().getTickEngine().addTick(new Tick(firstTick + (i * getAbility().getDefaultTickMillis()), Tick.MINION_DEBUFF));
+				}
 			}
 			getAbility().setCasting(false);
 		}
