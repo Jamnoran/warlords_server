@@ -1,5 +1,6 @@
 package game.vo;
 
+import game.GameServer;
 import game.logging.Log;
 import game.util.CalculationUtil;
 import game.util.DatabaseUtil;
@@ -290,7 +291,6 @@ public class Hero {
 	}
 
 	public void generateHeroInformation() {
-
 	}
 
 	public int getXpForLevel() {
@@ -385,12 +385,10 @@ public class Hero {
 		float damageLeft = calculateDamageReceived(damage, penetration, damageType);
 		// First we need to check if we have a shield on this hero
 		if(getBuffs() != null && getBuffs().size() > 0){
-			Log.i(TAG, "Got buff : " + getBuffs().size());
 			Iterator<Buff> buffIterator = buffs.iterator();
 			while (buffIterator.hasNext()) {
 				Buff buff = buffIterator.next();
 
-				Log.i(TAG, "Buff type : " + buff.type);
 				if(buff.type == Buff.SHIELD){
 					float temporaryBuffValue = Math.round(buff.value - damageLeft);
 					Log.i(TAG, "Buff amount left after damage: " + temporaryBuffValue);
@@ -663,5 +661,15 @@ public class Hero {
 				", criticalMultiplier=" + criticalMultiplier +
 				", criticalChance=" + criticalChance +
 				'}';
+	}
+
+	public void checkForRetaliation(Minion minion) {
+		if(getBuffs() != null && getBuffs().size() > 0){
+			for (Buff buff: getBuffs()) {
+				if(buff.type == Buff.RETALIATION){
+					minion.takeDamage(buff.getValue());
+				}
+			}
+		}
 	}
 }

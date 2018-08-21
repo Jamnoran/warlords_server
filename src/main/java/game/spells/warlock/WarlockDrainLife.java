@@ -1,20 +1,21 @@
-package game.spells;
+package game.spells.warlock;
 
 import game.GameServer;
 import game.logging.Log;
+import game.spells.Spell;
 import game.vo.*;
-import game.vo.classes.Priest;
+import game.vo.classes.Warlock;
 
 import java.util.ArrayList;
 
 /**
  * Created by Jamnoran on 28-Nov-16.
  */
-public class PriestSmite extends Spell {
+public class WarlockDrainLife extends Spell {
 
-	private static final String TAG = PriestSmite.class.getSimpleName();
+	private static final String TAG = WarlockDrainLife.class.getSimpleName();
 
-	public PriestSmite(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
+	public WarlockDrainLife(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
@@ -28,13 +29,13 @@ public class PriestSmite extends Spell {
 			getAbility().setCalculatedCastTime(getAbility().getCastTime());
 
 			// Get damage amount
-			Priest priest = (Priest) getHero();
-			Amount damageAmount = priest.getSpellDamage(getAbility());
+			Warlock warlock = (Warlock) getHero();
+			Amount damageAmount = warlock.getSpellDamage(getAbility());
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
 
 			Thread castTime = new Thread(() -> {
 				try {
-					Thread.sleep(getAbility().getCastTime());
+					Thread.sleep(getAbility().getCalculatedCastTime());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -42,14 +43,10 @@ public class PriestSmite extends Spell {
 			});
 			castTime.start();
 
-			// Send castbar information
-			getGameServer().sendCastBarInformation(getHero().getId(), getAbility());
-
 			// Add animation to list
-			getGameServer().getAnimations().add(new GameAnimation("SMITE", 0, getHero().getId(), null, 2));
-		}else{
-			Log.i(TAG, "Did not have a target...");
+			getGameServer().getAnimations().add(new GameAnimation("DRAIN", 0, getHero().getId(), null, 1));
 		}
+
 		super.execute();
 	}
 
@@ -59,7 +56,9 @@ public class PriestSmite extends Spell {
 		if (getAbility().isCasting()) {
 			// Damage target
 			damageMinion(getTargetEnemyList().get(0), amount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
+
+			healHero(getHero().id, amount);
+			getAbility().setCasting(false);
 		}
-		getAbility().setCasting(false);
 	}
 }

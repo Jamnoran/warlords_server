@@ -190,7 +190,9 @@ public class GameServer {
 
 	public void sendCombatText(CombatTextResponse combatTextResponse) {
 		String jsonInString = new Gson().toJson(combatTextResponse);
-		server.dispatchMessage(new Message(jsonInString));
+		if (server != null) {
+			server.dispatchMessage(new Message(jsonInString));
+		}
 	}
 
 
@@ -337,6 +339,10 @@ public class GameServer {
 					Minion min = GameUtil.getMinionById(minionId, minions);
 					if (min != null && min.getHp() > 0) {
 						hero.takeDamage(fDamage, min.getArmorPenetration(), "PHYSICAL");
+
+						// Check if hero has retaliation buff
+						hero.checkForRetaliation(min);
+
 						sendCombatText(new CombatTextResponse(true, hero.getId(), "" + damage.getAmount(), damage.isCrit(), "#FFFF0000"));
 						if (hero.getHp() <= 0) {
 							Log.i(TAG, "Hero died, send death animation to client");
@@ -355,6 +361,8 @@ public class GameServer {
 				}
 			};
 			thread.start();
+		}else {
+			Log.i(TAG, "Could not find hero");
 		}
 
 	}

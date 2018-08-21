@@ -81,11 +81,8 @@ public class GameUtil {
 					targetHero = lowestHpHero;
 				} else if (lowestHpHero.getHp() < targetHero.getHp()) {
 					targetHero = lowestHpHero;
-					Log.i(TAG, "Found a target with lower hp : " + lowestHpHero.getId());
 				}
 			}
-		}else{
-			Log.i(TAG, "We did not find heroes or gameserver");
 		}
 		return targetHero;
 	}

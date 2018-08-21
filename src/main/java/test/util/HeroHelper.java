@@ -1,28 +1,50 @@
-package test;
+package test.util;
 
-import game.GameServer;
-import game.spells.priest.PriestHealOverTime;
 import game.util.DatabaseUtil;
 import game.vo.Ability;
 import game.vo.AbilityPosition;
 import game.vo.Hero;
-import game.vo.Vector3;
+import game.vo.Talent;
 import game.vo.classes.Priest;
+import game.vo.classes.Warrior;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class PriestHealOverTimeTest {
+public class HeroHelper {
 
-	@org.junit.Test
-	public void castTimeCompleted() {
+	public static Warrior getWarrior(){
+		Hero hero = DatabaseUtil.getHero(14);
+		Warrior warrior = (Warrior) hero;
 
-		long time = System.currentTimeMillis();
+		warrior.generateHeroInformation();
+
+		warrior.setAbilities(getAbilities(warrior));
+
+		warrior.setTalents(getTalents(warrior));
+
+		return warrior;
+	}
+
+	public static Priest getPriest(){
 		Hero hero = DatabaseUtil.getHero(13);
 		Priest priest = (Priest) hero;
 
 		priest.generateHeroInformation();
 
+		priest.setAbilities(getAbilities(priest));
+
+		priest.setTalents(getTalents(priest));
+
+		return priest;
+	}
+
+	private static ArrayList<Talent> getTalents(Hero hero) {
+		ArrayList<Talent> talents = DatabaseUtil.getHeroTalents(hero.getId());
+		return talents;
+	}
+
+	public static ArrayList<Ability> getAbilities(Hero hero) {
 		ArrayList<Ability> heroAbilities = DatabaseUtil.getAllAbilities(hero.getClass_type());
 		ArrayList<AbilityPosition> abilityPositions = DatabaseUtil.getHeroAbilityPositions(hero.getId());
 		for (AbilityPosition abilityPosition : abilityPositions) {
@@ -35,13 +57,6 @@ public class PriestHealOverTimeTest {
 
 		Collections.sort(heroAbilities, new Ability());
 
-		priest.setAbilities(heroAbilities);
-
-		GameServer gameServer = new GameServer(null);
-		ArrayList<Integer> targetFriendly = new ArrayList<>();
-		targetFriendly.add(priest.getId());
-		Vector3 position = new Vector3(0,0,0);
-		PriestHealOverTime spell = new PriestHealOverTime( time,  hero,  priest.getAbility(5), gameServer,  null,  targetFriendly,  position);
-		spell.execute();
+		return heroAbilities;
 	}
 }

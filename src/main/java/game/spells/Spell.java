@@ -170,7 +170,6 @@ public class Spell {
 		float totalDamageAfterReduction = Math.round(minion.calculateDamageReceived(damageAmount, penetration, damageType));
 		gameServer.sendCombatText(new CombatTextResponse(false, minion.getId(), "" + totalDamageAfterReduction, damageAmount.isCrit(), "#FFFFFFFF"));
 		if (minion.takeDamage(totalDamageAfterReduction)) {
-			Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
 			gameServer.minionDied(hero.getId(), minion.getId());
 		}else {
 			minion.addThreat(new Threat(hero.getId(), 0.0f, totalDamageAfterReduction, 0.0f));

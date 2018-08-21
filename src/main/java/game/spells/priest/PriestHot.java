@@ -1,7 +1,8 @@
-package game.spells;
+package game.spells.priest;
 
 import game.GameServer;
 import game.logging.Log;
+import game.spells.Spell;
 import game.util.GameUtil;
 import game.vo.*;
 import game.vo.classes.Priest;

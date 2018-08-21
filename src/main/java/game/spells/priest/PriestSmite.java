@@ -1,20 +1,21 @@
-package game.spells;
+package game.spells.priest;
 
 import game.GameServer;
 import game.logging.Log;
+import game.spells.Spell;
 import game.vo.*;
-import game.vo.classes.Warlock;
+import game.vo.classes.Priest;
 
 import java.util.ArrayList;
 
 /**
  * Created by Jamnoran on 28-Nov-16.
  */
-public class WarlockDrainLife extends Spell {
+public class PriestSmite extends Spell {
 
-	private static final String TAG = WarlockDrainLife.class.getSimpleName();
+	private static final String TAG = PriestSmite.class.getSimpleName();
 
-	public WarlockDrainLife(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
+	public PriestSmite(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
@@ -28,13 +29,13 @@ public class WarlockDrainLife extends Spell {
 			getAbility().setCalculatedCastTime(getAbility().getCastTime());
 
 			// Get damage amount
-			Warlock warlock = (Warlock) getHero();
-			Amount damageAmount = warlock.getSpellDamage(getAbility());
+			Priest priest = (Priest) getHero();
+			Amount damageAmount = priest.getSpellDamage(getAbility());
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
 
 			Thread castTime = new Thread(() -> {
 				try {
-					Thread.sleep(getAbility().getCalculatedCastTime());
+					Thread.sleep(getAbility().getCastTime());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -42,10 +43,14 @@ public class WarlockDrainLife extends Spell {
 			});
 			castTime.start();
 
-			// Add animation to list
-			getGameServer().getAnimations().add(new GameAnimation("DRAIN", 0, getHero().getId(), null, 1));
-		}
+			// Send castbar information
+			getGameServer().sendCastBarInformation(getHero().getId(), getAbility());
 
+			// Add animation to list
+			getGameServer().getAnimations().add(new GameAnimation("SMITE", 0, getHero().getId(), null, 2));
+		}else{
+			Log.i(TAG, "Did not have a target...");
+		}
 		super.execute();
 	}
 
@@ -55,9 +60,7 @@ public class WarlockDrainLife extends Spell {
 		if (getAbility().isCasting()) {
 			// Damage target
 			damageMinion(getTargetEnemyList().get(0), amount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
-
-			healHero(getHero().id, amount);
-			getAbility().setCasting(false);
 		}
+		getAbility().setCasting(false);
 	}
 }
