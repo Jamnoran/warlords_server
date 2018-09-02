@@ -281,8 +281,8 @@ public class DatabaseUtil {
 		return items;
 	}
 
-	public static void updateHeroItem(Integer itemId, Integer newPosition, boolean equipped) {
-		if (itemId != null && newPosition != null) {
+	public static void updateHeroItem(long itemId, Integer newPosition, boolean equipped) {
+		if (itemId > 0 && newPosition != null) {
 			Connection connection = getConnection();
 			if (connection != null) {
 				try {
@@ -292,8 +292,10 @@ public class DatabaseUtil {
 						equippedValue = 1;
 					}
 					stmt.executeUpdate("update loot set position_id = " + newPosition + ", equipped = "+ equippedValue +" where id=" + itemId);
+					Log.i(TAG, "Update query [update loot set position_id = " + newPosition + ", equipped = "+ equippedValue +" where id=" + itemId + "]");
+
 					countOfRequest++;
-					Log.i(TAG, "Update item : " + itemId + " to new position " + newPosition);
+					Log.i(TAG, "Update item : " + itemId + " to new position " + newPosition + " equipped = " + equippedValue);
 					stmt.close();
 					connection.close();
 				} catch (SQLException e) {
@@ -331,6 +333,7 @@ public class DatabaseUtil {
 					item.setStatId_3(rs.getLong("stat_id_3"));
 					item.setStatId_4(rs.getLong("stat_id_4"));
 					Integer eq = rs.getInt("equipped");
+//					Log.i(TAG, "Equipped : " + item.isEquipped() + " Id : " + item.getId());
 					if(eq == 1){
 						item.setEquipped(true);
 					}

@@ -1,10 +1,7 @@
 package test.util;
 
 import game.util.DatabaseUtil;
-import game.vo.Ability;
-import game.vo.AbilityPosition;
-import game.vo.Hero;
-import game.vo.Talent;
+import game.vo.*;
 import game.vo.classes.Priest;
 import game.vo.classes.Warrior;
 
@@ -23,6 +20,8 @@ public class HeroHelper {
 
 		warrior.setTalents(getTalents(warrior));
 
+		warrior.setItems(getItems(warrior));
+
 		return warrior;
 	}
 
@@ -35,6 +34,8 @@ public class HeroHelper {
 		priest.setAbilities(getAbilities(priest));
 
 		priest.setTalents(getTalents(priest));
+
+		priest.setItems(getItems(priest));
 
 		return priest;
 	}
@@ -58,5 +59,10 @@ public class HeroHelper {
 		Collections.sort(heroAbilities, new Ability());
 
 		return heroAbilities;
+	}
+
+
+	private static ArrayList<Item> getItems(Hero hero) {
+		return DatabaseUtil.getLoot(hero.getId());
 	}
 }

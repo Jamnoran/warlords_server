@@ -134,19 +134,19 @@ public class GameUtil {
 			fullNames = Arrays.asList("Targe", "Kite shield", "Doom guard", "Shield of the north", "Buckler", "Mantlet", "Pavise", "Roundache", "Hungarian shield");
 		}else if (position.equals(Item.HEAD)){
 			name = "Helmet";
-			fullNames = Arrays.asList("Bascinet", "Spangenhelm", "Sallet", "Zischagge", "Morion", "Safavid");
+			fullNames = Arrays.asList("Bascinet", "Spangenhelm", "Sallet", "Zischagge", "Morion", "Safavid", "Hammerhead");
 		}else if (position.equals(Item.SHOULDERS)){
 			name = "Shoulders";
-			fullNames = Arrays.asList("Warmogz", "Hammerlander", "Dumdum");
+			fullNames = Arrays.asList("Oifsons", "Hammerlander", "Dumdum", "Pads of destruction", "Deathpads", "Poky shoulders", "Shondandie");
 		}else if (position.equals(Item.CHEST)){
 			name = "Armor";
-			fullNames = Arrays.asList("Warmogz", "Hammerlander", "Dumdum");
+			fullNames = Arrays.asList("Warmogz", "Full body armor", "Iron maiden", "Leather armor of Carl II");
 		}else if (position.equals(Item.LEGS)){
-			name = "Leggings";
-			fullNames = Arrays.asList("Warmogz", "Hammerlander", "Dumdum");
+			name = "Pants";
+			fullNames = Arrays.asList("Pantalones", "Shin guards", "Leg warmers");
 		}else if (position.equals(Item.BOOTS)){
 			name = "Boots";
-			fullNames = Arrays.asList("Warmogz", "Hammerlander", "Dumdum");
+			fullNames = Arrays.asList("Fastest boost ever", "Snowboots", "Pieces of wood");
 		}
 
 		int random = CalculationUtil.getRandomInt(0, (adjectives.size() + fullNames.size() -1));

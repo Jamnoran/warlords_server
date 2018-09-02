@@ -474,13 +474,7 @@ public class Hero {
 		// Check base stats
 
 		// Check items equipped
-		if(getItems() != null) {
-			for (Item item : getItems()) {
-				if(!item.getPosition().equals(Item.MAIN_HAND)){
-					armorCalculation = armorCalculation + item.getBaseStat();
-				}
-			}
-		}
+		armorCalculation = armorCalculation + getItemStat(ItemStat.ARMOR);
 
 		// Check talents
 		if(getTalents() != null){
@@ -508,11 +502,12 @@ public class Hero {
 		// Check base stats
 
 		// Check items equipped
+		mrCalculation = mrCalculation + getItemStat(ItemStat.MAGIC_RESIST);
 
 		// Check talents
 		if(getTalents() != null){
 			for(Talent talent : getTalents()){
-				if(talent.getTalentId() == 12){
+				if(talent.getTalentId() == Talent.TALENT_MAGIC_RESIST){
 					mrCalculation = mrCalculation + talent.getBaseValue() + (talent.getScaling() * talent.getPointAdded());
 				}
 			}
@@ -671,5 +666,39 @@ public class Hero {
 				}
 			}
 		}
+	}
+
+
+	public float getItemStat(String value) {
+		float itemStat = 0f;
+		if(getItems() != null) {
+//			Log.i(TAG, "Checking items of character, has this many items : " + getItems().size());
+			for (Item item : getItems()) {
+//				Log.i(TAG, "Checking item : " + item.toString());
+				if (item.isEquipped()) {
+					for (ItemStat stat: item.getStats()) {
+						if(stat.getType().equals(value)){
+							if(value.equals(ItemStat.DAMAGE)){
+								itemStat = itemStat + CalculationUtil.getRandomInt(stat.getBaseStat(), stat.getTop());
+							}else {
+								itemStat = itemStat + stat.getBaseStat();
+							}
+						}
+					}
+					if(value.equals(ItemStat.DAMAGE)){
+						if(item.getPosition().equals(Item.MAIN_HAND) || item.getPosition().equals(Item.OFF_HAND)){
+							itemStat = itemStat + item.getBaseStat();
+						}
+					}else{
+						if(!item.getPosition().equals(Item.MAIN_HAND) && !item.getPosition().equals(Item.OFF_HAND)){
+							if (value.equals(ItemStat.ARMOR)) {
+								itemStat = itemStat + item.getBaseStat();
+							}
+						}
+					}
+				}
+			}
+		}
+		return itemStat;
 	}
 }

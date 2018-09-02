@@ -5,6 +5,8 @@ package game.vo;
  */
 public class Talent {
 
+	public static transient int TALENT_MAGIC_RESIST = 12;
+
 	private int id;
 	private int heroId;
 	private int spellId;

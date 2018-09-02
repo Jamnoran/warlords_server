@@ -7,6 +7,7 @@ public class ItemStat {
 	public static final String CRIT = "CRIT";
 	public static final String LIFE_STEAL = "LIFE_STEAL";
 	public static final String HP = "HP";
+	public static final String DAMAGE = "DAMAGE";
 
 	private long id;
 	private String name;
