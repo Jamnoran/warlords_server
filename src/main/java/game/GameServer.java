@@ -343,7 +343,7 @@ public class GameServer {
 						// Check if hero has retaliation buff
 						hero.checkForRetaliation(min);
 
-						sendCombatText(new CombatTextResponse(true, hero.getId(), "" + damage.getAmount(), damage.isCrit(), "#FFFF0000"));
+						sendCombatText(new CombatTextResponse(true, hero.getId(), "" + damage.getAmount(), damage.isCrit(), GameUtil.COLOR_CRIT));
 						if (hero.getHp() <= 0) {
 							Log.i(TAG, "Hero died, send death animation to client");
 							int numbersAlive = 0;
@@ -399,7 +399,7 @@ public class GameServer {
 						float totalDamage = Math.round(minion.calculateDamageReceived(amount, hero.getArmorPenetration(), "PHYSICAL"));
 						getGameUtil().dealDamageToMinion(hero, minion, totalDamage);
 
-						sendCombatText(new CombatTextResponse(false, minion.getId(), "" + amount.getAmount(), amount.isCrit(), "#FFFFFFFF"));
+						sendCombatText(new CombatTextResponse(false, minion.getId(), "" + amount.getAmount(), amount.isCrit(), GameUtil.COLOR_DAMAGE));
 
 						//sendCooldownInformation(hero.getAbility(0), hero.getId());
 

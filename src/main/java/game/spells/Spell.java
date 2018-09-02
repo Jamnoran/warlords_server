@@ -168,7 +168,7 @@ public class Spell {
 
 	public void damageMinion(Minion minion, Amount damageAmount, float penetration, String damageType) {
 		float totalDamageAfterReduction = Math.round(minion.calculateDamageReceived(damageAmount, penetration, damageType));
-		gameServer.sendCombatText(new CombatTextResponse(false, minion.getId(), "" + totalDamageAfterReduction, damageAmount.isCrit(), "#FFFFFFFF"));
+		gameServer.sendCombatText(new CombatTextResponse(false, minion.getId(), "" + totalDamageAfterReduction, damageAmount.isCrit(), GameUtil.COLOR_DAMAGE));
 		if (minion.takeDamage(totalDamageAfterReduction)) {
 			gameServer.minionDied(hero.getId(), minion.getId());
 		}else {
@@ -179,7 +179,7 @@ public class Spell {
 
 	public void healHero(Integer heroId, Amount amount) {
 		GameUtil.getHeroById(heroId, gameServer.getHeroes()).heal(amount);
-		gameServer.sendCombatText(new CombatTextResponse(true, hero.getId(), "" + amount.getAmount(), amount.isCrit(), "#FF00FF00"));
+		gameServer.sendCombatText(new CombatTextResponse(true, hero.getId(), "" + amount.getAmount(), amount.isCrit(), GameUtil.COLOR_HEAL));
 	}
 
 	public void damageHero(Integer heroId, float amount){

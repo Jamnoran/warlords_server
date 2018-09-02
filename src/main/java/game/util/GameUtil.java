@@ -18,6 +18,10 @@ import java.util.*;
  */
 public class GameUtil {
 	private static final String TAG = GameUtil.class.getSimpleName();
+	public static final String COLOR_DAMAGE = "#FFFFFFFF";
+	public static final String COLOR_HEAL = "#FF00FF00";
+	public static final String COLOR_CRIT = "#FFFF0000";
+
 	private GameServer gameServer;
 	private static int itemsForEachLevel = 5;
 
@@ -383,7 +387,7 @@ public class GameUtil {
 							if (debuff.type == Buff.DOT) {
 								dealDamageToMinion(GameUtil.getHeroById(debuff.heroId, heroes), minion, debuff.value);
 
-								getGameServer().sendCombatText(new CombatTextResponse(false, minion.getId(), "" + debuff.value, false, "#FFFFFFFF"));
+								getGameServer().sendCombatText(new CombatTextResponse(false, minion.getId(), "" + debuff.value, false, COLOR_DAMAGE));
 
 								debuff.ticks--;
 								if (debuff.ticks == 0) {
@@ -398,12 +402,15 @@ public class GameUtil {
 	}
 
 	public void heroBuffs(ArrayList<Minion> minions, ArrayList<Hero> heroes) {
+		Log.i(TAG, "Got tick to go through hero buffs");
 		for(Hero hero : heroes){
 			if(hero.getBuffs().size() > 0){
 				for(Buff buff : hero.getBuffs()) {
+					Log.i(TAG, "Hero [" + hero.getId() + "]got buffs : " + hero.getBuffs());
 					if (buff.type == Buff.HOT) {
 						Log.i(TAG, "Healed for " + buff.value);
 						hero.heal(new Amount(buff.value));
+						getGameServer().sendCombatText(new CombatTextResponse(true, hero.getId(), "" + buff.value, false, COLOR_HEAL));
 					}
 				}
 			}

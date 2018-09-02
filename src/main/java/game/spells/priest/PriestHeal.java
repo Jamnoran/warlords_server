@@ -3,6 +3,7 @@ package game.spells.priest;
 import game.GameServer;
 import game.logging.Log;
 import game.spells.Spell;
+import game.util.GameUtil;
 import game.vo.*;
 import game.vo.classes.Priest;
 
@@ -21,23 +22,27 @@ public class PriestHeal extends Spell {
 
 
 	public void execute() {
-		if(getTargetFriendlyList() != null && getTargetFriendlyList().size() > 0) {
+		if(!getAbility().isCasting()) {
 			try {
-				for (Hero hero : getTargetFriendlyList()) {
-
-					Log.i(TAG, "Target Hero to heal : " + hero.getId());
-
-					// Get heal amount
-					Priest priest = (Priest) getHero();
-					Amount healAmount = priest.getSpellDamage(getAbility());
-					Log.i(TAG, "Healing for this amount : " + healAmount);
-
-					// Heal target (don't overheal)
-					healHero(hero.getId(), healAmount);
-
-					// Add animation to list
-					getGameServer().getAnimations().add(new GameAnimation("HEAL", hero.getId(), getHero().getId(), null, 2));
+				Hero hero;
+				if (getTargetFriendlyList().size() > 0) {
+					hero = getTargetFriendlyList().get(0);
+				}else{
+					hero = getGameServer().getGameUtil().getHeroWithLowestHp();
 				}
+
+				Log.i(TAG, "Target Hero to heal : " + hero.getId());
+
+				// Get heal amount
+				Priest priest = (Priest) getHero();
+				Amount healAmount = priest.getSpellDamage(getAbility());
+				Log.i(TAG, "Healing for this amount : " + healAmount);
+
+				// Heal target (don't overheal)
+				healHero(hero.getId(), healAmount);
+
+				// Add animation to list
+				getGameServer().getAnimations().add(new GameAnimation("HEAL", hero.getId(), getHero().getId(), null, 2));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

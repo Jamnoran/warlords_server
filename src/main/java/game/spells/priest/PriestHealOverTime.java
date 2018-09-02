@@ -15,16 +15,24 @@ import java.util.ArrayList;
 public class PriestHealOverTime extends Spell {
 
 	private static final String TAG = PriestHealOverTime.class.getSimpleName();
+	private Hero heroToHeal;
+	private static int healOverTimeDefaultMillisTick =  3000;
 
 	public PriestHealOverTime(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
+		getAbility().setDefaultTickMillis(healOverTimeDefaultMillisTick);
 	}
 
 
 	public void execute() {
-		if (getTargetEnemyList() != null && getTargetEnemyList().size() >= 1 && !getAbility().isCasting()) {
+		if(!getAbility().isCasting()) {
 			getAbility().setCasting(true);
-			Log.i(TAG, "Target minion to damage : " + getTargetEnemyList().get(0).getId());
+			if (getTargetFriendlyList().size() > 0) {
+				heroToHeal = getTargetFriendlyList().get(0);
+			}else{
+				heroToHeal = getGameServer().getGameUtil().getHeroWithLowestHp();
+			}
+			Log.i(TAG, "Healing over time to hero id: " + heroToHeal.getId());
 
 			// Calculate castTime with CDR and talents etc
 			getAbility().setCalculatedCastTime(getAbility().getCastTime());
@@ -32,7 +40,7 @@ public class PriestHealOverTime extends Spell {
 			// Get damage amount
 			Priest priest = (Priest) getHero();
 			Amount damageAmount = priest.getSpellDamage(getAbility());
-			Log.i(TAG, "Damage for this amount : " + damageAmount);
+			Log.i(TAG, "Healing for this amount : " + damageAmount);
 
 			Thread castTime = new Thread(() -> {
 				try {
@@ -54,21 +62,23 @@ public class PriestHealOverTime extends Spell {
 	public void castTimeCompleted(Amount amount){
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
-			// Damage target
-			healHero(getTargetFriendly().get(0), amount);
+			// Heal target
+			healHero(heroToHeal.getId(), amount);
 			getAbility().setCasting(false);
 
 			long firstTick = System.currentTimeMillis();
 
 			try {
-				if(GameUtil.getHeroById(getTargetFriendly().get(0), getGameServer().getHeroes()) != null) {
-					GameUtil.getHeroById(getTargetFriendly().get(0), getGameServer().getHeroes()).addBuff(new Buff(getHero().id, getTargetEnemy().get(0), Buff.HOT, Math.round(amount.getAmount()), getAbility().getDefaultTickMillis(), "" + firstTick, getAbility().getValue()));
+				if(GameUtil.getHeroById(heroToHeal.getId(), getGameServer().getHeroes()) != null) {
+					GameUtil.getHeroById(heroToHeal.getId(), getGameServer().getHeroes()).addBuff(new Buff(getHero().id, heroToHeal.getId(), Buff.HOT, Math.round(amount.getAmount()), getAbility().getDefaultTickMillis(), "" + firstTick, getAbility().getValue()));
+					Log.i(TAG, "Added buff healing over time to hero");
 				}
 			} catch (Exception e) {
 				Log.i(TAG, "What do we get nullpointer on here?");
 				e.printStackTrace();
 			}
 
+			Log.i(TAG, "Added this many ticks to tickengine : " + getAbility().getValue() + " Ability : " + getAbility().toString());
 			for (int i = 0 ; i < getAbility().getValue() ; i++) {
 				getGameServer().getTickEngine().addTick(new Tick(firstTick + (i * getAbility().getDefaultTickMillis()), Tick.BUFF));
 			}
