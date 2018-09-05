@@ -3,6 +3,7 @@ apply plugin: 'java'
 repositories {
     mavenCentral()
     jcenter()
+    maven { url 'http://repo1.maven.org/maven2' }
 }
 
 jar {
