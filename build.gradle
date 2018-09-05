@@ -2,6 +2,7 @@ apply plugin: 'java'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 task wrapper(type: Wrapper) {
