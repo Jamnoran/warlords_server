@@ -38,5 +38,4 @@ public class WarriorCleave extends Spell {
 		}
 		super.execute();
 	}
-
 }

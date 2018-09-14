@@ -160,7 +160,9 @@ public class ItemUtil {
 				break;
 		}
 		// Add to database
-		stat = DatabaseUtil.addItemStat(stat);
+		if (addToDatabase) {
+			stat = DatabaseUtil.addItemStat(stat);
+		}
 
 		return stat;
 	}

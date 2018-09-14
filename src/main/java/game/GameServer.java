@@ -338,7 +338,7 @@ public class GameServer {
 
 					Minion min = GameUtil.getMinionById(minionId, minions);
 					if (min != null && min.getHp() > 0) {
-						hero.takeDamage(fDamage, min.getArmorPenetration(), "PHYSICAL");
+						hero.takeDamage(fDamage, min.getArmorPenetration(), Amount.PHYSICAL);
 
 						// Check if hero has retaliation buff
 						hero.checkForRetaliation(min);
@@ -377,7 +377,7 @@ public class GameServer {
 	 * @param heroId
 	 * @param minionId
 	 */
-	void attack(Integer heroId, Integer minionId, long timeForAttackRequest) {
+	public void attack(Integer heroId, Integer minionId, long timeForAttackRequest) {
 		Hero hero = GameUtil.getHeroById(heroId, heroes);
 		if (hero != null && hero.readyForAutoAttack(timeForAttackRequest)) {
 			Minion minion = GameUtil.getMinionById(minionId, minions);

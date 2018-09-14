@@ -19,17 +19,21 @@ public class WarriorTaunt extends Spell {
 	}
 
 	public void execute() {
+		Log.i(TAG, "Ability : " + getAbility().toString());
 		// Taunt amount
 		float scaleAmount = getScaleFromTalents();
-		float tauntAmount = getAbility().getBaseDamage() * (1 + scaleAmount);
+		float tauntAmount = ((float) getAbility().getValue()) * (1 + scaleAmount);
+		Log.i(TAG, "Scale amount : " + scaleAmount + " Base : " + getAbility().getValue());
 
 		if (getTargetEnemyList() != null) {
 			for (Minion minion : getTargetEnemyList()) {
 				Log.i(TAG, "Target minion to taunt : " + minion.getId());
-				Log.i(TAG, "Taunting for this amount : " + tauntAmount);
-
-				minion.addThreat(new Threat(getHero().getId(), tauntAmount, 0, 0));
+				float tauntAmountForMinion = tauntAmount + minion.getHighestThreathValue();
+				Log.i(TAG, "Taunting for this amount : " + tauntAmountForMinion);
+				minion.addThreat(new Threat(getHero().getId(), tauntAmountForMinion, 0, 0));
 			}
+		}else{
+			Log.i(TAG, "Could not find minions to taunt");
 		}
 
 		// Add animation to list
