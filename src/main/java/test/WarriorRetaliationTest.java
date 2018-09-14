@@ -36,9 +36,9 @@ public class WarriorRetaliationTest {
 
 		Log.i("Test","Starting spell");
 		WarriorRetaliation spell = new WarriorRetaliation(time, warrior, warrior.getAbility(9), gameServer, null, targetFriendly, position);
-
-		spell.execute();
-
+		if (spell.init()) {
+			spell.execute();
+		}
 
 		Log.i("Test","Checking if hero has buffs");
 		for (Buff buff : warrior.getBuffs()) {

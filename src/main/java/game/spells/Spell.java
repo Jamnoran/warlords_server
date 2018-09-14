@@ -142,7 +142,7 @@ public class Spell {
 			if(hero.getHp() > Math.round(abilityCost)){
 				Log.i(TAG, "Has hp enough for spell hp cost:  "  + abilityCost);
 				// TODO: Need to have check if ability can cause lethal damage
-				hero.takeDamage(Math.round(abilityCost), 0, "TRUE");
+				hero.takeDamage(Math.round(abilityCost), 0, Amount.TRUE_DAMAGE);
 			}
 		}else{
 			float resourceCostCost = ability.getResourceCost();
@@ -184,7 +184,7 @@ public class Spell {
 
 	public void damageHero(Integer heroId, float amount){
 		float totalAmount = Math.round(amount);
-		GameUtil.getHeroById(heroId, gameServer.getHeroes()).takeDamage(totalAmount, 0, "TRUE");
+		GameUtil.getHeroById(heroId, gameServer.getHeroes()).takeDamage(totalAmount, 0, Amount.TRUE_DAMAGE);
 	}
 
 

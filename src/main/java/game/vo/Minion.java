@@ -5,7 +5,6 @@ import game.logging.Log;
 import game.util.CalculationUtil;
 import game.util.GameUtil;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class Minion {
@@ -29,6 +28,7 @@ public class Minion {
 
 	public transient boolean targetInRangeForAttack = false;
 	private transient float baseDamage = 5;
+	private transient float damageMultiplier = 1.2f;
 	private transient Integer baseHp = 10;
 	private transient Integer hpPerLevel = 5;
 	private transient Integer timeBetweenAttacks = 3000;
@@ -89,10 +89,11 @@ public class Minion {
 		}
 	}
 
-	private void attack(Integer heroId) {
+	public void attack(Integer heroId) {
 		long time = System.currentTimeMillis();
 		timeLastAttack = time;
-		Amount damage = new Amount(baseDamage);
+		Amount damage = new Amount(level * (baseDamage * damageMultiplier));
+		Log.i(TAG, "Multiplier on minion damage :" + damage.getAmount() + " from base: " + baseDamage + " and level " + level);
 		game.attackHero(heroId, damage, id);
 	}
 
@@ -125,12 +126,13 @@ public class Minion {
 	public void addThreat(Threat threat){
 		boolean foundThreat = false;
 		for(Threat threatInList : threats){
-			if(threat.getHeroId() == threatInList.getHeroId()){
+			if(threat.getHeroId().equals(threatInList.getHeroId())){
 				foundThreat = true;
 				threatInList.addThreat(threat);
 			}
 		}
 		if(!foundThreat){
+			threat.addThreat(threat);
 			threats.add(threat);
 			heroTarget = threat.getHeroId();
 		}
@@ -153,6 +155,15 @@ public class Minion {
 			return null;
 		}
 	}
+
+	public ArrayList<Threat> getThreats() {
+		return threats;
+	}
+
+	public void setThreats(ArrayList<Threat> threats) {
+		this.threats = threats;
+	}
+
 	public Integer getLevel() {
 		return level;
 	}
@@ -342,5 +353,15 @@ public class Minion {
 
 	public void addDebuff(Buff debuff) {
 		deBuffs.add(debuff);
+	}
+
+	public float getHighestThreathValue() {
+		for(Threat threat : threats){
+			if(threat.getHeroId().equals(getHeroIdWithMostThreat())){
+				Log.i(TAG, "Highest amount of threat was : " + threat.getAmount());
+				return threat.getAmount();
+			}
+		}
+		return 0;
 	}
 }

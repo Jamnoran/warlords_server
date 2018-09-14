@@ -1,6 +1,9 @@
 package game.vo;
 
 public class Amount {
+	public static String TRUE_DAMAGE = "TRUE";
+	public static String PHYSICAL = "PHYSICAL";
+	public static String MAGIC = "MAGIC";
 	private float amount;
 	private boolean crit = false;
 

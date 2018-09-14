@@ -42,6 +42,8 @@ public class PriestHealOverTimeTest {
 		targetFriendly.add(priest.getId());
 		Vector3 position = new Vector3(0,0,0);
 		PriestHealOverTime spell = new PriestHealOverTime( time,  hero,  priest.getAbility(5), gameServer,  null,  targetFriendly,  position);
-		spell.execute();
+		if (spell.init()) {
+			spell.execute();
+		}
 	}
 }
