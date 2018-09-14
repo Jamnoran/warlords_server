@@ -405,12 +405,19 @@ public class GameUtil {
 		Log.i(TAG, "Got tick to go through hero buffs");
 		for(Hero hero : heroes){
 			if(hero.getBuffs().size() > 0){
-				for(Buff buff : hero.getBuffs()) {
-					Log.i(TAG, "Hero [" + hero.getId() + "]got buffs : " + hero.getBuffs());
+				Iterator<Buff> iterator = hero.getBuffs().iterator();
+				while (iterator.hasNext()) {
+					Buff buff = iterator.next();
+					Log.i(TAG, "Hero [" + hero.getId() + "] got buffs : " + hero.getBuffs());
 					if (buff.type == Buff.HOT) {
 						Log.i(TAG, "Healed for " + buff.value);
 						hero.heal(new Amount(buff.value));
 						getGameServer().sendCombatText(new CombatTextResponse(true, hero.getId(), "" + buff.value, false, COLOR_HEAL));
+
+						buff.ticks--;
+						if (buff.ticks == 0) {
+							iterator.remove();
+						}
 					}
 				}
 			}
