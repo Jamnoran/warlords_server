@@ -32,7 +32,7 @@ public class WarlockBloodBolt extends Spell {
 			// Damage target
 			damageMinion(getTargetEnemyList().get(0), damageAmount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
 			// Add animation to list
-			getGameServer().getAnimations().add(new GameAnimation("BLOOD_BOLT", 0, getHero().getId(), null, 1));
+			getGameServer().getAnimations().add(new GameAnimation("BLOOD_BOLT", getTargetEnemyList().get(0).getId(), getHero().getId(), null, 1));
 		}
 
 		super.execute();

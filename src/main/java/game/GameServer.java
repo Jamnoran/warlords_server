@@ -36,7 +36,7 @@ public class GameServer {
 	private ArrayList<GameAnimation> animations = new ArrayList<>();
 	private ArrayList<Message> messages = new ArrayList<>();
 	private World world;
-	public int gameLevel = 11;
+	public int gameLevel = 5;
 	private SpellUtil spellUtil;
 	private GameUtil gameUtil;
 	private TickEngine tickEngine;
