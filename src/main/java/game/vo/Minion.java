@@ -76,7 +76,7 @@ public class Minion {
 	private boolean attackIfHasEnemy() {
 		Integer heroId = getHeroIdWithMostThreat();
 		if(heroId != null){
-			Log.i(TAG, "Minion taking action, hp : " + hp + " aggro: " + getHeroIdWithMostThreat());
+			//Log.i(TAG, "Minion taking action, hp : " + hp + " aggro: " + getHeroIdWithMostThreat());
 			if (targetInRangeForAttack) {
 				long time = System.currentTimeMillis();
 				if (timeLastAttack == null || ((time - timeLastAttack) >= timeBetweenAttacks)) {
@@ -93,7 +93,7 @@ public class Minion {
 		long time = System.currentTimeMillis();
 		timeLastAttack = time;
 		Amount damage = new Amount(level * (baseDamage * damageMultiplier));
-		Log.i(TAG, "Multiplier on minion damage :" + damage.getAmount() + " from base: " + baseDamage + " and level " + level);
+//		Log.i(TAG, "Multiplier on minion damage :" + damage.getAmount() + " from base: " + baseDamage + " and level " + level);
 		game.attackHero(heroId, damage, id);
 	}
 

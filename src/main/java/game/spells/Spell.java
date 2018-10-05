@@ -27,7 +27,6 @@ public class Spell {
 	private int CDTalentId;
 	private int costTalentId;
 
-
 	public Spell(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		this.time = time;
 		this.hero = hero;
@@ -271,5 +270,9 @@ public class Spell {
 
 	public void setCostTalentId(int costTalentId) {
 		this.costTalentId = costTalentId;
+	}
+
+	public Vector3 getPosition() {
+		return position;
 	}
 }

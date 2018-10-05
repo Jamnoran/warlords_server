@@ -148,6 +148,7 @@ public class SpellUtil {
     //          Warrior
     private void warriorCleave(Warrior hero, SpellRequest parsedRequest) {
         WarriorCleave spell = new WarriorCleave(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), gameServer, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
+        spell.setInitialCast(parsedRequest.isInitialCast());
         if (spell.init()) {
             spell.execute();
         } else {
@@ -157,6 +158,7 @@ public class SpellUtil {
 
     private void warriorTaunt(Warrior hero, SpellRequest parsedRequest) {
         WarriorTaunt spell = new WarriorTaunt(parsedRequest.getTime(), hero, hero.getAbility(parsedRequest.getSpell_id()), gameServer, parsedRequest.getTarget_enemy(), parsedRequest.getTarget_friendly(), parsedRequest.getVector());
+        spell.setInitialCast(parsedRequest.isInitialCast());
         if (spell.init()) {
             spell.execute();
         } else {

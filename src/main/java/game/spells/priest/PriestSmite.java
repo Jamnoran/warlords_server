@@ -69,7 +69,7 @@ public class PriestSmite extends Spell {
 	}
 
 
-	public void castTimeCompleted(Amount amount){
+	private void castTimeCompleted(Amount amount){
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
 			// Damage target

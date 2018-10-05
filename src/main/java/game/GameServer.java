@@ -320,7 +320,7 @@ public class GameServer {
 	 * @param minionId
 	 */
 	public void attackHero(Integer heroId, Amount damage, Integer minionId) {
-		Log.i(TAG, "Minion : " + minionId + " attacked hero: " + heroId);
+		//Log.i(TAG, "Minion : " + minionId + " attacked hero: " + heroId);
 		Hero hero = GameUtil.getHeroById(heroId, heroes);
 		if (hero != null) {
 			animations.add(new GameAnimation("MINION_ATTACK", heroId, minionId, null, 0));

@@ -13,33 +13,37 @@ import java.util.ArrayList;
 public class WarriorTaunt extends Spell {
 
 	private static final String TAG = WarriorTaunt.class.getSimpleName();
+	private boolean initialCast;
 
 	public WarriorTaunt(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
 	public void execute() {
-		Log.i(TAG, "Ability : " + getAbility().toString());
-		// Taunt amount
-		float scaleAmount = getScaleFromTalents();
-		float tauntAmount = ((float) getAbility().getValue()) * (1 + scaleAmount);
-		Log.i(TAG, "Scale amount : " + scaleAmount + " Base : " + getAbility().getValue());
+		if (initialCast) {
+			// Add animation to list
+			Log.i(TAG, "Inital cast of taunt, send animation");
+			getGameServer().getAnimations().add(new GameAnimation("TAUNT", 0, getHero().getId(), null, 2));
+			getGameServer().sendCastBarInformation(getHero().getId(), getAbility());
+		} else {
+			Log.i(TAG, "Ability : " + getAbility().toString());
+			// Taunt amount
+			float scaleAmount = getScaleFromTalents();
+			float tauntAmount = ((float) getAbility().getValue()) * (1 + scaleAmount);
+			Log.i(TAG, "Scale amount : " + scaleAmount + " Base : " + getAbility().getValue());
 
-		if (getTargetEnemyList() != null) {
-			for (Minion minion : getTargetEnemyList()) {
-				Log.i(TAG, "Target minion to taunt : " + minion.getId());
-				float tauntAmountForMinion = tauntAmount + minion.getHighestThreathValue();
-				Log.i(TAG, "Taunting for this amount : " + tauntAmountForMinion);
-				minion.addThreat(new Threat(getHero().getId(), tauntAmountForMinion, 0, 0));
+			if (getTargetEnemyList() != null) {
+				for (Minion minion : getTargetEnemyList()) {
+					Log.i(TAG, "Target minion to taunt : " + minion.getId());
+					float tauntAmountForMinion = tauntAmount + minion.getHighestThreathValue();
+					Log.i(TAG, "Taunting for this amount : " + tauntAmountForMinion);
+					minion.addThreat(new Threat(getHero().getId(), tauntAmountForMinion, 0, 0));
+				}
+			}else{
+				Log.i(TAG, "Could not find minions to taunt");
 			}
-		}else{
-			Log.i(TAG, "Could not find minions to taunt");
+			super.execute();
 		}
-
-		// Add animation to list
-		getGameServer().getAnimations().add(new GameAnimation("TAUNT", 0, getHero().getId(), null, 2));
-
-		super.execute();
 	}
 
 	private float getScaleFromTalents() {
@@ -51,5 +55,13 @@ public class WarriorTaunt extends Spell {
 			}
 		}
 		return scaleAmount;
+	}
+
+	public void setInitialCast(boolean initialCast) {
+		this.initialCast = initialCast;
+	}
+
+	public boolean getInitialCast() {
+		return initialCast;
 	}
 }
