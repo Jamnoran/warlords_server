@@ -5,7 +5,18 @@ package game.vo;
  */
 public class Talent {
 
+	public static transient int TALENT_CD_HEROIC_CHARGE = 1;
+	public static transient int TALENT_TAUNT_AMOUNT = 2;
+	public static transient int TALENT_DEC_RESOURCE_HEROIC_CHARGE = 3;
+	public static transient int TALENT_GENERAL_HP = 4;
+	public static transient int TALENT_GENERAL_DAMAGE = 5;
+	public static transient int TALENT_AMOUNT_FLASH_HEAL = 6;
+	public static transient int TALENT_AMOUNT_HOT = 7;
+	public static transient int TALENT_GENERAL_INTELLIGENCE = 9;
+	public static transient int TALENT_GENERAL_ARMOR = 10;
+	public static transient int TALENT_GENERAL_ARMOR_PENETRATION = 11;
 	public static transient int TALENT_MAGIC_RESIST = 12;
+	public static transient int TALENT_GENERALMAGIC_PENETRATION = 13;
 
 	private int id;
 	private int heroId;

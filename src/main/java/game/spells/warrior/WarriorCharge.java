@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public class WarriorCharge extends Spell {
 
 	private static final String TAG = WarriorCharge.class.getSimpleName();
-	private int cdTalentId = 1;
-	private int costTalentId = 3;
+	private int cdTalentId = Talent.TALENT_CD_HEROIC_CHARGE;
+	private int costTalentId = Talent.TALENT_DEC_RESOURCE_HEROIC_CHARGE;
 
 	public WarriorCharge(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
@@ -44,7 +44,7 @@ public class WarriorCharge extends Spell {
 
 			// Set the cooldown for this ability
 			getAbility().setMillisLastUse(getTime());
-			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().getBaseCD()));
+			getAbility().setTimeWhenOffCooldown("" + (getTime() + getAbility().calculateCooldown(getHero(), this)));
 
 			// Send castbar information
 			getGameServer().sendCastBarInformation(getHero().getId(), getAbility());
