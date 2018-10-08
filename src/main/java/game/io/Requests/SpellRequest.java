@@ -27,6 +27,8 @@ public class SpellRequest extends JsonRequest {
 	private float target_position_y;
 	@SerializedName("time")
 	private long time;
+	@SerializedName("initial_cast")
+	private boolean initialCast;
 
 	public Integer getSpell_id() {
 		return spell_id;
@@ -96,6 +98,14 @@ public class SpellRequest extends JsonRequest {
 		this.heroId = heroId;
 	}
 
+	public boolean isInitialCast() {
+		return initialCast;
+	}
+
+	public void setInitialCast(boolean initialCast) {
+		this.initialCast = initialCast;
+	}
+
 	@Override
 	public String toString() {
 		return "SpellRequest{" +
@@ -107,6 +117,9 @@ public class SpellRequest extends JsonRequest {
 				", target_position_z=" + target_position_z +
 				", target_position_y=" + target_position_y +
 				", time=" + time +
+				", initialCast=" + initialCast +
+				", requestType='" + requestType + '\'' +
+				", user_id='" + user_id + '\'' +
 				'}';
 	}
 }

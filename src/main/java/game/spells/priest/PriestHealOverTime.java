@@ -63,7 +63,6 @@ public class PriestHealOverTime extends Spell {
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
 			// Heal target
-			healHero(heroToHeal.getId(), amount);
 			getAbility().setCasting(false);
 
 			long firstTick = System.currentTimeMillis();
@@ -79,7 +78,7 @@ public class PriestHealOverTime extends Spell {
 			}
 
 			Log.i(TAG, "Added this many ticks to tickengine : " + getAbility().getValue() + " Ability : " + getAbility().toString());
-			for (int i = 0 ; i < getAbility().getValue() ; i++) {
+			for (int i = 1 ; i <= getAbility().getValue() ; i++) {
 				getGameServer().getTickEngine().addTick(new Tick(firstTick + (i * getAbility().getDefaultTickMillis()), Tick.BUFF));
 			}
 		}

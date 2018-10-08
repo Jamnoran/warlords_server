@@ -14,28 +14,37 @@ import java.util.ArrayList;
 public class WarriorCleave extends Spell {
 
 	private static final String TAG = WarriorCleave.class.getSimpleName();
+	private boolean initialCast = false;
 
 	public WarriorCleave(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 	}
 
-
 	public void execute() {
-		if (getTargetEnemyList() != null) {
-			for (Minion minion : getTargetEnemyList()) {
-				Log.i(TAG, "Target minion to damage : " + minion.getId());
-				// Get damage amount
-				Warrior warrior = (Warrior) getHero();
-				Amount damageAmount = warrior.getSpellDamage(getAbility());
-				Log.i(TAG, "Damage for this amount : " + damageAmount);
-
-				// Damage target
-				damageMinion(minion, damageAmount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
-
-			}
+		Log.i(TAG, "Ability : " + getAbility().toString() + " Initial cast " + initialCast);
+		if (initialCast) {
 			// Add animation to list
-			getGameServer().getAnimations().add(new GameAnimation("CLEAVE", 0, getHero().getId(), null, 1));
+			getGameServer().getAnimations().add(new GameAnimation("CLEAVE", 0, getHero().getId(), getPosition(), 1));
+
+			getGameServer().sendCastBarInformation(getHero().getId(), getAbility());
+		}else{
+			if(getTargetEnemyList() != null){
+				for (Minion minion : getTargetEnemyList()) {
+					Log.i(TAG, "Target minion to damage : " + minion.getId());
+					// Get damage amount
+					Warrior warrior = (Warrior) getHero();
+					Amount damageAmount = warrior.getSpellDamage(getAbility());
+					Log.i(TAG, "Damage for this amount : " + damageAmount);
+
+					// Damage target
+					damageMinion(minion, damageAmount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
+				}
+			}
+			super.execute();
 		}
-		super.execute();
+	}
+
+	public void setInitialCast(boolean initialCast) {
+		this.initialCast = initialCast;
 	}
 }

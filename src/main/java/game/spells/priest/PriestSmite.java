@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class PriestSmite extends Spell {
 
 	private static final String TAG = PriestSmite.class.getSimpleName();
+	private static long animationTime = 400;
 
 	public PriestSmite(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
@@ -32,6 +33,16 @@ public class PriestSmite extends Spell {
 			Priest priest = (Priest) getHero();
 			Amount damageAmount = priest.getSpellDamage(getAbility());
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
+			sendAnimation("SMITE");
+			Thread animationSender = new Thread(() -> {
+				try {
+					Thread.sleep(getAbility().getCastTime() - animationTime);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				sendAnimation("SMITE_CAST");
+			});
+			animationSender.start();
 
 			Thread castTime = new Thread(() -> {
 				try {
@@ -46,16 +57,19 @@ public class PriestSmite extends Spell {
 			// Send castbar information
 			getGameServer().sendCastBarInformation(getHero().getId(), getAbility());
 
-			// Add animation to list
-			getGameServer().getAnimations().add(new GameAnimation("SMITE", 0, getHero().getId(), null, 2));
 		}else{
 			Log.i(TAG, "Did not have a target...");
 		}
 		super.execute();
 	}
 
+	private void sendAnimation(String animation) {
+		// Add animation to list
+		getGameServer().getAnimations().add(new GameAnimation(animation, 0, getHero().getId(), null, 2));
+	}
 
-	public void castTimeCompleted(Amount amount){
+
+	private void castTimeCompleted(Amount amount){
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
 			// Damage target
