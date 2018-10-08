@@ -26,7 +26,7 @@ public class PriestShield extends Spell {
 			Log.i(TAG, "Target Hero to shield: " + hero.getId());
 			// Get shield amount
 			Priest priest = (Priest) getHero();
-			Amount shieldAmount = priest.getSpellDamage(getAbility());
+			Amount shieldAmount = priest.getSpellDamage(this);
 			Log.i(TAG, "Shield for this amount : " + shieldAmount);
 
 			int duration = 3000;

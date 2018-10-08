@@ -5,6 +5,7 @@ import game.logging.Log;
 import game.vo.Amount;
 import game.vo.Hero;
 import game.vo.Minion;
+import game.vo.Talent;
 import game.vo.classes.Warrior;
 import org.junit.Test;
 import test.util.GameHelper;
@@ -44,5 +45,20 @@ public class DamageCalculationTests {
 		Log.i("Test", "Testing MR[" + warrior.getHp() + "/" + warrior.getMaxHp() + "]");
 		warrior.takeDamage(10.0f, 100.0f, Amount.MAGIC);
 		Log.i("Test", "Testing MR[" + warrior.getHp() + "/" + warrior.getMaxHp() + "]");
+	}
+
+	@Test
+	public void testAttackMinion(){
+		GameServer server = GameHelper.createWorld(true, false);
+		Warrior warrior = (Warrior) GameHelper.getHeroByClass(server, Hero.WARRIOR);
+
+		Minion minion = GameHelper.getMinionByPos(server, 0);
+		server.attack(warrior.getId(), minion.getId(), System.currentTimeMillis());
+		try {
+			sleep(1200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Log.i("Test", "Done");
 	}
 }

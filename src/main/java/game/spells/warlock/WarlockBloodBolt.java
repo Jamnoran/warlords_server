@@ -32,7 +32,7 @@ public class WarlockBloodBolt extends Spell {
 
 			// Get damage amount
 			Warlock warlock = (Warlock) getHero();
-			Amount damageAmount = warlock.getSpellDamage(getAbility());
+			Amount damageAmount = warlock.getSpellDamage(this);
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
 			sendAnimation("BLOOD_BOLT");
 //			Thread animationSender = new Thread(() -> {

@@ -18,8 +18,8 @@ public class PriestHeal extends Spell {
 
 	public PriestHeal(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
+		setAmountTalentId(Talent.TALENT_AMOUNT_FLASH_HEAL);
 	}
-
 
 	public void execute() {
 		if(!getAbility().isCasting()) {
@@ -35,7 +35,7 @@ public class PriestHeal extends Spell {
 
 				// Get heal amount
 				Priest priest = (Priest) getHero();
-				Amount healAmount = priest.getSpellDamage(getAbility());
+				Amount healAmount = priest.getSpellDamage(this);
 				Log.i(TAG, "Healing for this amount : " + healAmount);
 
 				// Heal target (don't overheal)

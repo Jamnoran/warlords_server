@@ -1,7 +1,7 @@
 package game.vo;
 
-import game.GameServer;
 import game.logging.Log;
+import game.spells.Spell;
 import game.util.CalculationUtil;
 import game.util.DatabaseUtil;
 
@@ -376,6 +376,11 @@ public class Hero {
 		}
 	}
 
+	public float getHpFromTalents(){
+		float hpAmount = Talent.getTalentAmount(getTalents(), Talent.TALENT_GENERAL_HP);
+		return hpAmount;
+	}
+
 	public float calculateDamageReceived(Amount damage) {
 		float newDamage = damage.getAmount();
 		return newDamage;
@@ -422,16 +427,17 @@ public class Hero {
 		}
 	}
 
-	public Amount getSpellDamage(Ability ability) {
+	public Amount getSpellDamage(Spell spell) {
 		Amount damage;
 		float multiplier;
-		if(ability.getDamageType().equals("MAGIC")){
+		if(spell.getAbility().getDamageType().equals("MAGIC")){
 			multiplier = (1 + (getIntelligence() * attackIntScaling));
 		}else{ // PHYSICAL
 			multiplier = (1 + (getStrength() * attackStrScaling));
 		}
-		damage = new Amount(CalculationUtil.getRandomInt(ability.getBaseDamage(), ability.getTopDamage()) * multiplier);
-		if(ability.getCrittable() == 1 && checkIfCritical()){
+		int talentAmount = Math.round(Talent.getTalentAmount(getTalents(), spell.getAmountTalentId()));
+		damage = new Amount(CalculationUtil.getRandomInt((spell.getAbility().getBaseDamage() + talentAmount), (spell.getAbility().getTopDamage() + talentAmount)) * multiplier);
+		if(spell.getAbility().getCrittable() == 1 && checkIfCritical()){
 			Log.i(TAG, "Critical hit");
 			damage.setAmount(damage.getAmount() * criticalMultiplier);
 			damage.setCrit(true);
@@ -440,7 +446,7 @@ public class Hero {
 	}
 
 	public Amount getAttackDamage() {
-		Amount damage = new Amount(CalculationUtil.getRandomInt(baseAttackDamage, baseMaxAttackDamage) * (1 + (getStrength() * attackStrScaling)));
+		Amount damage = new Amount(CalculationUtil.getRandomInt(baseAttackDamage + Math.round(getBaseDamageFromTalents()), baseMaxAttackDamage + Math.round(getBaseDamageFromTalents())) * (1 + (getStrength() * attackStrScaling)));
 		if(checkIfCritical()){
 			Log.i(TAG, "Critical hit");
 			damage.setAmount(damage.getAmount() * criticalMultiplier);
@@ -479,7 +485,7 @@ public class Hero {
 		// Check talents
 		if(getTalents() != null){
 			for(Talent talent : getTalents()){
-				if(talent.getTalentId() == 10){
+				if(talent.getTalentId() == Talent.TALENT_GENERAL_ARMOR){
 					armorCalculation = armorCalculation + talent.getBaseValue() + (talent.getScaling() * talent.getPointAdded());
 				}
 			}
@@ -496,6 +502,9 @@ public class Hero {
 		this.magicResistance = calculateMagicResist();
 		return magicResistance;
 	}
+	public float getBaseDamageFromTalents(){
+		return Talent.getTalentAmount(getTalents(), Talent.TALENT_GENERAL_DAMAGE);
+	}
 
 	public float calculateMagicResist() {
 		float mrCalculation = 0;
@@ -507,7 +516,7 @@ public class Hero {
 		// Check talents
 		if(getTalents() != null){
 			for(Talent talent : getTalents()){
-				if(talent.getTalentId() == Talent.TALENT_MAGIC_RESIST){
+				if(talent.getTalentId() == Talent.TALENT_GENERAL_MAGIC_RESIST){
 					mrCalculation = mrCalculation + talent.getBaseValue() + (talent.getScaling() * talent.getPointAdded());
 				}
 			}
@@ -616,9 +625,9 @@ public class Hero {
 
 	public float getPenetration(String damageType) {
 		if(damageType.equals("PHYSICAL")){
-			return armorPenetration;
+			return calculateArmorPenetration();
 		}else if (damageType.equals("MAGIC")){
-			return magicPenetration;
+			return calculateMagicPenetration();
 		}
 		return 0;
 	}
@@ -700,5 +709,15 @@ public class Hero {
 			}
 		}
 		return itemStat;
+	}
+
+	private float calculateArmorPenetration() {
+		float value = getArmorPenetration() + Talent.getTalentAmount(getTalents(), Talent.TALENT_GENERAL_ARMOR_PENETRATION);
+		return value;
+	}
+
+	private float calculateMagicPenetration() {
+		float value = getArmorPenetration() + Talent.getTalentAmount(getTalents(), Talent.TALENT_GENERAL_MAGIC_PENETRATION);
+		return value;
 	}
 }

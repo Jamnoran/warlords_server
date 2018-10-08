@@ -28,7 +28,7 @@ public class WarriorTaunt extends Spell {
 		} else {
 			Log.i(TAG, "Ability : " + getAbility().toString());
 			// Taunt amount
-			float scaleAmount = getScaleFromTalents();
+			float scaleAmount = Talent.getTalentAmount(getHero().getTalents(), Talent.TALENT_TAUNT_AMOUNT);
 			float tauntAmount = ((float) getAbility().getValue()) * (1 + scaleAmount);
 			Log.i(TAG, "Scale amount : " + scaleAmount + " Base : " + getAbility().getValue());
 
@@ -44,17 +44,6 @@ public class WarriorTaunt extends Spell {
 			}
 			super.execute();
 		}
-	}
-
-	private float getScaleFromTalents() {
-		int scaleId = 2;
-		float scaleAmount = 0.0f;
-		for(Talent talent : getHero().getTalents()){
-			if(talent.getId() == scaleId){
-				scaleAmount = scaleAmount + talent.getScaling() * talent.getPointAdded();
-			}
-		}
-		return scaleAmount;
 	}
 
 	public void setInitialCast(boolean initialCast) {

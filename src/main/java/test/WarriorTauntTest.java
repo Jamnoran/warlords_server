@@ -1,10 +1,8 @@
-package game.spells.warrior;
+package test;
 
 import game.GameServer;
 import game.logging.Log;
-import game.util.SpellUtil;
-import game.vo.Amount;
-import game.vo.Buff;
+import game.spells.warrior.WarriorTaunt;
 import game.vo.Minion;
 import game.vo.Vector3;
 import game.vo.classes.Priest;
@@ -16,7 +14,6 @@ import test.util.MinionHelper;
 import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
-import static org.junit.Assert.*;
 
 public class WarriorTauntTest {
 

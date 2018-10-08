@@ -396,7 +396,7 @@ public class GameServer {
 
 						Log.i(TAG, "Found hero that's attacking : " + hero.getClass_type() + " hp of minion is : " + minion.getHp());
 						Amount amount = hero.getAttackDamage();
-						float totalDamage = Math.round(minion.calculateDamageReceived(amount, hero.getArmorPenetration(), "PHYSICAL"));
+						float totalDamage = Math.round(minion.calculateDamageReceived(amount, hero.getPenetration(Amount.PHYSICAL), Amount.PHYSICAL));
 						getGameUtil().dealDamageToMinion(hero, minion, totalDamage);
 
 						sendCombatText(new CombatTextResponse(false, minion.getId(), "" + amount.getAmount(), amount.isCrit(), GameUtil.COLOR_DAMAGE));
@@ -419,7 +419,6 @@ public class GameServer {
 	public void endGame() {
 		gameRunning = false;
 	}
-
 
 	public void restartLevel() {
 		resetHeroes();

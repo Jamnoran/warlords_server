@@ -21,6 +21,7 @@ public class PriestHealOverTime extends Spell {
 	public PriestHealOverTime(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
 		getAbility().setDefaultTickMillis(healOverTimeDefaultMillisTick);
+		setAmountTalentId(Talent.TALENT_AMOUNT_HOT);
 	}
 
 
@@ -39,7 +40,7 @@ public class PriestHealOverTime extends Spell {
 
 			// Get damage amount
 			Priest priest = (Priest) getHero();
-			Amount damageAmount = priest.getSpellDamage(getAbility());
+			Amount damageAmount = priest.getSpellDamage(this);
 			Log.i(TAG, "Healing for this amount : " + damageAmount);
 
 			Thread castTime = new Thread(() -> {

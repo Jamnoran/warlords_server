@@ -2,6 +2,7 @@ package game.vo.classes;
 
 import game.logging.Log;
 import game.vo.Hero;
+import game.vo.Talent;
 
 /**
  * Created by Jamnoran on 30-Jun-16.
@@ -24,12 +25,12 @@ public class Warlock extends Hero {
 	}
 
 	public void generateHeroInformation() {
-		setHp(hpPerLevel * getLevel());
+		setHp((hpPerLevel * getLevel()) + getHpFromTalents());
 		setMaxHp(getHp());
 		setStrength(strPerLevel * getLevel());
 		setStamina(staPerLevel * getLevel());
 		setDexterity(dexPerLevel * getLevel());
-		setIntelligence(intPerLevel * getLevel());
+		setIntelligence(intPerLevel * getLevel() + Math.round(Talent.getTalentAmount(getTalents(), Talent.TALENT_GENERAL_INTELLIGENCE)));
 		setAttackRange(attackRange);
 		setHpRegen(hpRegen);
 		calculateArmor();

@@ -31,7 +31,7 @@ public class WarlockHaemorrhage extends Spell {
 
 			// Get damage amount
 			Warlock warlock = (Warlock) getHero();
-			Amount damageAmount = warlock.getSpellDamage(getAbility());
+			Amount damageAmount = warlock.getSpellDamage(this);
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
 
 			Thread castTime = new Thread(() -> {

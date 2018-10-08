@@ -31,7 +31,7 @@ public class PriestSmite extends Spell {
 
 			// Get damage amount
 			Priest priest = (Priest) getHero();
-			Amount damageAmount = priest.getSpellDamage(getAbility());
+			Amount damageAmount = priest.getSpellDamage(this);
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
 			sendAnimation("SMITE");
 			Thread animationSender = new Thread(() -> {

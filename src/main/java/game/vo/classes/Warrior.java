@@ -2,6 +2,7 @@ package game.vo.classes;
 
 import game.logging.Log;
 import game.vo.Hero;
+import game.vo.Talent;
 
 /**
  * Created by Jamnoran on 30-Jun-16.
@@ -26,15 +27,15 @@ public class Warrior extends Hero {
 	}
 
 	public void generateHeroInformation() {
-		setHp(hpPerLevel * getLevel());
+		setHp((hpPerLevel * getLevel()) + getHpFromTalents());
+		setMaxHp(getHp());
 		setResource(resource);
 		setMaxResource(getResource());
-		setMaxHp(getHp());
 		Log.i(TAG, "Warrior is initialized with stats");
 		setStrength(strPerLevel * getLevel());
 		setStamina(staPerLevel * getLevel());
 		setDexterity(dexPerLevel * getLevel());
-		setIntelligence(intPerLevel * getLevel());
+		setIntelligence(intPerLevel * getLevel() + Math.round(Talent.getTalentAmount(getTalents(), Talent.TALENT_GENERAL_INTELLIGENCE)));
 		setHpRegen(hpRegen);
 		setResourceRegen(resourceRegen);
 		setAttackRange(attackRange);

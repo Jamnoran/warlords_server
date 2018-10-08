@@ -31,7 +31,7 @@ public class WarlockRestore extends Spell {
 			// Get damage amount
 			Warlock warlock = (Warlock) getHero();
 			float hpCost = getHero().getMaxHp() * (getAbility().getResourceCost() / 100);
-			Amount damageAmount = warlock.getSpellDamage(getAbility());
+			Amount damageAmount = warlock.getSpellDamage(this);
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
 
 			Thread castTime = new Thread(() -> {

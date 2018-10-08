@@ -33,7 +33,7 @@ public class WarriorCleave extends Spell {
 					Log.i(TAG, "Target minion to damage : " + minion.getId());
 					// Get damage amount
 					Warrior warrior = (Warrior) getHero();
-					Amount damageAmount = warrior.getSpellDamage(getAbility());
+					Amount damageAmount = warrior.getSpellDamage(this);
 					Log.i(TAG, "Damage for this amount : " + damageAmount);
 
 					// Damage target
