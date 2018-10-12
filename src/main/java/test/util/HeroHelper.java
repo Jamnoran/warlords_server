@@ -14,13 +14,13 @@ public class HeroHelper {
 		Hero hero = DatabaseUtil.getHero(14);
 		Warrior warrior = (Warrior) hero;
 
-		warrior.generateHeroInformation();
-
 		warrior.setAbilities(getAbilities(warrior));
 
 		warrior.setTalents(getTalents(warrior));
 
 		warrior.setItems(getItems(warrior));
+
+		warrior.generateHeroInformation();
 
 		return warrior;
 	}
@@ -29,14 +29,13 @@ public class HeroHelper {
 		Hero hero = DatabaseUtil.getHero(13);
 		Priest priest = (Priest) hero;
 
-		priest.generateHeroInformation();
-
 		priest.setAbilities(getAbilities(priest));
 
 		priest.setTalents(getTalents(priest));
 
 		priest.setItems(getItems(priest));
 
+		priest.generateHeroInformation();
 		return priest;
 	}
 

@@ -28,8 +28,9 @@ public class HeroTest {
 		ArrayList<Talent> talents = new ArrayList<>();
 		Talent talent = new Talent();
 		talent.setHeroId(warrior.getId());
-		talent.setTalentId(Talent.TALENT_GENERAL_ARMOR_PENETRATION);
+		talent.setTalentId(Talent.TALENT_GENERAL_HP);
 		talent.setPointAdded(1);
+		talents.add(talent);
 		DatabaseUtil.addTalentPoints(warrior.getId(), talents);
 
 		warrior = HeroHelper.getWarrior();

@@ -435,7 +435,9 @@ public class GameServer {
 		hero.setDesiredPositionZ(hero.getPositionZ());
 		Log.i(TAG, "Send stop hero to heroId : " + heroId);
 		String jsonInString = new Gson().toJson(new StopHeroResponse(heroId));
-		server.dispatchMessage(new Message(jsonInString));
+		if (server != null) {
+			server.dispatchMessage(new Message(jsonInString));
+		}
 
 		animations.add(new GameAnimation("HERO_IDLE", null, heroId, null, 0));
 		sendGameStatus();

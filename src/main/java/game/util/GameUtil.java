@@ -245,7 +245,7 @@ public class GameUtil {
 
 	public void dealDamageToMinion(Hero hero, Minion minion, float damage) {
 		if (minion.takeDamage(damage)) {
-			Log.i(TAG, "Found minion to attack : " + minion.getId() + " Minion is dead!!!");
+			Log.i(TAG, "Found minion to attack : " + minion.getId() + " Minion died!!!");
 			getGameServer().minionDied(hero.getId(), minion.getId());
 			// Send stop movement to all attacking this minion
 			getGameServer().stopHero(hero.id);

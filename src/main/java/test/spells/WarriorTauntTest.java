@@ -1,4 +1,4 @@
-package test;
+package test.spells;
 
 import game.GameServer;
 import game.logging.Log;
