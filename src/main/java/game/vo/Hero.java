@@ -637,36 +637,6 @@ public class Hero {
 		calculateMagicResist();
 	}
 
-
-	@Override
-	public String toString() {
-		return "Hero{" +
-				"id=" + id +
-				", user_id=" + user_id +
-				", xp=" + xp +
-				", level=" + level +
-				", topGameLvl=" + topGameLvl +
-				", positionX=" + positionX +
-				", positionZ=" + positionZ +
-				", desiredPositionX=" + desiredPositionX +
-				", desiredPositionZ=" + desiredPositionZ +
-				", class_type='" + class_type + '\'' +
-				", hp=" + hp +
-				", alive=" + alive +
-				", attackRange=" + attackRange +
-				", maxHp=" + maxHp +
-				", strength=" + strength +
-				", intelligence=" + intelligence +
-				", stamina=" + stamina +
-				", dexterity=" + dexterity +
-				", baseAttackDamage=" + baseAttackDamage +
-				", baseMaxAttackDamage=" + baseMaxAttackDamage +
-				", attackStrScaling=" + attackStrScaling +
-				", criticalMultiplier=" + criticalMultiplier +
-				", criticalChance=" + criticalChance +
-				'}';
-	}
-
 	public void checkForRetaliation(Minion minion) {
 		if(getBuffs() != null && getBuffs().size() > 0){
 			for (Buff buff: getBuffs()) {
@@ -711,13 +681,93 @@ public class Hero {
 		return itemStat;
 	}
 
+	public Integer getHpPerLevel() {
+		return null;
+	}
+
+	public Integer getStrPerLevel() {
+		return null;
+	}
+
+	public Integer getIntPerLevel() {
+		return null;
+	}
+
+	public Integer getDexPerLevel() {
+		return null;
+	}
+
+	public Integer getStaPerLevel() {
+		return null;
+	}
+
+
 	private float calculateArmorPenetration() {
-		float value = getArmorPenetration() + Talent.getTalentAmount(getTalents(), Talent.TALENT_GENERAL_ARMOR_PENETRATION);
-		return value;
+		return getArmorPenetration() + Talent.getTalentAmount(getTalents(), Talent.TALENT_GENERAL_ARMOR_PENETRATION);
 	}
 
 	private float calculateMagicPenetration() {
-		float value = getArmorPenetration() + Talent.getTalentAmount(getTalents(), Talent.TALENT_GENERAL_MAGIC_PENETRATION);
-		return value;
+		return getArmorPenetration() + Talent.getTalentAmount(getTalents(), Talent.TALENT_GENERAL_MAGIC_PENETRATION);
+	}
+
+	public void updateStats() {
+		calculateArmor();
+		Log.i(TAG, "Hero has calculated armor value : " + armor);
+		calculateMagicResist();
+		setStrength(getStrPerLevel() * getLevel());
+		setStamina(getStaPerLevel() * getLevel());
+		setDexterity(getDexPerLevel() * getLevel());
+		setIntelligence(getIntPerLevel() * getLevel() + Math.round(Talent.getTalentAmount(getTalents(), Talent.TALENT_GENERAL_INTELLIGENCE)));
+		setHpRegen(hpRegen);
+
+		Log.i(TAG, "Hero has updated stats : " + this.toString());
+	}
+
+
+	@Override
+	public String toString() {
+		return "Hero{" +
+				"id=" + id +
+				", user_id=" + user_id +
+				", xp=" + xp +
+				", xpForLevel=" + xpForLevel +
+				", baseXpForScaling=" + baseXpForScaling +
+				", topGameLvl=" + topGameLvl +
+				", level=" + level +
+				", alive=" + alive +
+				", positionX=" + positionX +
+				", positionZ=" + positionZ +
+				", positionY=" + positionY +
+				", desiredPositionX=" + desiredPositionX +
+				", desiredPositionZ=" + desiredPositionZ +
+				", desiredPositionY=" + desiredPositionY +
+				", class_type='" + class_type + '\'' +
+				", hp=" + hp +
+				", maxHp=" + maxHp +
+				", resource=" + resource +
+				", maxResource=" + maxResource +
+				", attackRange=" + attackRange +
+				", armor=" + armor +
+				", magicResistance=" + magicResistance +
+				", armorPenetration=" + armorPenetration +
+				", magicPenetration=" + magicPenetration +
+				", hpRegen=" + hpRegen +
+				", resourceRegen=" + resourceRegen +
+				", strength=" + strength +
+				", intelligence=" + intelligence +
+				", stamina=" + stamina +
+				", dexterity=" + dexterity +
+				", baseAttackDamage=" + baseAttackDamage +
+				", baseMaxAttackDamage=" + baseMaxAttackDamage +
+				", attackStrScaling=" + attackStrScaling +
+				", attackIntScaling=" + attackIntScaling +
+				", criticalMultiplier=" + criticalMultiplier +
+				", criticalChance=" + criticalChance +
+				", stairsPressed=" + stairsPressed +
+				", timeLastAuto=" + timeLastAuto +
+				", baseAttackSpeed=" + baseAttackSpeed +
+				", xpScale=" + xpScale +
+				", abilities=" + abilities +
+				'}';
 	}
 }

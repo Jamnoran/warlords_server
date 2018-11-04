@@ -20,6 +20,9 @@ public class HeroTest {
 		System.out.println("Warrior has this much armor : " + warrior.getItemStat(ItemStat.ARMOR));
 		System.out.println("Warrior has this much magic resist : " + warrior.getItemStat(ItemStat.MAGIC_RESIST));
 		System.out.println("Warrior has this much damage from items: " + warrior.getItemStat(ItemStat.DAMAGE));
+
+		warrior.updateStats();
+		System.out.println("Stats are updated");
 	}
 
 	@Test

@@ -24,6 +24,7 @@ public class Test {
 	private String randomType;
 
 	public static void main(String[] args) {
+
 //		Hero hero = DatabaseUtil.getHero(14);
 ////
 //		Warrior warr = (Warrior) hero;
@@ -75,12 +76,12 @@ public class Test {
 
 //		DatabaseUtil.updateHeroItem(2, 4, false);
 
-		Hero hero = new Hero();
-		hero.setLevel(64);
+//		Hero hero = new Hero();
+//		hero.setLevel(64);
 
 //		ArrayList<Item> loot = GameUtil.generateLoot(warr);
-		Item item = ItemUtil.generateItem(hero.getLevel(), hero);
-		Log.i(TAG, "Item : " + item.toString());
+//		Item item = ItemUtil.generateItem(hero.getLevel(), hero);
+//		Log.i(TAG, "Item : " + item.toString());
 //		Log.i(TAG, "Got this many items: " + loot.size());
 //		for (Item item : loot) {
 //			Log.i(TAG, "Item : " + item.toString());

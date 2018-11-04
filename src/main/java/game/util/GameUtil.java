@@ -208,9 +208,11 @@ public class GameUtil {
 	}
 
 
-	public static void updateItemPosition(String userId, UpdateHeroItemPositionRequest request) {
+	public void updateItemPosition(String userId, UpdateHeroItemPositionRequest request) {
 		Log.i(TAG, "Updated item " + request.getItemId() + " To pos: " + request.getNewPosition());
 		DatabaseUtil.updateHeroItem(request.getItemId(), request.getNewPosition(), request.getEquipped());
+		getHeroById(request.getHeroId(), getGameServer().getHeroes()).updateStats();
+		getGameServer().sendGameStatus();
 	}
 
 
@@ -228,7 +230,6 @@ public class GameUtil {
 		}
 	}
 
-
 	public static void updateMinionPositions(ArrayList<Minion> updatedMinions, ArrayList<Minion> minions) {
 		// TODO: Do this more efficient
 		for (Minion minion : updatedMinions) {
@@ -241,7 +242,6 @@ public class GameUtil {
 			}
 		}
 	}
-
 
 	public void dealDamageToMinion(Hero hero, Minion minion, float damage) {
 		if (minion.takeDamage(damage)) {

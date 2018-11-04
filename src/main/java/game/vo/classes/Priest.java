@@ -41,4 +41,24 @@ public class Priest extends Hero {
 		calculateArmor();
 		calculateMagicResist();
 	}
+	public Integer getHpPerLevel() {
+		return hpPerLevel;
+	}
+
+	public Integer getStrPerLevel() {
+		return strPerLevel;
+	}
+
+	public Integer getIntPerLevel() {
+		return intPerLevel;
+	}
+
+	public Integer getDexPerLevel() {
+		return dexPerLevel;
+	}
+
+	public Integer getStaPerLevel() {
+		return staPerLevel;
+	}
+
 }

@@ -133,7 +133,7 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("UPDATE_ITEM_POSITION")) {
 				UpdateHeroItemPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateHeroItemPositionRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				GameUtil.updateItemPosition(request.getUser_id(), parsedRequest);
+				gameServer.getGameUtil().updateItemPosition(request.getUser_id(), parsedRequest);
 			} else if (request.isType("UPDATE_MINION_POSITION")) {
 				//Log.i(TAG, "parsedRequest : " + request.toString());
 				UpdateMinionPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateMinionPositionRequest.class);
