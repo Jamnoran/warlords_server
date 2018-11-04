@@ -33,14 +33,14 @@ public class PriestSmite extends Spell {
 			Priest priest = (Priest) getHero();
 			Amount damageAmount = priest.getSpellDamage(this);
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
-			sendAnimation("SMITE");
+			sendAnimation("SMITE", getTargetEnemyList().get(0).getId());
 			Thread animationSender = new Thread(() -> {
 				try {
 					Thread.sleep(getAbility().getCastTime() - animationTime);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				sendAnimation("SMITE_CAST");
+				sendAnimation("SMITE_CAST", getTargetEnemyList().get(0).getId());
 			});
 			animationSender.start();
 
@@ -63,9 +63,9 @@ public class PriestSmite extends Spell {
 		super.execute();
 	}
 
-	private void sendAnimation(String animation) {
+	private void sendAnimation(String animation, int target) {
 		// Add animation to list
-		getGameServer().getAnimations().add(new GameAnimation(animation, 0, getHero().getId(), null, 2));
+		getGameServer().getAnimations().add(new GameAnimation(animation, target, getHero().getId(), null, 2));
 	}
 
 
