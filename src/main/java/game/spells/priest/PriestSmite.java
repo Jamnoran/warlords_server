@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class PriestSmite extends Spell {
 
 	private static final String TAG = PriestSmite.class.getSimpleName();
-	private static long animationTime = 400;
+	private static long animationTime = 1100;
 
 	public PriestSmite(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
@@ -67,7 +67,6 @@ public class PriestSmite extends Spell {
 		// Add animation to list
 		getGameServer().getAnimations().add(new GameAnimation(animation, target, getHero().getId(), null, 2));
 	}
-
 
 	private void castTimeCompleted(Amount amount){
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
