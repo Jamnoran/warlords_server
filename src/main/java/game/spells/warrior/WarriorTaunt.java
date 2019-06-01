@@ -32,8 +32,8 @@ public class WarriorTaunt extends Spell {
 			float tauntAmount = ((float) getAbility().getValue()) * (1 + scaleAmount);
 			Log.i(TAG, "Scale amount : " + scaleAmount + " Base : " + getAbility().getValue());
 
-			if (getTargetEnemyList() != null) {
-				for (Minion minion : getTargetEnemyList()) {
+			if (getTargetEnemies() != null) {
+				for (Minion minion : getTargetEnemies()) {
 					Log.i(TAG, "Target minion to taunt : " + minion.getId());
 					float tauntAmountForMinion = tauntAmount + minion.getHighestThreathValue();
 					Log.i(TAG, "Taunting for this amount : " + tauntAmountForMinion);

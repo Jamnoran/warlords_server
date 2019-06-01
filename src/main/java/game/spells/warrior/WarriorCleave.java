@@ -25,11 +25,10 @@ public class WarriorCleave extends Spell {
 		if (initialCast) {
 			// Add animation to list
 			getGameServer().getAnimations().add(new GameAnimation("CLEAVE", 0, getHero().getId(), getPosition(), 1));
-
 			getGameServer().sendCastBarInformation(getHero().getId(), getAbility());
 		}else{
-			if(getTargetEnemyList() != null){
-				for (Minion minion : getTargetEnemyList()) {
+			if(getTargetEnemies() != null){
+				for (Minion minion : getTargetEnemies()) {
 					Log.i(TAG, "Target minion to damage : " + minion.getId());
 					// Get damage amount
 					Warrior warrior = (Warrior) getHero();

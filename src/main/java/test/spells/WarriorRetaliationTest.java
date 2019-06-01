@@ -2,12 +2,12 @@ package test.spells;
 
 import game.GameServer;
 import game.logging.Log;
+import game.spells.AbilityID;
 import game.spells.warrior.WarriorRetaliation;
-import game.vo.Amount;
-import game.vo.Buff;
-import game.vo.Minion;
-import game.vo.Vector3;
+import game.util.HeroUtil;
+import game.vo.*;
 import game.vo.classes.Warrior;
+import test.util.GameHelper;
 import test.util.HeroHelper;
 import test.util.MinionHelper;
 
@@ -19,33 +19,25 @@ public class WarriorRetaliationTest {
 
 	@org.junit.Test
 	public void warriorRetaliationTest() {
-
 		long time = System.currentTimeMillis();
-		Warrior warrior = HeroHelper.getWarrior();
-
-
-		GameServer gameServer = new GameServer(null);
-		gameServer.getHeroes().add(warrior);
-
-		Minion minion = MinionHelper.getMinion(gameServer);
-		gameServer.getMinions().add(minion);
+		GameServer server = GameHelper.createWorld(true, false);
+		Warrior warrior = (Warrior) GameHelper.getHeroByClass(server, Hero.WARRIOR);
+		Minion minion = GameHelper.getMinionByPos(server, 0);
 
 		ArrayList<Integer> targetFriendly = new ArrayList<>();
 		targetFriendly.add(warrior.getId());
 		Vector3 position = new Vector3(0,0,0);
 
-		Log.i("Test","Starting spell");
-		WarriorRetaliation spell = new WarriorRetaliation(time, warrior, warrior.getAbility(9), gameServer, null, targetFriendly, position);
+		assert (warrior.getBuffs().size() == 0);
+		WarriorRetaliation spell = new WarriorRetaliation(time, warrior, warrior.getAbility(AbilityID.WARRIOR_RETALLIATION), server, null, targetFriendly, position);
 		if (spell.init()) {
 			spell.execute();
 		}
 
-		Log.i("Test","Checking if hero has buffs");
-		for (Buff buff : warrior.getBuffs()) {
-			System.out.println("Buff : " + buff.toString());
-		}
+		// Assert hero has buff
+		assert (warrior.getBuffs().size() > 0);
 
-		gameServer.attackHero(warrior.getId(), new Amount(10), minion.getId());
+		HeroUtil.attackHero(warrior.getId(), new Amount(10), minion.getId(), server);
 
 		Runnable checkAfterAwhileIfBuffIsThere = () -> {
 			try {
@@ -53,17 +45,13 @@ public class WarriorRetaliationTest {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			for (Buff buff : warrior.getBuffs()) {
-				System.out.println("Buff after a while: " + buff.toString());
-			}
-			Log.i("Test","Checked if there was any buffs");
+			// Assert buff is gone
+			assert (warrior.getBuffs().size() == 0);
 
-			Log.i("Test","Minion hp : " + minion.getHp() + " / " + minion.getMaxHp());
+			// Assert that minion has taken damage
+			assert (minion.getHp() < minion.getMaxHp());
 
 		};
 		checkAfterAwhileIfBuffIsThere.run();
-
-
-
 	}
 }

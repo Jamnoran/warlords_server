@@ -25,8 +25,8 @@ public class PriestHeal extends Spell {
 		if(!getAbility().isCasting()) {
 			try {
 				Hero hero;
-				if (getTargetFriendlyList().size() > 0) {
-					hero = getTargetFriendlyList().get(0);
+				if (getTargetFriendlies().size() > 0) {
+					hero = getTargetFriendlies().get(0);
 				}else{
 					hero = getGameServer().getGameUtil().getHeroWithLowestHp();
 				}

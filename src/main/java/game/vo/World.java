@@ -34,7 +34,7 @@ public class World {
 		if(seed < 0){
 			seed = seed * -1;
 		}
-		Log.i(TAG, "Seed is set to " + seed);
+//		Log.i(TAG, "Seed is set to " + seed);
 
 		return this;
 	}

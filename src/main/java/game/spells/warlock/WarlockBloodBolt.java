@@ -4,7 +4,6 @@ import game.GameServer;
 import game.logging.Log;
 import game.spells.Spell;
 import game.vo.*;
-import game.vo.classes.Priest;
 import game.vo.classes.Warlock;
 
 import java.util.ArrayList;
@@ -23,9 +22,9 @@ public class WarlockBloodBolt extends Spell {
 
 
 	public void execute() {
-		if (getTargetEnemyList() != null && getTargetEnemyList().size() >= 1 && !getAbility().isCasting()) {
+		if (getTargetEnemies() != null && getTargetEnemies().size() >= 1 && !getAbility().isCasting()) {
 			getAbility().setCasting(true);
-			Log.i(TAG, "Target minion to damage : " + getTargetEnemyList().get(0).getId());
+			Log.i(TAG, "Target minion to damage : " + getTargetEnemies().get(0).getId());
 
 			// Calculate castTime with CDR and talents etc
 			getAbility().setCalculatedCastTime(getAbility().getCastTime());
@@ -67,7 +66,7 @@ public class WarlockBloodBolt extends Spell {
 
 	private void sendAnimation(String animation) {
 		// Add animation to list
-		getGameServer().getAnimations().add(new GameAnimation(animation, getTargetEnemyList().get(0).getId(), getHero().getId(), null, 1));
+		getGameServer().getAnimations().add(new GameAnimation(animation, getTargetEnemies().get(0).getId(), getHero().getId(), null, 1));
 	}
 
 
@@ -75,7 +74,7 @@ public class WarlockBloodBolt extends Spell {
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
 			// Damage target
-			damageMinion(getTargetEnemyList().get(0), amount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
+			damageMinion(getTargetEnemies().get(0), amount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
 		}
 		getAbility().setCasting(false);
 	}

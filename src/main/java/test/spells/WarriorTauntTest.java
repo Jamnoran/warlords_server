@@ -2,12 +2,16 @@ package test.spells;
 
 import game.GameServer;
 import game.logging.Log;
+import game.spells.AbilityID;
 import game.spells.warrior.WarriorTaunt;
+import game.util.HeroUtil;
+import game.vo.Hero;
 import game.vo.Minion;
 import game.vo.Vector3;
 import game.vo.classes.Priest;
 import game.vo.classes.Warrior;
 import org.junit.Test;
+import test.util.GameHelper;
 import test.util.HeroHelper;
 import test.util.MinionHelper;
 
@@ -18,43 +22,32 @@ import static java.lang.Thread.sleep;
 public class WarriorTauntTest {
 
 	@Test
-	public void taunt(){
+	public void warriorTauntTest(){
 		long time = System.currentTimeMillis();
-		Warrior warrior = HeroHelper.getWarrior();
-
-		Priest priest = HeroHelper.getPriest();
-
-		GameServer gameServer = new GameServer(null);
-		gameServer.getHeroes().add(warrior);
-		gameServer.getHeroes().add(priest);
-
-		Minion minion = MinionHelper.getMinion(gameServer);
-		gameServer.getMinions().add(minion);
+		GameServer gameServer = GameHelper.createWorld(true, true);
+		Warrior warrior = (Warrior) GameHelper.getHeroByClass(gameServer, Hero.WARRIOR);
+		Priest priest = (Priest) GameHelper.getHeroByClass(gameServer, Hero.PRIEST);
+		Minion minion = GameHelper.getMinionByPos(gameServer, 0);
 
 		ArrayList<Integer> targetFriendly = new ArrayList<>();
 		targetFriendly.add(warrior.getId());
 		Vector3 position = new Vector3(0,0,0);
 
-		gameServer.attack(priest.getId(), minion.getId(), System.currentTimeMillis());
+		HeroUtil.attack(priest.getId(), minion.getId(), System.currentTimeMillis(), gameServer);
 
 		try {
 			sleep(600);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		// Assert that priest has highest threat before taunt
+		assert (minion.getHeroIdWithMostThreat() == priest.getId());
 
-		Log.i("Test","Minion threat table: " + minion.getHeroIdWithMostThreat());
-		Log.i("Test", "Amount was : " + minion.getHighestThreathValue());
-
-
-		Log.i("Test","Starting spell taunt");
 		ArrayList<Integer> minions = new ArrayList<>();
 		minions.add(minion.getId());
-		WarriorTaunt spell = new WarriorTaunt(time, warrior, warrior.getAbility(8), gameServer, minions, targetFriendly, position);
+		WarriorTaunt spell = new WarriorTaunt(time, warrior, warrior.getAbility(AbilityID.WARRIOR_TAUNT), gameServer, minions, targetFriendly, position);
 		if (spell.init()) {
 			spell.execute();
-		} else {
-			Log.i("Test", "Could not send spell, probably because of mana or cd");
 		}
 
 		try {
@@ -62,10 +55,7 @@ public class WarriorTauntTest {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
-		Log.i("Test","Minion threath table: " + minion.getHeroIdWithMostThreat());
-
-
+		// Assert that warrior has highest threat after taunt
+		assert (minion.getHeroIdWithMostThreat().equals(warrior.getId()));
 	}
-
 }

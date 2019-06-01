@@ -5,6 +5,10 @@ import game.vo.Hero;
 import game.vo.Item;
 import game.vo.ItemStat;
 
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.List;
+
 public class ItemUtil {
 
 
@@ -71,7 +75,7 @@ public class ItemUtil {
 	}
 
 	private static String generateName(Item item) {
-		return GameUtil.generateItemName(item.getPosition());
+		return generateItemName(item.getPosition());
 	}
 
 	private static int getBaseStats(int base, Item item) {
@@ -166,4 +170,42 @@ public class ItemUtil {
 
 		return stat;
 	}
+
+
+	public static String generateItemName(String position) {
+		String name = null;
+		List<String> adjectives = Arrays.asList("Metal {0}", "Starkiller {0}", "{0} of doom", "{0} of death", "{0} of fluff", "{0} of iron", "{0} of leather" , "{0} of nerds", "{0} of diamond", "{0} of hamsters" , "{0} of destruction" , "{0} of wood");
+		List<String> fullNames = Arrays.asList(new String[]{});
+		if(position.equals(Item.MAIN_HAND)){
+			name = "Sword";
+			fullNames = Arrays.asList("Ameranthe", "Death-poker", "Mondser");
+		}else if(position.equals(Item.OFF_HAND)){
+			name = "Shield";
+			fullNames = Arrays.asList("Targe", "Kite shield", "Doom guard", "Shield of the north", "Buckler", "Mantlet", "Pavise", "Roundache", "Hungarian shield");
+		}else if (position.equals(Item.HEAD)){
+			name = "Helmet";
+			fullNames = Arrays.asList("Bascinet", "Spangenhelm", "Sallet", "Zischagge", "Morion", "Safavid", "Hammerhead");
+		}else if (position.equals(Item.SHOULDERS)){
+			name = "Shoulders";
+			fullNames = Arrays.asList("Oifsons", "Hammerlander", "Dumdum", "Pads of destruction", "Deathpads", "Poky shoulders", "Shondandie");
+		}else if (position.equals(Item.CHEST)){
+			name = "Armor";
+			fullNames = Arrays.asList("Warmogz", "Full body armor", "Iron maiden", "Leather armor of Carl II");
+		}else if (position.equals(Item.LEGS)){
+			name = "Pants";
+			fullNames = Arrays.asList("Pantalones", "Shin guards", "Leg warmers");
+		}else if (position.equals(Item.BOOTS)){
+			name = "Boots";
+			fullNames = Arrays.asList("Fastest boost ever", "Snowboots", "Pieces of wood");
+		}
+
+		int random = CalculationUtil.getRandomInt(0, (adjectives.size() + fullNames.size() -1));
+		if (random < adjectives.size()) {
+			name = MessageFormat.format(adjectives.get(random), name);
+		} else {
+			name = fullNames.get((random - adjectives.size()));
+		}
+		return name;
+	}
+
 }

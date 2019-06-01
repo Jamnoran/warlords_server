@@ -9,6 +9,7 @@ public class User {
 	private String username;
 	private String email;
 	private String password;
+	private String loginKey;
 
 	public User() {
 	}
@@ -49,6 +50,14 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getLoginKey() {
+		return loginKey;
+	}
+
+	public void setLoginKey(String loginKey) {
+		this.loginKey = loginKey;
 	}
 
 	@Override

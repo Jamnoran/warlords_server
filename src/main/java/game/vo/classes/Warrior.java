@@ -31,7 +31,6 @@ public class Warrior extends Hero {
 		setMaxHp(getHp());
 		setResource(resource);
 		setMaxResource(getResource());
-		Log.i(TAG, "Warrior is initialized with stats");
 		setStrength(strPerLevel * getLevel());
 		setStamina(staPerLevel * getLevel());
 		setDexterity(dexPerLevel * getLevel());

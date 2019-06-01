@@ -210,8 +210,12 @@ public class Ability implements Comparator<Ability> {
 	}
 
 	public boolean isAbilityOffCD(long time) {
-		Log.i(TAG, "Time until next time we can use ability: " + (time - (getMillisLastUse() + getBaseCD())));
-		Log.i(TAG, "Can use ability : " + (getMillisLastUse() + getBaseCD() <= time) + " negative number is its not yet off cd");
+		if ((getMillisLastUse() + getBaseCD() <= time)) {
+			Log.i(TAG, "Can use ability, not on CD!");
+		} else {
+			Log.i(TAG, "Time until next time we can use ability: " + (time - (getMillisLastUse() + getBaseCD())));
+			Log.i(TAG, "Can use ability : " + (getMillisLastUse() + getBaseCD() <= time) + " negative number is its not yet off cd");
+		}
 		return (getMillisLastUse() + getBaseCD() <= time);
 	}
 

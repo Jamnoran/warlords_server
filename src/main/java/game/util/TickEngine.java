@@ -16,38 +16,25 @@ public class TickEngine {
 	private static final String TAG = TickEngine.class.getSimpleName();
 	// Living game world
 	private GameServer server;
-	private Thread tickThread;
 	private int threadTick = 100;
 	private int gameStatusTickTime = 1000;
 	private int minionActionTickTime = 500;
 	private int heroRegenTickTime = 2000;
 	private int requestMinionPositionTickTime = 1000;
 
-	public ArrayList<Tick> ticks = new ArrayList<>();
+	private ArrayList<Tick> ticks = new ArrayList<>();
+	private ArrayList<Tick> ticksToAdd = new ArrayList<>();
 
 	public TickEngine(GameServer gameServer) {
 		server = gameServer;
 	}
 
 	public void startGameTicks() {
-		long time = System.currentTimeMillis();
-		ticks.add(new Tick((time + gameStatusTickTime), Tick.GAME_STATUS));
-		ticks.add(new Tick((time + minionActionTickTime), Tick.MINION_ACTION));
-		ticks.add(new Tick((time + heroRegenTickTime), Tick.HERO_REGEN));
-		ticks.add(new Tick((time + requestMinionPositionTickTime), Tick.REQUEST_MINION_POSITION));
-		Log.i(TAG, "Starting new thread");
-		tickThread = new Thread(() -> {
+		initAllTicks();
+		Thread tickThread = new Thread(() -> {
 			while (server.isGameRunning()) {
 				Collections.sort(ticks);
-
-				boolean addNewGameStatus = false;
-				boolean addMinionAction = false;
-				boolean addHeroRegen = false;
-				boolean addRequestMinionPosition = false;
-				boolean addHeroBuff = false;
-
-				boolean minionDebuffAction = false;
-
+				ticksToAdd.clear();
 				// Check ticks if they should be actioned
 				Iterator<Tick> iterator = ticks.iterator();
 				while (iterator.hasNext()) {
@@ -57,74 +44,86 @@ public class TickEngine {
 							Log.i(TAG, "Activated this tick : " + tick.timeToActivate + " of type " + tick.typeOfTick);
 						}
 						if (tick.typeOfTick == Tick.GAME_STATUS) {
-							addNewGameStatus = true;
+							gameStatusTick();
 						}
 						if (tick.typeOfTick == Tick.MINION_ACTION) {
-							addMinionAction = true;
+							minionActionTick();
 						}
 						if (tick.typeOfTick == Tick.HERO_REGEN) {
-							addHeroRegen = true;
+							heroRegenTick();
 						}
 						if (tick.typeOfTick == Tick.BUFF) {
-							addHeroBuff = true;
+							heroBuffTick();
 						}
 						if (tick.typeOfTick == Tick.REQUEST_MINION_POSITION) {
-							addRequestMinionPosition = true;
+							requestMinionPositionTick();
 						}
 						if (tick.typeOfTick == Tick.MINION_DEBUFF) {
-							minionDebuffAction = true;
+							minionDebuffTick();
 						}
 						iterator.remove();
 					}
 				}
 
+				// Add all ticks wanted to be created to list here so we do not get error from adding inside iterator
+				ticks.addAll(ticksToAdd);
+
+				// Wait for next tick
 				try {
 					sleep(threadTick);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				}
-
-				if (addNewGameStatus) {
-					server.sendGameStatus();
-					ticks.add(new Tick((System.currentTimeMillis() + gameStatusTickTime), Tick.GAME_STATUS));
-				}
-				if (addMinionAction) {
-					for (Minion minion : server.getMinions()) {
-						if (minion.isAlive()) {
-							minion.takeAction();
-						}
-					}
-					ticks.add(new Tick((System.currentTimeMillis() + minionActionTickTime), Tick.MINION_ACTION));
-				}
-
-				if (minionDebuffAction) {
-					server.getGameUtil().minionDebuffs(server.getMinions(), server.getHeroes());
-				}
-
-				if (addHeroBuff) {
-					Log.i(TAG, "Hero buff");
-					server.getGameUtil().heroBuffs(server.getMinions(), server.getHeroes());
-				}
-				if (addHeroRegen) {
-					for (Hero hero : server.getHeroes()) {
-						hero.regenTick();
-					}
-					ticks.add(new Tick((System.currentTimeMillis() + heroRegenTickTime), Tick.HERO_REGEN));
-				}
-
-				if (addRequestMinionPosition) {
-					// Send request to a random client to update server with actual position of minions
-					server.sendRequestMinionPosition();
-					ticks.add(new Tick((System.currentTimeMillis() + requestMinionPositionTickTime), Tick.HERO_REGEN));
 				}
 			}
 		});
 		tickThread.start();
 	}
 
+	private void initAllTicks() {
+		long time = System.currentTimeMillis();
+		ticks.add(new Tick((time + gameStatusTickTime), Tick.GAME_STATUS));
+		ticks.add(new Tick((time + minionActionTickTime), Tick.MINION_ACTION));
+		ticks.add(new Tick((time + heroRegenTickTime), Tick.HERO_REGEN));
+		ticks.add(new Tick((time + requestMinionPositionTickTime), Tick.REQUEST_MINION_POSITION));
+	}
+
+	private void minionDebuffTick() {
+		server.getGameUtil().minionDebuffs(server.getMinions(), server.getHeroes());
+	}
+
+	private void requestMinionPositionTick() {
+		// Send request to a random client to update server with actual position of minions
+		CommunicationUtil.sendRequestMinionPosition(server);
+		ticksToAdd.add(new Tick((System.currentTimeMillis() + requestMinionPositionTickTime), Tick.HERO_REGEN));
+	}
+
+	private void heroBuffTick() {
+		Log.i(TAG, "Hero buff");
+		server.getGameUtil().heroBuffs(server.getMinions(), server.getHeroes());
+	}
+
+	private void heroRegenTick() {
+		for (Hero hero : server.getHeroes()) {
+			hero.regenTick();
+		}
+		ticksToAdd.add(new Tick((System.currentTimeMillis() + heroRegenTickTime), Tick.HERO_REGEN));
+	}
+
+	private void minionActionTick() {
+		for (Minion minion : server.getMinions()) {
+			if (minion.isAlive()) {
+				minion.takeAction();
+			}
+		}
+		ticksToAdd.add(new Tick((System.currentTimeMillis() + minionActionTickTime), Tick.MINION_ACTION));
+	}
+
+	private void gameStatusTick() {
+		server.sendGameStatus();
+		ticksToAdd.add(new Tick((System.currentTimeMillis() + gameStatusTickTime), Tick.GAME_STATUS));
+	}
 
 	public void addTick(Tick tick) {
 		ticks.add(tick);
 	}
-
 }

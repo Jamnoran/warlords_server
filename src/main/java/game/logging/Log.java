@@ -1,5 +1,6 @@
 package game.logging;
 
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -20,11 +21,41 @@ public class Log {
 			}else if (className.length() < 12){
 				tab = "					";
 			}
-			System.out.println(sdf.format(Calendar.getInstance().getTime()) + " [" + className + "]" + tab + message);
+			String logMessage = sdf.format(Calendar.getInstance().getTime()) + " [" + className + "]" + tab + message;
+			System.out.println(logMessage);
+			writeToFile(logMessage);
+		}
+	}
+	public static void d(String className, String message){
+		System.out.println(className + ": " + message);
+	}
+
+
+	private static String OS = System.getProperty("os.name").toLowerCase();
+
+	private static void writeToFile(String logMessage) {
+		try {
+			String fileName = "server.txt";
+			File dir = new File("../logs");
+			File file = new File (dir, fileName);
+			file.getParentFile().mkdirs();
+
+//			File file = new File (fileName);
+			PrintWriter writer;
+			if ( file.exists() && !file.isDirectory() ) {
+				writer = new PrintWriter(new FileOutputStream(file, true));
+			}
+			else {
+				writer = new PrintWriter(file);
+			}
+			writer.println(logMessage);
+			writer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 
-	public static void d(String className, String message){
-		System.out.println(className + ": " + message);
+	public static boolean isWindows() {
+		return (OS.indexOf("win") >= 0);
 	}
 }

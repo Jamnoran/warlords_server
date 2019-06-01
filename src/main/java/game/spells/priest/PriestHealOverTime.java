@@ -24,12 +24,11 @@ public class PriestHealOverTime extends Spell {
 		setAmountTalentId(Talent.TALENT_AMOUNT_HOT);
 	}
 
-
 	public void execute() {
 		if(!getAbility().isCasting()) {
 			getAbility().setCasting(true);
-			if (getTargetFriendlyList().size() > 0) {
-				heroToHeal = getTargetFriendlyList().get(0);
+			if (getTargetFriendlies().size() > 0) {
+				heroToHeal = getTargetFriendlies().get(0);
 			}else{
 				heroToHeal = getGameServer().getGameUtil().getHeroWithLowestHp();
 			}

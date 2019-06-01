@@ -21,8 +21,8 @@ public class PriestShield extends Spell {
 
 
 	public void execute() {
-		if (getTargetFriendlyList().get(0) != null) {
-			Hero hero = getTargetFriendlyList().get(0);
+		if (getTargetFriendlies().get(0) != null) {
+			Hero hero = getTargetFriendlies().get(0);
 			Log.i(TAG, "Target Hero to shield: " + hero.getId());
 			// Get shield amount
 			Priest priest = (Priest) getHero();

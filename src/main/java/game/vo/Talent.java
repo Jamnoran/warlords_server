@@ -163,7 +163,7 @@ public class Talent {
 				}
 			}
 		}
-		Log.i(TAG, "Value of talents : " + scaleAmount + " and talent id: " + talentId);
+//		Log.i(TAG, "Value of talents : " + scaleAmount + " and talent id: " + talentId);
 		return scaleAmount;
 	}
 

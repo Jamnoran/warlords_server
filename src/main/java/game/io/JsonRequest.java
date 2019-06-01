@@ -15,7 +15,8 @@ public class JsonRequest implements Serializable {
 	public String requestType;
 	@SerializedName("user_id")
 	public String user_id;
-
+	@SerializedName("mac")
+	public String mac;
 
 	public static JsonRequest parse(Message aMessage) {
         Gson gson = new GsonBuilder().create();

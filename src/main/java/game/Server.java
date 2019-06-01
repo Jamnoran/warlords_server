@@ -1,5 +1,9 @@
 package game;
 
+import game.communication.ClientInfo;
+import game.communication.ClientListener;
+import game.communication.ClientSender;
+import game.communication.LobbyServerDispatcher;
 import game.io.WebserviceCommunication;
 import game.logging.Log;
 

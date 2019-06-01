@@ -13,6 +13,8 @@ import game.vo.classes.Warrior;
 import java.text.MessageFormat;
 import java.util.*;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Created by Eric on 2017-02-02.
  */
@@ -49,6 +51,41 @@ public class GameUtil {
 	}
 
 
+	public void startHordeMinionSpawner(GameServer server) {
+		Thread thread = new Thread(() -> {
+			while (server.getHordeMinionsLeft() > 0) {
+				Point point = getRandomEnemySpawnPoint(server);
+				if (point != null) {
+					Minion minion = server.spawnMinion(point.getPosX(), point.getPosZ(), point.getPosY());
+					minion.setDesiredPositionX(0);
+					minion.setDesiredPositionZ(0);
+				} else {
+					Log.i(TAG, "We did not get a spawn point, something is wrong");
+				}
+				server.setHordeMinionsLeft(server.getHordeMinionsLeft() -1);
+				try {
+					sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		thread.start();
+	}
+
+	private Point getRandomEnemySpawnPoint(GameServer server) {
+		Point point = null;
+		while (point == null) {
+			int randomPos = CalculationUtil.getRandomInt(0, (server.getWorld().getSpawnPoints().size() - 1));
+			point = server.getWorld().getSpawnPoints().get(randomPos);
+			Log.i(TAG, "Trying to find a random spawn point at pos:  " + randomPos + " its of type : " + point.getPointType());
+			if (point.getPointType() == Point.SPAWN_POINT) {
+				point = null;
+			}
+		}
+		return point;
+	}
+
 
 	public void minionTargetInRange(MinionAggroRequest parsedRequest) {
 		if (gameServer != null && parsedRequest.getMinion_id() != null) {
@@ -69,7 +106,6 @@ public class GameUtil {
 			}
 		}
 	}
-
 
 	/**
 	 * Goes through the list of heroes and returning the hero that has the lowest hp
@@ -125,45 +161,6 @@ public class GameUtil {
 		}
 		return loot;
 	}
-
-	public static String generateItemName(String position) {
-		String name = null;
-		List<String> adjectives = Arrays.asList("Metal {0}", "Starkiller {0}", "{0} of doom", "{0} of death", "{0} of fluff", "{0} of iron", "{0} of leather" , "{0} of nerds", "{0} of diamond", "{0} of hamsters" , "{0} of destruction" , "{0} of wood");
-		List<String> fullNames = Arrays.asList(new String[]{});
-		if(position.equals(Item.MAIN_HAND)){
-			name = "Sword";
-			fullNames = Arrays.asList("Ameranthe", "Death-poker", "Mondser");
-		}else if(position.equals(Item.OFF_HAND)){
-			name = "Shield";
-			fullNames = Arrays.asList("Targe", "Kite shield", "Doom guard", "Shield of the north", "Buckler", "Mantlet", "Pavise", "Roundache", "Hungarian shield");
-		}else if (position.equals(Item.HEAD)){
-			name = "Helmet";
-			fullNames = Arrays.asList("Bascinet", "Spangenhelm", "Sallet", "Zischagge", "Morion", "Safavid", "Hammerhead");
-		}else if (position.equals(Item.SHOULDERS)){
-			name = "Shoulders";
-			fullNames = Arrays.asList("Oifsons", "Hammerlander", "Dumdum", "Pads of destruction", "Deathpads", "Poky shoulders", "Shondandie");
-		}else if (position.equals(Item.CHEST)){
-			name = "Armor";
-			fullNames = Arrays.asList("Warmogz", "Full body armor", "Iron maiden", "Leather armor of Carl II");
-		}else if (position.equals(Item.LEGS)){
-			name = "Pants";
-			fullNames = Arrays.asList("Pantalones", "Shin guards", "Leg warmers");
-		}else if (position.equals(Item.BOOTS)){
-			name = "Boots";
-			fullNames = Arrays.asList("Fastest boost ever", "Snowboots", "Pieces of wood");
-		}
-
-		int random = CalculationUtil.getRandomInt(0, (adjectives.size() + fullNames.size() -1));
-		if (random < adjectives.size()) {
-			name = MessageFormat.format(adjectives.get(random), name);
-		} else {
-			name = fullNames.get((random - adjectives.size()));
-		}
-		return name;
-	}
-
-
-
 
 	public static Hero getHeroByUserId(String user_id, ArrayList<Hero> heroes) {
 		for (Hero hero : heroes) {
@@ -248,7 +245,7 @@ public class GameUtil {
 			Log.i(TAG, "Found minion to attack : " + minion.getId() + " Minion died!!!");
 			getGameServer().minionDied(hero.getId(), minion.getId());
 			// Send stop movement to all attacking this minion
-			getGameServer().stopHero(hero.id);
+			HeroUtil.stopHero(hero.id, getGameServer());
 		} else {
 			Log.i(TAG, "Found minion to attack : " + minion.getId() + " new hp is: " + minion.getHp());
 			minion.addThreat(new Threat(hero.getId(), 0.0f, damage, 0.0f));
@@ -326,13 +323,12 @@ public class GameUtil {
 		}
 		Log.i(TAG, "Hero joined with this user id: " + hero.getUser_id() + " characters in game: " + heroes.size());
 		getGameServer().sendGameStatus();
-		getGameServer().sendAbilities("" + hero.getUser_id());
-		getGameServer().sendTalents(hero.getUser_id());
-		getGameServer().getHeroItems(hero, true);
+		CommunicationUtil.sendAbilities("" + hero.getUser_id(), getGameServer());
+		CommunicationUtil.sendTalents(hero.getUser_id(), getGameServer());
+		HeroUtil.getHeroItems(hero, true, getGameServer());
 
 		getGameServer().setGameStarted();
 	}
-
 
 	public void addSpawnPoints(ArrayList<Point> points) {
 		boolean pointAdded = false;
@@ -353,7 +349,7 @@ public class GameUtil {
 		}
 
 		if (getGameServer().getWorld().getWorldType() == World.HORDE) {
-			getGameServer().startHordeMinionSpawner();
+			startHordeMinionSpawner(getGameServer());
 		}
 
 		if (pointAdded) {
@@ -368,7 +364,7 @@ public class GameUtil {
 				hero.setDesiredPositionZ(location.getZ());
 				Log.i(TAG, "Setting new location for hero " + hero.getId() + " " + hero.getPositionX() + "x" + hero.getPositionZ() + "y" + hero.getPositionY());
 			}
-			getGameServer().sendTeleportPlayers();
+			CommunicationUtil.sendTeleportPlayers(getGameServer());
 		}
 	}
 
@@ -388,7 +384,7 @@ public class GameUtil {
 							if (debuff.type == Buff.DOT) {
 								dealDamageToMinion(GameUtil.getHeroById(debuff.heroId, heroes), minion, debuff.value);
 
-								getGameServer().sendCombatText(new CombatTextResponse(false, minion.getId(), "" + debuff.value, false, COLOR_DAMAGE));
+								CommunicationUtil.sendCombatText(new CombatTextResponse(false, minion.getId(), "" + debuff.value, false, COLOR_DAMAGE), getGameServer());
 
 								debuff.ticks--;
 								if (debuff.ticks == 0) {
@@ -413,7 +409,7 @@ public class GameUtil {
 					if (buff.type == Buff.HOT) {
 						Log.i(TAG, "Healed for " + buff.value);
 						hero.heal(new Amount(buff.value));
-						getGameServer().sendCombatText(new CombatTextResponse(true, hero.getId(), "" + buff.value, false, COLOR_HEAL));
+						CommunicationUtil.sendCombatText(new CombatTextResponse(true, hero.getId(), "" + buff.value, false, COLOR_HEAL), getGameServer());
 
 						buff.ticks--;
 						if (buff.ticks == 0) {

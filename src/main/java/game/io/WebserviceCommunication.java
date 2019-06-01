@@ -39,7 +39,6 @@ public class WebserviceCommunication {
 		return null;
 	}
 
-
 	private static JsonResponse sendRequest(String params, String url, JsonResponse responseObject) {
 		try {
 			URL obj = new URL(url);

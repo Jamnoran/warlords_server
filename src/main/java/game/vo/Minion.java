@@ -4,6 +4,7 @@ import game.GameServer;
 import game.logging.Log;
 import game.util.CalculationUtil;
 import game.util.GameUtil;
+import game.util.HeroUtil;
 
 import java.util.ArrayList;
 
@@ -94,7 +95,7 @@ public class Minion {
 		timeLastAttack = time;
 		Amount damage = new Amount(level * (baseDamage * damageMultiplier));
 //		Log.i(TAG, "Multiplier on minion damage :" + damage.getAmount() + " from base: " + baseDamage + " and level " + level);
-		game.attackHero(heroId, damage, id);
+		HeroUtil.attackHero(heroId, damage, id, game);
 	}
 
 	private void findNewLocationToWalkTo() {

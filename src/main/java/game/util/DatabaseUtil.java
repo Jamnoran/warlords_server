@@ -1,5 +1,6 @@
 package game.util;
 
+import game.io.Requests.AbilityPositionRequest;
 import game.logging.Log;
 import game.vo.*;
 import game.vo.classes.Priest;
@@ -30,15 +31,15 @@ public class DatabaseUtil {
 				ResultSet rs = stmt.executeQuery("SELECT * FROM heroes where id = " + id);
 				countOfRequest++;
 				while (rs.next()) {
-					Log.i(TAG, "Class : " + rs.getString("class_type"));
+//					Log.i(TAG, "Class : " + rs.getString("class_type"));
 					if(rs.getString("class_type").equals(Hero.WARRIOR)){
 						hero = new Warrior();
-						Log.i(TAG, "Warrior user");
+//						Log.i(TAG, "Warrior user");
 					}else if(rs.getString("class_type").equals(Hero.PRIEST)){
-						Log.i(TAG, "Create priest instead");
+//						Log.i(TAG, "Create priest instead");
 						hero = new Priest();
 					}else if(rs.getString("class_type").equals(Hero.WARLOCK)){
-						Log.i(TAG, "Create warlock instead");
+//						Log.i(TAG, "Create warlock instead");
 						hero = new Warlock();
 					}else{
 						Log.i(TAG, "Cant find class: [" + rs.getString("class_type") + "]");
@@ -558,6 +559,16 @@ public class DatabaseUtil {
 		}
 		return itemStat;
 	}
+
+
+	public static void updateAbilityPosition(AbilityPositionRequest request) {
+		DatabaseUtil.updateAbilityPosition(request.getHeroId(), request.getAbilityId(), request.getPosition());
+	}
+
+
+
+
+
 
 
 

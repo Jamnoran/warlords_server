@@ -21,9 +21,9 @@ public class WarlockRestore extends Spell {
 
 
 	public void execute() {
-		if (getTargetEnemyList() != null && getTargetFriendlyList().size() >= 1 && !getAbility().isCasting() && getTargetFriendlyList().get(0).getId() != getHero().getId()) {
+		if (getTargetEnemies() != null && getTargetFriendlies().size() >= 1 && !getAbility().isCasting() && getTargetFriendlies().get(0).getId() != getHero().getId()) {
 			getAbility().setCasting(true);
-			Log.i(TAG, "Target hero to restore: " + getTargetFriendlyList().get(0).getId());
+			Log.i(TAG, "Target hero to restore: " + getTargetFriendlies().get(0).getId());
 
 			// Calculate castTime with CDR and talents etc
 			getAbility().setCalculatedCastTime(getAbility().getCastTime());
@@ -60,7 +60,7 @@ public class WarlockRestore extends Spell {
 
 			damageHero(getHero().id, hpCost);
 
-			restoreResources(getTargetFriendly().get(0), amount.getAmount());
+			restoreResources(getTargetFriendlies().get(0).getId(), amount.getAmount());
 			getAbility().setCasting(false);
 		}
 	}

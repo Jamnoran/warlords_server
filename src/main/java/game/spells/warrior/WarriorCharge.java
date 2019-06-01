@@ -16,6 +16,7 @@ public class WarriorCharge extends Spell {
 	private static final String TAG = WarriorCharge.class.getSimpleName();
 	private int cdTalentId = Talent.TALENT_CD_HEROIC_CHARGE;
 	private int costTalentId = Talent.TALENT_DEC_RESOURCE_HEROIC_CHARGE;
+	private int CHARGE_DURATION = 300;
 
 	public WarriorCharge(long time, Hero hero, Ability ability, GameServer gameServer, ArrayList<Integer> targetEnemy, ArrayList<Integer> targetFriendly, Vector3 position) {
 		super(time, hero, ability, gameServer, targetEnemy, targetFriendly, position);
@@ -25,12 +26,11 @@ public class WarriorCharge extends Spell {
 
 	public void execute() {
 		// Send charge ability (set that this hero target is the minion, set movement speed for a period of time)
-		if (getTargetEnemy() != null && getTargetEnemy().size() > 0) {
-			int duration = 250;
-			Buff buff = new Buff(getHero().getId(), null, Buff.SPEED, getAbility().getValue(), duration, "0", 0);
+		if (getTargetEnemies() != null && getTargetEnemies().size() > 0) {
+			Buff buff = new Buff(getHero().getId(), null, Buff.SPEED, getAbility().getValue(), CHARGE_DURATION, "0", 0);
 			Thread buffDurationThread = new Thread(() -> {
 				try {
-					Thread.sleep(duration);
+					Thread.sleep(CHARGE_DURATION);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

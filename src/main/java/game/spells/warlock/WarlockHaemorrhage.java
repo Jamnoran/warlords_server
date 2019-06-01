@@ -22,9 +22,9 @@ public class WarlockHaemorrhage extends Spell {
 
 
 	public void execute() {
-		if (getTargetEnemyList() != null && getTargetEnemyList().size() >= 1 && !getAbility().isCasting()) {
+		if (getTargetEnemies() != null && getTargetEnemies().size() >= 1 && !getAbility().isCasting()) {
 			getAbility().setCasting(true);
-			Log.i(TAG, "Target minion to damage : " + getTargetEnemyList().get(0).getId());
+			Log.i(TAG, "Target minion to damage : " + getTargetEnemies().get(0).getId());
 
 			// Calculate castTime with CDR and talents etc
 			getAbility().setCalculatedCastTime(getAbility().getCastTime());
@@ -52,7 +52,7 @@ public class WarlockHaemorrhage extends Spell {
 			getGameServer().sendCastBarInformation(getHero().getId(), getAbility());
 
 			// Add animation to list
-			getGameServer().getAnimations().add(new GameAnimation("HAEMORRHAGE", getTargetEnemyList().get(0).getId(), getHero().getId(), null, 1));
+			getGameServer().getAnimations().add(new GameAnimation("HAEMORRHAGE", getTargetEnemies().get(0).getId(), getHero().getId(), null, 1));
 			getGameServer().sendGameStatus();
 		}else{
 			Log.i(TAG, "Cant use spell cos we dont have target or we are casting already " + getAbility().isCasting());
@@ -64,14 +64,14 @@ public class WarlockHaemorrhage extends Spell {
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
 
-			damageMinion(getTargetEnemyList().get(0), amount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
+			damageMinion(getTargetEnemies().get(0), amount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
 
-			if(getTargetEnemyList().get(0).isAlive()){
+			if(getTargetEnemies().get(0).isAlive()){
 				long firstTick = System.currentTimeMillis();
 
 				try {
-					if(GameUtil.getMinionById(getTargetEnemy().get(0), getGameServer().getMinions()) != null) {
-						GameUtil.getMinionById(getTargetEnemy().get(0), getGameServer().getMinions()).addDebuff(new Buff(getHero().id, getTargetEnemy().get(0), Buff.DOT, Math.round(amount.getAmount()), getAbility().getDefaultTickMillis(), "" + firstTick, getAbility().getValue()));
+					if(GameUtil.getMinionById(getTargetEnemies().get(0).getId(), getGameServer().getMinions()) != null) {
+						GameUtil.getMinionById(getTargetEnemies().get(0).getId(), getGameServer().getMinions()).addDebuff(new Buff(getHero().id, getTargetEnemies().get(0).getId(), Buff.DOT, Math.round(amount.getAmount()), getAbility().getDefaultTickMillis(), "" + firstTick, getAbility().getValue()));
 					}
 				} catch (Exception e) {
 					Log.i(TAG, "What do we get nullpointer on here?");

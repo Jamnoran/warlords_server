@@ -22,9 +22,9 @@ public class PriestSmite extends Spell {
 
 
 	public void execute() {
-		if (getTargetEnemyList() != null && getTargetEnemyList().size() >= 1 && !getAbility().isCasting()) {
+		if (getTargetEnemies() != null && getTargetEnemies().size() >= 1 && !getAbility().isCasting()) {
 			getAbility().setCasting(true);
-			Log.i(TAG, "Target minion to damage : " + getTargetEnemyList().get(0).getId());
+			Log.i(TAG, "Target minion to damage : " + getTargetEnemies().get(0).getId());
 
 			// Calculate castTime with CDR and talents etc
 			getAbility().setCalculatedCastTime(getAbility().getCastTime());
@@ -33,14 +33,14 @@ public class PriestSmite extends Spell {
 			Priest priest = (Priest) getHero();
 			Amount damageAmount = priest.getSpellDamage(this);
 			Log.i(TAG, "Damage for this amount : " + damageAmount);
-			sendAnimation("SMITE", getTargetEnemyList().get(0).getId());
+			sendAnimation("SMITE", getTargetEnemies().get(0).getId());
 			Thread animationSender = new Thread(() -> {
 				try {
 					Thread.sleep(getAbility().getCastTime() - animationTime);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				sendAnimation("SMITE_CAST", getTargetEnemyList().get(0).getId());
+				sendAnimation("SMITE_CAST", getTargetEnemies().get(0).getId());
 			});
 			animationSender.start();
 
@@ -72,7 +72,7 @@ public class PriestSmite extends Spell {
 		Log.i(TAG, "Ability cast time is complete, time to do rest [" + getAbility().getName() + "]");
 		if (getAbility().isCasting()) {
 			// Damage target
-			damageMinion(getTargetEnemyList().get(0), amount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
+			damageMinion(getTargetEnemies().get(0), amount, getHero().getPenetration(getAbility().getDamageType()), getAbility().getDamageType());
 		}
 		getAbility().setCasting(false);
 	}
