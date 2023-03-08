@@ -1,13 +1,7 @@
 package test.util;
 
 import game.GameServer;
-import game.util.DatabaseUtil;
-import game.vo.*;
-import game.vo.classes.Priest;
-import game.vo.classes.Warrior;
-
-import java.util.ArrayList;
-import java.util.Collections;
+import game.vo.Minion;
 
 public class MinionHelper {
 

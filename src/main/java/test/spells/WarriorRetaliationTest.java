@@ -1,15 +1,15 @@
 package test.spells;
 
 import game.GameServer;
-import game.logging.Log;
 import game.spells.AbilityID;
 import game.spells.warrior.WarriorRetaliation;
 import game.util.HeroUtil;
-import game.vo.*;
+import game.vo.Amount;
+import game.vo.Hero;
+import game.vo.Minion;
+import game.vo.Vector3;
 import game.vo.classes.Warrior;
 import test.util.GameHelper;
-import test.util.HeroHelper;
-import test.util.MinionHelper;
 
 import java.util.ArrayList;
 

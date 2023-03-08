@@ -1,7 +1,6 @@
 package test.spells;
 
 import game.GameServer;
-import game.logging.Log;
 import game.spells.AbilityID;
 import game.spells.warrior.WarriorTaunt;
 import game.util.HeroUtil;
@@ -12,8 +11,6 @@ import game.vo.classes.Priest;
 import game.vo.classes.Warrior;
 import org.junit.Test;
 import test.util.GameHelper;
-import test.util.HeroHelper;
-import test.util.MinionHelper;
 
 import java.util.ArrayList;
 

@@ -7,7 +7,7 @@ import game.communication.LobbyServerDispatcher;
 import game.io.WebserviceCommunication;
 import game.logging.Log;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 

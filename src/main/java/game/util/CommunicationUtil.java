@@ -1,8 +1,8 @@
 package game.util;
 
 import com.google.gson.Gson;
-import game.communication.ClientInfo;
 import game.GameServer;
+import game.communication.ClientInfo;
 import game.io.JsonResponse;
 import game.io.Responses.*;
 import game.logging.Log;

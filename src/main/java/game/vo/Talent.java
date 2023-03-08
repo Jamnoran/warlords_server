@@ -1,7 +1,5 @@
 package game.vo;
 
-import game.logging.Log;
-
 import java.util.ArrayList;
 
 /**

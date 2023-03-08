@@ -3,13 +3,11 @@ package test.game;
 import game.GameServer;
 import game.logging.Log;
 import game.spells.warrior.WarriorRetaliation;
-import game.spells.warrior.WarriorTaunt;
 import game.util.TickEngine;
 import game.vo.Hero;
 import game.vo.Minion;
 import game.vo.Tick;
 import game.vo.Vector3;
-import game.vo.classes.Priest;
 import game.vo.classes.Warrior;
 import org.junit.Test;
 import test.util.GameHelper;
@@ -17,7 +15,7 @@ import test.util.GameHelper;
 import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 public class TickEngineTest {
 

@@ -10,8 +10,10 @@ import game.vo.classes.Priest;
 import game.vo.classes.Warlock;
 import game.vo.classes.Warrior;
 
-import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Random;
 
 import static java.lang.Thread.sleep;
 

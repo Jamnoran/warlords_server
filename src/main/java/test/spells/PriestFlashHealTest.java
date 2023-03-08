@@ -3,7 +3,6 @@ package test.spells;
 import game.GameServer;
 import game.spells.AbilityID;
 import game.spells.priest.PriestHeal;
-import game.spells.priest.PriestHealOverTime;
 import game.vo.Amount;
 import game.vo.Hero;
 import game.vo.Vector3;

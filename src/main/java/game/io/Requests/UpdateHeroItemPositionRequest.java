@@ -2,9 +2,6 @@ package game.io.Requests;
 
 import com.google.gson.annotations.SerializedName;
 import game.io.JsonRequest;
-import game.vo.Minion;
-
-import java.util.ArrayList;
 
 /**
  * Created by Jamnoran on 2017-08-10.

@@ -1,6 +1,5 @@
 package game.io.Responses;
 
-import com.google.gson.JsonElement;
 import game.vo.Message;
 
 /**

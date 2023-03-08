@@ -6,7 +6,6 @@ import game.util.HeroUtil;
 import game.vo.Amount;
 import game.vo.Hero;
 import game.vo.Minion;
-import game.vo.Talent;
 import game.vo.classes.Warrior;
 import org.junit.Test;
 import test.util.GameHelper;

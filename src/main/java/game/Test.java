@@ -1,19 +1,12 @@
 package game;
 
-import game.io.Requests.SpellRequest;
 import game.logging.Log;
-import game.util.DatabaseUtil;
-import game.util.GameUtil;
-import game.util.ItemUtil;
-import game.util.SpellUtil;
-import game.vo.*;
-import game.vo.classes.Warrior;
+import game.vo.Hero;
+import game.vo.Minion;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class Test {
 

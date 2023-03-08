@@ -1,7 +1,6 @@
 package game.util;
 
 import game.GameServer;
-import game.logging.Log;
 import game.vo.Hero;
 import game.vo.Minion;
 

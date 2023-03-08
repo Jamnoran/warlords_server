@@ -1,11 +1,9 @@
 package game.vo;
 
 import game.GameServer;
-import game.logging.Log;
 import game.util.GameUtil;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 /**

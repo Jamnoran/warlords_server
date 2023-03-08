@@ -2,7 +2,7 @@ package game.communication;
 
 import com.google.gson.Gson;
 import game.GameServer;
-import game.io.*;
+import game.io.JsonRequest;
 import game.io.Requests.GameSlotRequest;
 import game.io.Requests.JoinServerRequest;
 import game.io.Responses.GameSlotResponse;
