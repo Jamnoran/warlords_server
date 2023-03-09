@@ -15,9 +15,9 @@ import java.util.ArrayList;
  */
 public class DatabaseUtil {
 	private static final String TAG = DatabaseUtil.class.getSimpleName();
-	private static String ip = "erca.online";
+	private static String ip = "jamnoran.se";
 //	private static String ip = "192.168.0.215";
-	private static String port = "8889";
+	private static String port = "9906";
 	private static String user = "warlord_clients";
 	private static String password = "bosse45&";
 	private static Integer countOfRequest = 0;
@@ -411,7 +411,7 @@ public class DatabaseUtil {
 		if (connection != null) {
 			try {
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery("SELECT id, points, talent_id, hero_id FROM warlords.user_talents where hero_id = " + heroId);
+				ResultSet rs = stmt.executeQuery("SELECT id, points, talent_id, hero_id FROM warlord.user_talents where hero_id = " + heroId);
 				countOfRequest++;
 				while (rs.next()) {
 					for(Talent talent : talents){
@@ -586,9 +586,9 @@ public class DatabaseUtil {
 			if(connection == null){
 				try {
 //					if (!) {
-						connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "/warlords", user, password);
+						connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "/warlord", user, password);
 //					}else{
-//						connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:" + port + "/warlords", user, password);
+//						connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:" + port + "/warlord", user, password);
 //					}
 				} catch (SQLException e) {
 					Log.i(TAG, "Connection Failed! Check output console try number : " + i);

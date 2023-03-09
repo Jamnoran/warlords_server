@@ -71,6 +71,6 @@ public class User {
 	}
 
 	public String getSqlInsertQuery() {
-		return "INSERT INTO `warlords`.`users` (`id`, `username`, `password`, `email`) VALUES (NULL, '" + getUsername() + "', '" + getPassword() + "', '" + getEmail() + "')";
+		return "INSERT INTO `warlord`.`users` (`id`, `username`, `password`, `email`) VALUES (NULL, '" + getUsername() + "', '" + getPassword() + "', '" + getEmail() + "')";
 	}
 }
