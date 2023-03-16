@@ -17,6 +17,8 @@ import game.vo.*;
 
 import java.util.ArrayList;
 
+import static game.util.GameUtil.getHeroById;
+
 /**
  * Created by Jamnoran on 27-Jun-16.
  */
@@ -36,7 +38,7 @@ public class GameServer {
 	private ArrayList<GameAnimation> animations = new ArrayList<>();
 	private ArrayList<Message> messages = new ArrayList<>();
 	private World world;
-	public int gameLevel = 5;
+	public int gameLevel = 1;
 	private SpellUtil spellUtil;
 	private GameUtil gameUtil;
 	private TickEngine tickEngine;
@@ -187,6 +189,8 @@ public class GameServer {
 
 	public void minionDied(int heroId, Integer minionId) {
 		animations.add(new GameAnimation("MINION_DIED", minionId, heroId, null, 0));
+
+		//GameUtil.generateLoot(hero);
 	}
 
 	public ArrayList<GameAnimation> getAnimations() {

@@ -28,7 +28,7 @@ public class Minion {
 	private int minionType = 1;
 
 	public transient boolean targetInRangeForAttack = false;
-	private transient float baseDamage = 5;
+	private transient float baseDamage = 2;
 	private transient float damageMultiplier = 1.2f;
 	private transient Integer baseHp = 10;
 	private transient Integer hpPerLevel = 5;

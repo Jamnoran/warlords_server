@@ -19,7 +19,6 @@ public class Item {
 	public static String LEGS = "LEGS";
 	public static String BOOTS = "BOOTS";
 
-
 	private long id;
 	private long heroId;
 	private long itemId;
