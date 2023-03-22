@@ -2,10 +2,15 @@ package game.util;
 
 import game.io.Requests.AbilityPositionRequest;
 import game.logging.Log;
-import game.vo.*;
-import game.vo.classes.Priest;
-import game.vo.classes.Warlock;
-import game.vo.classes.Warrior;
+import game.models.heroes.Hero;
+import game.models.abilities.Ability;
+import game.models.abilities.AbilityPosition;
+import game.models.heroes.priest.Priest;
+import game.models.heroes.warlock.Warlock;
+import game.models.heroes.warrior.Warrior;
+import game.models.talents.Talent;
+import game.models.items.Item;
+import game.models.items.ItemStat;
 
 import java.sql.*;
 import java.util.ArrayList;

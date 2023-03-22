@@ -3,10 +3,10 @@ package test.game;
 import game.GameServer;
 import game.logging.Log;
 import game.util.HeroUtil;
-import game.vo.Amount;
-import game.vo.Hero;
-import game.vo.Minion;
-import game.vo.classes.Warrior;
+import game.models.game.Amount;
+import game.models.heroes.Hero;
+import game.models.enemies.Minion;
+import game.models.heroes.warrior.Warrior;
 import org.junit.Test;
 import test.util.GameHelper;
 

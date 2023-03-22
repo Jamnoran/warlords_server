@@ -2,7 +2,7 @@ package game.io.Requests;
 
 import com.google.gson.annotations.SerializedName;
 import game.io.JsonRequest;
-import game.vo.Point;
+import game.models.game.Point;
 
 import java.util.ArrayList;
 

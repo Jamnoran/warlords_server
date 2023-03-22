@@ -1,7 +1,6 @@
 package game
 
 import com.google.gson.Gson
-import game.GameServer
 import game.communication.ClientInfo
 import game.communication.ServerDispatcher
 import game.io.Requests.SpellRequest
@@ -10,11 +9,16 @@ import game.io.Responses.ClearWorldResponse
 import game.io.Responses.GameStatusResponse
 import game.io.Responses.MessageResponse
 import game.logging.Log
-import game.util.CommunicationUtil
+import game.io.CommunicationHandler
 import game.util.GameUtil
 import game.util.SpellUtil
 import game.util.TickEngine
-import game.vo.*
+import game.models.heroes.Hero
+import game.models.abilities.Ability
+import game.models.enemies.Minion
+import game.models.game.GameAnimation
+import game.models.game.World
+import game.models.server.Message
 import java.util.function.Consumer
 
 /**
@@ -69,7 +73,7 @@ class GameServer(server: ServerDispatcher?) {
     fun sendWorldOperation(heroIdToSend: Int) {
         val thread: Thread = object : Thread() {
             override fun run() {
-                CommunicationUtil.sendWorld(heroIdToSend, this@GameServer)
+                CommunicationHandler.sendWorld(heroIdToSend, this@GameServer)
             }
         }
         thread.start()
@@ -141,7 +145,12 @@ class GameServer(server: ServerDispatcher?) {
 
     fun sendCastBarInformation(heroId: Int, ability: Ability?) {
         val jsonInString = Gson().toJson(AbilityStatusResponse(ability))
-        server?.dispatchMessage(Message(getClientIdByHeroId(heroId), jsonInString))
+        server?.dispatchMessage(
+            Message(
+                getClientIdByHeroId(heroId),
+                jsonInString
+            )
+        )
     }
 
     /**

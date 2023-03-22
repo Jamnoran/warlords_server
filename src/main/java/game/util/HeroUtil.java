@@ -2,12 +2,18 @@ package game.util;
 
 import com.google.gson.Gson;
 import game.GameServer;
+import game.io.CommunicationHandler;
 import game.io.Requests.MoveRequest;
 import game.io.Responses.CombatTextResponse;
 import game.io.Responses.HeroItemsResponse;
 import game.io.Responses.StopHeroResponse;
 import game.logging.Log;
-import game.vo.*;
+import game.models.enemies.Minion;
+import game.models.game.Amount;
+import game.models.game.GameAnimation;
+import game.models.heroes.Hero;
+import game.models.items.Item;
+import game.models.server.Message;
 
 import java.util.ArrayList;
 
@@ -96,7 +102,7 @@ public class HeroUtil {
 						// Check if hero has retaliation buff
 						hero.checkForRetaliation(min);
 
-						CommunicationUtil.sendCombatText(new CombatTextResponse(true, hero.getId(), "" + damage.getAmount(), damage.isCrit(), GameUtil.COLOR_CRIT), gameServer);
+						CommunicationHandler.sendCombatText(new CombatTextResponse(true, hero.getId(), "" + damage.getAmount(), damage.isCrit(), GameUtil.COLOR_CRIT), gameServer);
 						if (hero.getHp() <= 0) {
 							Log.i(TAG, "Hero died, send death animation to client");
 							int numbersAlive = 0;
@@ -148,7 +154,7 @@ public class HeroUtil {
 						float totalDamage = Math.round(minion.calculateDamageReceived(amount, hero.getPenetration(Amount.PHYSICAL), Amount.PHYSICAL));
 						gameServer.getGameUtil().dealDamageToMinion(hero, minion, totalDamage);
 
-						CommunicationUtil.sendCombatText(new CombatTextResponse(false, minion.getId(), "" + amount.getAmount(), amount.isCrit(), GameUtil.COLOR_DAMAGE), gameServer);
+						CommunicationHandler.sendCombatText(new CombatTextResponse(false, minion.getId(), "" + amount.getAmount(), amount.isCrit(), GameUtil.COLOR_DAMAGE), gameServer);
 
 						//sendCooldownInformation(hero.getAbility(0), hero.getId());
 

@@ -1,7 +1,7 @@
 package game.io.Requests;
 
 import game.io.JsonRequest;
-import game.vo.Talent;
+import game.models.talents.Talent;
 
 import java.util.ArrayList;
 

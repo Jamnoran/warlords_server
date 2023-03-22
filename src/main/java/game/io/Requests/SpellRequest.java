@@ -2,7 +2,7 @@ package game.io.Requests;
 
 import com.google.gson.annotations.SerializedName;
 import game.io.JsonRequest;
-import game.vo.Vector3;
+import game.models.vo.Vector3;
 
 import java.util.ArrayList;
 

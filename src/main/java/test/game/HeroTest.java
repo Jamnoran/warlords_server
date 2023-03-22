@@ -2,10 +2,14 @@ package test.game;
 
 import game.GameServer;
 import game.logging.Log;
+import game.models.enemies.Minion;
+import game.models.game.Amount;
+import game.models.heroes.Hero;
+import game.models.talents.Talent;
+import game.models.items.ItemStat;
 import game.util.DatabaseUtil;
 import game.util.HeroUtil;
-import game.vo.*;
-import game.vo.classes.Warrior;
+import game.models.heroes.warrior.Warrior;
 import org.junit.Test;
 import test.util.GameHelper;
 import test.util.HeroHelper;

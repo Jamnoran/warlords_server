@@ -1,7 +1,7 @@
 package test.util;
 
 import game.GameServer;
-import game.vo.Minion;
+import game.models.enemies.Minion;
 
 public class MinionHelper {
 

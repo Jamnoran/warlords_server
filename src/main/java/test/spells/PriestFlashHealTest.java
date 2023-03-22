@@ -1,12 +1,12 @@
 package test.spells;
 
 import game.GameServer;
-import game.spells.AbilityID;
-import game.spells.priest.PriestHeal;
-import game.vo.Amount;
-import game.vo.Hero;
-import game.vo.Vector3;
-import game.vo.classes.Priest;
+import game.models.abilities.AbilityID;
+import game.models.heroes.priest.spells.PriestHeal;
+import game.models.game.Amount;
+import game.models.heroes.Hero;
+import game.models.vo.Vector3;
+import game.models.heroes.priest.Priest;
 import test.util.GameHelper;
 
 import java.util.ArrayList;

@@ -7,7 +7,7 @@ import game.io.Requests.GameSlotRequest;
 import game.io.Requests.JoinServerRequest;
 import game.io.Responses.GameSlotResponse;
 import game.logging.Log;
-import game.vo.Message;
+import game.models.server.Message;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -1,6 +1,6 @@
 package game.io.Responses;
 
-import game.vo.Vector3;
+import game.models.vo.Vector3;
 
 /**
  * Created by Jamnoran on 27-Jun-16.

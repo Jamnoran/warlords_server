@@ -2,13 +2,13 @@ package test.game;
 
 import game.GameServer;
 import game.logging.Log;
-import game.spells.warrior.WarriorRetaliation;
+import game.models.heroes.warrior.spells.WarriorRetaliation;
 import game.util.TickEngine;
-import game.vo.Hero;
-import game.vo.Minion;
-import game.vo.Tick;
-import game.vo.Vector3;
-import game.vo.classes.Warrior;
+import game.models.heroes.Hero;
+import game.models.enemies.Minion;
+import game.models.game.Tick;
+import game.models.vo.Vector3;
+import game.models.heroes.warrior.Warrior;
 import org.junit.Test;
 import test.util.GameHelper;
 

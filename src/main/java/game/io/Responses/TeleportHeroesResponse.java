@@ -1,6 +1,6 @@
 package game.io.Responses;
 
-import game.vo.Hero;
+import game.models.heroes.Hero;
 
 import java.util.ArrayList;
 

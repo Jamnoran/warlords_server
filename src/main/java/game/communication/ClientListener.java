@@ -1,6 +1,6 @@
 package game.communication;
 
-import game.vo.Message;
+import game.models.server.Message;
 
 import java.io.BufferedReader;
 import java.io.IOException;

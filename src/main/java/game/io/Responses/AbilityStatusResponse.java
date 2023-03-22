@@ -1,6 +1,6 @@
 package game.io.Responses;
 
-import game.vo.Ability;
+import game.models.abilities.Ability;
 
 /**
  * Created by Jamnoran on 27-Jun-16.

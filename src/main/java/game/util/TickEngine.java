@@ -1,15 +1,17 @@
 package game.util;
 
 import game.GameServer;
+import game.io.CommunicationHandler;
 import game.logging.Log;
-import game.vo.Hero;
-import game.vo.Minion;
-import game.vo.Tick;
+import game.models.enemies.Minion;
+import game.models.game.Tick;
+import game.models.heroes.Hero;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import static game.models.game.Tick.GAME_STATUS;
 import static java.lang.Thread.sleep;
 
 public class TickEngine {
@@ -24,10 +26,13 @@ public class TickEngine {
 
 	private ArrayList<Tick> ticks = new ArrayList<>();
 	private ArrayList<Tick> ticksToAdd = new ArrayList<>();
+	private ArrayList<Tick> ticksToRemove = new ArrayList<>();
 
 	public TickEngine(GameServer gameServer) {
 		server = gameServer;
 	}
+
+	private static final long THREAD_TICK = 100;
 
 	public void startGameTicks() {
 		initAllTicks();
@@ -35,42 +40,33 @@ public class TickEngine {
 			while (server.isGameRunning()) {
 				Collections.sort(ticks);
 				ticksToAdd.clear();
+
 				// Check ticks if they should be actioned
-				Iterator<Tick> iterator = ticks.iterator();
-				while (iterator.hasNext()) {
-					Tick tick = iterator.next();
+				for (Tick tick : ticks) {
 					if (System.currentTimeMillis() >= tick.timeToActivate) {
-						if (tick.typeOfTick != Tick.GAME_STATUS && tick.typeOfTick != Tick.REQUEST_MINION_POSITION && tick.typeOfTick != Tick.HERO_REGEN && tick.typeOfTick != Tick.MINION_ACTION) {
-							Log.i(TAG, "Activated this tick : " + tick.timeToActivate + " of type " + tick.typeOfTick);
+						switch (tick.typeOfTick) {
+							case Tick.GAME_STATUS -> gameStatusTick();
+							case Tick.MINION_ACTION -> minionActionTick();
+							case Tick.HERO_REGEN -> heroRegenTick();
+							case Tick.BUFF -> heroBuffTick();
+							case Tick.REQUEST_MINION_POSITION -> requestMinionPositionTick();
+							case Tick.MINION_DEBUFF -> minionDebuffTick();
+							default -> Log.i(TAG, "Activated this tick : " + tick.timeToActivate + " of type " + tick.typeOfTick);
 						}
-						if (tick.typeOfTick == Tick.GAME_STATUS) {
-							gameStatusTick();
-						}
-						if (tick.typeOfTick == Tick.MINION_ACTION) {
-							minionActionTick();
-						}
-						if (tick.typeOfTick == Tick.HERO_REGEN) {
-							heroRegenTick();
-						}
-						if (tick.typeOfTick == Tick.BUFF) {
-							heroBuffTick();
-						}
-						if (tick.typeOfTick == Tick.REQUEST_MINION_POSITION) {
-							requestMinionPositionTick();
-						}
-						if (tick.typeOfTick == Tick.MINION_DEBUFF) {
-							minionDebuffTick();
-						}
-						iterator.remove();
+						ticksToRemove.add(tick);
 					}
 				}
+
+				// Remove all ticks that have been actioned
+				ticks.removeAll(ticksToRemove);
+				ticksToRemove.clear();
 
 				// Add all ticks wanted to be created to list here so we do not get error from adding inside iterator
 				ticks.addAll(ticksToAdd);
 
 				// Wait for next tick
 				try {
-					sleep(threadTick);
+					Thread.sleep(THREAD_TICK);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -81,25 +77,25 @@ public class TickEngine {
 
 	private void initAllTicks() {
 		long time = System.currentTimeMillis();
-		ticks.add(new Tick((time + gameStatusTickTime), Tick.GAME_STATUS));
+		ticks.add(new Tick((time + gameStatusTickTime), GAME_STATUS));
 		ticks.add(new Tick((time + minionActionTickTime), Tick.MINION_ACTION));
 		ticks.add(new Tick((time + heroRegenTickTime), Tick.HERO_REGEN));
 		ticks.add(new Tick((time + requestMinionPositionTickTime), Tick.REQUEST_MINION_POSITION));
 	}
 
 	private void minionDebuffTick() {
-		server.getGameUtil().minionDebuffs(server.getMinions(), server.getHeroes());
+		server.getGameUtil().handleMinionDebuffs(server.getMinions(), server.getHeroes());
 	}
 
 	private void requestMinionPositionTick() {
 		// Send request to a random client to update server with actual position of minions
-		CommunicationUtil.sendRequestMinionPosition(server);
+		CommunicationHandler.sendRequestMinionPosition(server);
 		ticksToAdd.add(new Tick((System.currentTimeMillis() + requestMinionPositionTickTime), Tick.HERO_REGEN));
 	}
 
 	private void heroBuffTick() {
 		Log.i(TAG, "Hero buff");
-		server.getGameUtil().heroBuffs(server.getMinions(), server.getHeroes());
+		server.getGameUtil().heroBuffs(server.getHeroes());
 	}
 
 	private void heroRegenTick() {
@@ -120,7 +116,7 @@ public class TickEngine {
 
 	private void gameStatusTick() {
 		server.sendGameStatus();
-		ticksToAdd.add(new Tick((System.currentTimeMillis() + gameStatusTickTime), Tick.GAME_STATUS));
+		ticksToAdd.add(new Tick((System.currentTimeMillis() + gameStatusTickTime), GAME_STATUS));
 	}
 
 	public void addTick(Tick tick) {

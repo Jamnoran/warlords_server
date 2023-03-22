@@ -7,12 +7,12 @@ import game.Server;
 import game.io.JsonRequest;
 import game.io.Requests.*;
 import game.logging.Log;
-import game.util.CommunicationUtil;
+import game.io.CommunicationHandler;
 import game.util.DatabaseUtil;
 import game.util.GameUtil;
 import game.util.HeroUtil;
-import game.vo.Hero;
-import game.vo.Message;
+import game.models.heroes.Hero;
+import game.models.server.Message;
 
 import java.util.Vector;
 
@@ -116,7 +116,7 @@ public class ServerDispatcher extends Thread {
 				gameServer.getGameUtil().clickPortal(parsedRequest.getHero_id(), gameServer.getHeroes());
 			} else if (request.isType("GET_ABILITIES")) {
 				Log.i(TAG, "parsedRequest : " + request.toString());
-				CommunicationUtil.sendAbilities(request.getUser_id(), gameServer);
+				CommunicationHandler.sendAbilities(request.getUser_id(), gameServer);
 			} else if (request.isType("UPDATE_ABILITY_POSITION")) {
 				AbilityPositionRequest abilityPositionRequest = gson.fromJson(aMessage.getMessage(), AbilityPositionRequest.class);
 				Log.i(TAG, "parsedRequest : " + request.toString());
@@ -138,7 +138,7 @@ public class ServerDispatcher extends Thread {
 			} else if (request.isType("UPDATE_ITEM_POSITION")) {
 				UpdateHeroItemPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateHeroItemPositionRequest.class);
 				Log.i(TAG, "parsedRequest : " + parsedRequest.toString());
-				gameServer.getGameUtil().updateItemPosition(request.getUser_id(), parsedRequest);
+				gameServer.getGameUtil().updateItemPosition(parsedRequest);
 			} else if (request.isType("UPDATE_MINION_POSITION")) {
 				//Log.i(TAG, "parsedRequest : " + request.toString());
 				UpdateMinionPositionRequest parsedRequest = gson.fromJson(aMessage.getMessage(), UpdateMinionPositionRequest.class);

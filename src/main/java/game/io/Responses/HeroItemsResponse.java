@@ -1,7 +1,7 @@
 package game.io.Responses;
 
 import game.io.JsonRequest;
-import game.vo.Item;
+import game.models.items.Item;
 
 import java.util.ArrayList;
 

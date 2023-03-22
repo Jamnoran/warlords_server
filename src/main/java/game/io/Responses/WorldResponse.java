@@ -1,6 +1,6 @@
 package game.io.Responses;
 
-import game.vo.World;
+import game.models.game.World;
 
 /**
  * Created by Jamnoran on 27-Jun-16.

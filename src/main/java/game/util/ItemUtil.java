@@ -1,9 +1,10 @@
 package game.util;
 
 import game.logging.Log;
-import game.vo.Hero;
-import game.vo.Item;
-import game.vo.ItemStat;
+import game.logic.math.CalculationUtil;
+import game.models.heroes.Hero;
+import game.models.items.Item;
+import game.models.items.ItemStat;
 
 import java.text.MessageFormat;
 import java.util.Arrays;

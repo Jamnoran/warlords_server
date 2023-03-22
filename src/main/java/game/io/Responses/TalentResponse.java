@@ -1,6 +1,6 @@
 package game.io.Responses;
 
-import game.vo.Talent;
+import game.models.talents.Talent;
 
 import java.util.ArrayList;
 

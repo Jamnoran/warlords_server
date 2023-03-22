@@ -2,7 +2,7 @@ package game.io.Requests;
 
 import com.google.gson.annotations.SerializedName;
 import game.io.JsonRequest;
-import game.vo.Minion;
+import game.models.enemies.Minion;
 
 import java.util.ArrayList;
 

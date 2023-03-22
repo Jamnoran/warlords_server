@@ -1,14 +1,14 @@
 package test.spells;
 
 import game.GameServer;
-import game.spells.AbilityID;
-import game.spells.warrior.WarriorTaunt;
+import game.models.abilities.AbilityID;
+import game.models.heroes.warrior.spells.WarriorTaunt;
 import game.util.HeroUtil;
-import game.vo.Hero;
-import game.vo.Minion;
-import game.vo.Vector3;
-import game.vo.classes.Priest;
-import game.vo.classes.Warrior;
+import game.models.heroes.Hero;
+import game.models.enemies.Minion;
+import game.models.vo.Vector3;
+import game.models.heroes.priest.Priest;
+import game.models.heroes.warrior.Warrior;
 import org.junit.Test;
 import test.util.GameHelper;
 

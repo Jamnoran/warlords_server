@@ -3,21 +3,21 @@ package game.util;
 import game.GameServer;
 import game.io.Requests.SpellRequest;
 import game.logging.Log;
-import game.spells.priest.PriestHeal;
-import game.spells.priest.PriestHealOverTime;
-import game.spells.priest.PriestShield;
-import game.spells.priest.PriestSmite;
-import game.spells.warlock.WarlockBloodBolt;
-import game.spells.warlock.WarlockDrainLife;
-import game.spells.warlock.WarlockHaemorrhage;
-import game.spells.warlock.WarlockRestore;
-import game.spells.warrior.WarriorCharge;
-import game.spells.warrior.WarriorCleave;
-import game.spells.warrior.WarriorTaunt;
-import game.vo.Hero;
-import game.vo.classes.Priest;
-import game.vo.classes.Warlock;
-import game.vo.classes.Warrior;
+import game.models.heroes.priest.spells.PriestHeal;
+import game.models.heroes.priest.spells.PriestHealOverTime;
+import game.models.heroes.priest.spells.PriestShield;
+import game.models.heroes.priest.spells.PriestSmite;
+import game.models.heroes.warlock.spells.WarlockBloodBolt;
+import game.models.heroes.warlock.spells.WarlockDrainLife;
+import game.models.heroes.warlock.spells.WarlockHaemorrhage;
+import game.models.heroes.warlock.spells.WarlockRestore;
+import game.models.heroes.warrior.spells.WarriorCharge;
+import game.models.heroes.warrior.spells.WarriorCleave;
+import game.models.heroes.warrior.spells.WarriorTaunt;
+import game.models.heroes.Hero;
+import game.models.heroes.priest.Priest;
+import game.models.heroes.warlock.Warlock;
+import game.models.heroes.warrior.Warrior;
 
 public class SpellUtil {
 

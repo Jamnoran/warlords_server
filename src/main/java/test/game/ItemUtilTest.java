@@ -1,12 +1,12 @@
 package test.game;
 
 import game.logging.Log;
-import game.util.CalculationUtil;
+import game.logic.math.CalculationUtil;
 import game.util.DatabaseUtil;
 import game.util.GameUtil;
-import game.vo.Hero;
-import game.vo.Item;
-import game.vo.classes.Warrior;
+import game.models.heroes.Hero;
+import game.models.items.Item;
+import game.models.heroes.warrior.Warrior;
 import org.junit.Test;
 import test.util.HeroHelper;
 

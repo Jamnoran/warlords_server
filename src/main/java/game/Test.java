@@ -1,8 +1,8 @@
 package game;
 
 import game.logging.Log;
-import game.vo.Hero;
-import game.vo.Minion;
+import game.models.heroes.Hero;
+import game.models.enemies.Minion;
 
 import java.io.BufferedReader;
 import java.io.IOException;

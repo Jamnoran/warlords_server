@@ -1,8 +1,8 @@
 package game.io.Responses;
 
-import game.vo.GameAnimation;
-import game.vo.Hero;
-import game.vo.Minion;
+import game.models.game.GameAnimation;
+import game.models.heroes.Hero;
+import game.models.enemies.Minion;
 
 import java.util.ArrayList;
 

@@ -1,9 +1,13 @@
 package test.util;
 
+import game.models.heroes.Hero;
+import game.models.abilities.Ability;
+import game.models.abilities.AbilityPosition;
+import game.models.talents.Talent;
+import game.models.items.Item;
 import game.util.DatabaseUtil;
-import game.vo.*;
-import game.vo.classes.Priest;
-import game.vo.classes.Warrior;
+import game.models.heroes.priest.Priest;
+import game.models.heroes.warrior.Warrior;
 
 import java.util.ArrayList;
 import java.util.Collections;

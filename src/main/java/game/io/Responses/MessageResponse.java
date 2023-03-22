@@ -1,6 +1,6 @@
 package game.io.Responses;
 
-import game.vo.Message;
+import game.models.server.Message;
 
 /**
  * Created by Jamnoran on 2017-05-17.

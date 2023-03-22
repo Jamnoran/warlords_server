@@ -3,7 +3,7 @@ package test.game;
 import game.communication.LobbyServerDispatcher;
 import game.communication.ServerDispatcher;
 import game.logging.Log;
-import game.vo.Message;
+import game.models.server.Message;
 
 
 public class GameLogicTest {
