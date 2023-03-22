@@ -2,10 +2,14 @@ package game.io
 
 import com.google.gson.Gson
 import game.GameServer
-import game.communication.ClientInfo
-import game.io.Responses.*
+import game.io.Responses.AbilitiesResponse
+import game.io.Responses.CombatTextResponse
+import game.io.Responses.CooldownResponse
+import game.io.Responses.RotateTargetResponse
+import game.io.Responses.TalentResponse
+import game.io.Responses.TeleportHeroesResponse
+import game.io.Responses.WorldResponse
 import game.logging.Log
-import game.logic.math.CalculationUtil
 import game.models.abilities.Ability
 import game.models.server.Message
 import game.util.DatabaseUtil
@@ -19,12 +23,12 @@ object CommunicationHandler {
     }
 
     @JvmStatic
-	fun sendRotateTargetResponse(response: RotateTargetResponse, server: GameServer) {
+    fun sendRotateTargetResponse(response: RotateTargetResponse, server: GameServer) {
         sendRequest(response, server)
     }
 
     @JvmStatic
-	fun sendCombatText(combatTextResponse: CombatTextResponse, server: GameServer) {
+    fun sendCombatText(combatTextResponse: CombatTextResponse, server: GameServer) {
         sendRequest(combatTextResponse, server)
     }
 
@@ -33,8 +37,8 @@ object CommunicationHandler {
      *
      * @param userId
      */
-	@JvmStatic
-	fun sendAbilities(userId: String, server: GameServer?) {
+    @JvmStatic
+    fun sendAbilities(userId: String, server: GameServer?) {
         val hero = getHeroByUserId(userId, server!!.heroes)
         if (hero != null) {
             val heroAbilities = DatabaseUtil.getAllAbilities(hero.class_type)
@@ -77,27 +81,19 @@ object CommunicationHandler {
     }
 
     /**
-     * Sending cool down use down to a specific user
+     * Sending CoolDown use down to a specific user
      *
      * @param abi
      * @param heroId
      */
-    fun sendCooldownInformation(abi: Ability?, heroId: Int, server: GameServer) {
+    fun sendCoolDownInformation(abi: Ability?, heroId: Int, server: GameServer) {
         sendRequest(CooldownResponse(abi), server, heroId)
     }
 
     @JvmStatic
-	fun sendRequestMinionPosition(server: GameServer) {
+    fun sendRequestMinionPosition(server: GameServer) {
         if (server.server != null && server.server!!.clientCount > 0) {
             sendRequest(JsonResponse("UPDATE_MINION_POSITION", 200), server, server.heroes.random().id)
-            //val positionOfRandomClient = CalculationUtil.getRandomInt(0, server.server!!.clientCount - 1)
-            //val clientInfo = server.server!!.clients[positionOfRandomClient] as ClientInfo
-            //server.server!!.dispatchMessage(
-            //    Message(
-            //        clientInfo.getId(),
-            //        Gson().toJson(JsonResponse("UPDATE_MINION_POSITION", 200))
-            //    )
-            //)
         }
     }
 
