@@ -21,7 +21,6 @@ import game.models.heroes.warrior.Warrior;
 
 public class SpellUtil {
 
-
     private static final String TAG = SpellUtil.class.getSimpleName();
     private GameServer gameServer = null;
 
